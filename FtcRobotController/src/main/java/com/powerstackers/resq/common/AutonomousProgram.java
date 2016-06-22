@@ -54,7 +54,7 @@ public class AutonomousProgram extends LinearOpMode {
         // Wait for the start of the match!Thread.interrupted()
         this.waitForStart();
 
-        if (allianceColor== RED) {
+        if (allianceColor == RED) {
             robot.setChurroGrabbers(DoorSetting.CLOSE);
             robot.setBrush(MotorSetting.FORWARD);
             robot.algorithm.goTicks(robot.algorithm.inchesToTicks(58), 0.4);
@@ -64,7 +64,7 @@ public class AutonomousProgram extends LinearOpMode {
             robot.algorithm.turnDegrees(45, 0.8);
             robot.algorithm.goTicks(robot.algorithm.inchesToTicks(22), 0.4);
             robot.setClimberFlipper(DoorSetting.OPEN);
-        } else if (allianceColor== BLUE) {
+        } else if (allianceColor == BLUE) {
             robot.setChurroGrabbers(DoorSetting.CLOSE);
             robot.setBrush(MotorSetting.FORWARD);
             robot.algorithm.goTicks(robot.algorithm.inchesToTicks(68), -0.4);
