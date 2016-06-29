@@ -66,8 +66,8 @@ public class Robot {
     private DcMotor motorRightB;
     private DcMotor motorBrush;
     private DcMotor motorLift;
-    private DcMotor motorWinchLeft;
-    private DcMotor motorWinchRight;
+//    private DcMotor motorWinchLeft;
+//    private DcMotor motorWinchRight;
 
 //    private Servo servoTapeMeasure;
 //    private Servo servoTapeTilt;
@@ -101,13 +101,13 @@ public class Robot {
         motorRightB     = mode.hardwareMap.dcMotor.get("motorBRight");
         motorBrush      = mode.hardwareMap.dcMotor.get("motorBrush");
         motorLift       = mode.hardwareMap.dcMotor.get("motorLift");
-        motorWinchLeft  = mode.hardwareMap.dcMotor.get("motorLHang");
-        motorWinchRight = mode.hardwareMap.dcMotor.get("motorRHang");
+//        motorWinchLeft  = mode.hardwareMap.dcMotor.get("motorLHang");
+//        motorWinchRight = mode.hardwareMap.dcMotor.get("motorRHang");
 
         motorLift.setDirection(DcMotor.Direction.REVERSE);
         motorRightA.setDirection(DcMotor.Direction.REVERSE);
         motorRightB.setDirection(DcMotor.Direction.REVERSE);
-        motorWinchRight.setDirection(DcMotor.Direction.REVERSE);
+//        motorWinchRight.setDirection(DcMotor.Direction.REVERSE);
 
 //        servoTapeMeasure    = mode.hardwareMap.servo.get("servoTapeMeasure");
 //        servoTapeTilt       = mode.hardwareMap.servo.get("servoTapeTilt");
@@ -427,10 +427,10 @@ public class Robot {
      * Set the winch motors.
      * @param motorSetting MotorSetting indicating the direction.
      */
-    public void setWinch(MotorSetting motorSetting) {
-        toggleMotor(motorWinchLeft, motorSetting, WINCH_SPEED);
-        toggleMotor(motorWinchRight, motorSetting, WINCH_SPEED);
-    }
+//    public void setWinch(MotorSetting motorSetting) {
+//        toggleMotor(motorWinchLeft, motorSetting, WINCH_SPEED);
+//        toggleMotor(motorWinchRight, motorSetting, WINCH_SPEED);
+//    }
 
     public void calibrateGyro(){
         sensorGyro.calibrate();

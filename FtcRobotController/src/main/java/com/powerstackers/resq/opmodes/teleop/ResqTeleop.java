@@ -49,7 +49,7 @@ public class ResqTeleop extends OpMode {
 
     float stickDriveLeft;
     float stickDriveRight;
-    float stickWinch;
+//    float stickWinch;
     MotorSetting settingLiftHeightServo;
 //    MotorSetting settingTapeMeasureServo;
     MotorSetting settingLiftMotor = MotorSetting.STOP;
@@ -107,7 +107,7 @@ public class ResqTeleop extends OpMode {
         // Read the joystick and determine what motor setting to use.
         stickDriveLeft = (float) scaleInput(Range.clip(-gamepad1.left_stick_y, -1, 1));
         stickDriveRight = (float) scaleInput(Range.clip(-gamepad1.right_stick_y, -1, 1));
-        stickWinch = (float) scaleInput(Range.clip(-gamepad2.left_stick_y, -1, 1));
+//        stickWinch = (float) scaleInput(Range.clip(-gamepad2.left_stick_y, -1, 1));
 
         // Neatly read all the button assignments for clarity purposes.
         buttonLiftOut = gamepad1.left_bumper;
@@ -274,13 +274,13 @@ public class ResqTeleop extends OpMode {
         }
 
         // Winch motor control
-        if (stickWinch > MINIMUM_JOYSTICK_THRESHOLD) {
-            robot.setWinch(MotorSetting.FORWARD);
-        } else if (stickWinch < -MINIMUM_JOYSTICK_THRESHOLD) {
-            robot.setWinch(MotorSetting.REVERSE);
-        } else {
-            robot.setWinch(MotorSetting.STOP);
-        }
+//        if (stickWinch > MINIMUM_JOYSTICK_THRESHOLD) {
+//            robot.setWinch(MotorSetting.FORWARD);
+//        } else if (stickWinch < -MINIMUM_JOYSTICK_THRESHOLD) {
+//            robot.setWinch(MotorSetting.REVERSE);
+//        } else {
+//            robot.setWinch(MotorSetting.STOP);
+//        }
 
 //        robot.setTapeMeasure(settingTapeMeasureServo);
         robot.setLift(settingLiftMotor);
