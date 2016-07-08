@@ -57,22 +57,24 @@ public class AutonomousProgram extends LinearOpMode {
         if (allianceColor == RED) {
             robot.setChurroGrabbers(DoorSetting.CLOSE);
             robot.setBrush(MotorSetting.FORWARD);
-            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(58), 0.4);
+            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-80));
             robot.setBrush(MotorSetting.STOP);
             robot.calibrateGyro();
             sleep(5000);
-            robot.algorithm.turnDegrees(180, 0.8);
+            robot.algorithm.turnDegreesright(90, 0.85);
+//            robot.algorithm.turnDegrees(90, 0.8);
             robot.setBrush(MotorSetting.REVERSE);
-            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(12), 0.4);
+            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-12));
+            robot.setBrush(MotorSetting.STOP);
             robot.setClimberFlipper(DoorSetting.OPEN);
 
         } else if (allianceColor == BLUE) {
             robot.setChurroGrabbers(DoorSetting.CLOSE);
             robot.setBrush(MotorSetting.FORWARD);
-            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(68), -0.4);
+//            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(68), -0.4);
             robot.setBrush(MotorSetting.STOP);
-            robot.algorithm.turnDegrees(315, 0.8);
-            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(22), 0.4);
+            robot.algorithm.turnDegreesleft(315, 0.8);
+//            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(22), 0.4);
             robot.setClimberFlipper(DoorSetting.OPEN);
         } else {
             telemetry.addData("choosered", "deprecated: ");

@@ -21,7 +21,7 @@ public class ProtoBlue extends LinearOpMode {
 
         if (opModeIsActive()==true) {
             robot.setBrush(MotorSetting.FORWARD);
-            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(68), 0.4);
+//            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(68), 0.4);
             robot.setBrush(MotorSetting.STOP);
         }
 

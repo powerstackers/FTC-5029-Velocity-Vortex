@@ -91,7 +91,7 @@ public class JonsAlgo {
      * @param  ticks The distance that we want to travel.
      * @param  speed The speed at which to travel.
      */
-    public void goTicks(long ticks, double speed) {
+    public void goTicks(long ticks) {
 
 //        long startLeft = robot.getLeftEncoder();
         long startRight = robot.getRightEncoder();
@@ -100,13 +100,15 @@ public class JonsAlgo {
         long targetRight = startRight + ticks;
 //        long targetLeft = startLeft + ticks;
 
-        double leftCorrect	= 1.0;
-        double rightCorrect	= 0.95;
+        double leftCorrect	= 0.1;
+        double rightCorrect	= 1.0;
 
         if (ticks < 0) {
             // Set the drive motors to the given speed
-            robot.setPowerLeft(speed * leftCorrect);
-            robot.setPowerRight(speed * rightCorrect);
+//            robot.setPowerLeft(speed * leftCorrect);
+//            robot.setPowerRight(speed * rightCorrect);
+            robot.setPowerLeft(0.85);
+            robot.setPowerRight(0.60);
 
             // Wait until both motors have reached the target
             while ( robot.getRightEncoder() > targetRight) {
@@ -119,8 +121,10 @@ public class JonsAlgo {
             robot.setPowerRight(0);
         } else if (ticks > 0){
             // Set the drive motors to the speed (in reverse)
-            robot.setPowerLeft(-speed * leftCorrect);
-            robot.setPowerRight(-speed * rightCorrect);
+//            robot.setPowerLeft(-speed * leftCorrect);
+//            robot.setPowerRight(-speed * rightCorrect);
+            robot.setPowerLeft(-0.85);
+            robot.setPowerRight(-0.60);
 
             // Wait until both motors have reached the target
             while( robot.getRightEncoder() < targetRight) {
@@ -141,7 +145,7 @@ public class JonsAlgo {
      * @param  degrees  The distance in degrees to turn.
      * @param  speed    The speed at which to turn.
      */
-    public void turnDegrees(double degrees, double speed) throws InterruptedException {
+    public void turnDegreesleft(double degrees, double speed) throws InterruptedException {
 
         double degreesSoFar = robot.getGyroHeading();
 
@@ -155,7 +159,43 @@ public class JonsAlgo {
             robot.setPowerLeft(-1 * speed);
             robot.setPowerRight(speed);
             mode.telemetry.addData("gyro1", robot.getGyroHeading());
-        } else if (degrees < 180) {                                     //right
+        } else if (degrees < 180 || degrees == 180) {                                     //right
+            robot.setPowerLeft(speed);
+            robot.setPowerRight(-1 * speed);
+            mode.telemetry.addData("gyro2", robot.getGyroHeading());
+        } else {
+            robot.setPowerAll(0);
+        }
+        mode.telemetry.addData("Gyro", degrees + "," + degreesSoFar);
+        // For as long as the current degree measure doesn't equal the target. This will work in the clockwise and
+        // counterclockwise directions, since we are comparing the absolute values
+        while ((degreesSoFar) > (degrees)) {
+            mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
+        }
+
+        // Stop all drive motors
+        robot.setPowerAll(0);
+
+//        if (abs(degreesSoFar - degrees) > turnOvershootThreshold) {
+//            turnDegrees(-1*(degreesSoFar - degrees), 0.50);
+//        }
+    }
+
+    public void turnDegreesright(double degrees, double speed) throws InterruptedException {
+
+        double degreesSoFar = robot.getGyroHeading();
+
+//        robot.calibrateGyro();
+
+//        double degreesSoFar = 0;
+
+//        if (Range.clip(degrees ))
+
+        if (degrees > 180) {                                            //left
+            robot.setPowerLeft(-1 * speed);
+            robot.setPowerRight(speed);
+            mode.telemetry.addData("gyro1", robot.getGyroHeading());
+        } else if (degrees < 180 || degrees == 180) {                                     //right
             robot.setPowerLeft(speed);
             robot.setPowerRight(-1 * speed);
             mode.telemetry.addData("gyro2", robot.getGyroHeading());
@@ -176,6 +216,8 @@ public class JonsAlgo {
 //            turnDegrees(-1*(degreesSoFar - degrees), 0.50);
 //        }
     }
+
+//    public void
 
     /**
      * Use the walls of the playing field to square up the robot.
