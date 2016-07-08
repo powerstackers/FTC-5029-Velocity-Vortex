@@ -91,7 +91,7 @@ public class JonsAlgo {
      * @param  ticks The distance that we want to travel.
      * @param  speed The speed at which to travel.
      */
-    public void goTicks(long ticks) {
+    public void goTicks(long ticks, double speed) {
 
 //        long startLeft = robot.getLeftEncoder();
         long startRight = robot.getRightEncoder();
@@ -100,20 +100,32 @@ public class JonsAlgo {
         long targetRight = startRight + ticks;
 //        long targetLeft = startLeft + ticks;
 
-        double leftCorrect	= 0.1;
-        double rightCorrect	= 1.0;
+        double leftCorrect	= 1.0;
+        double rightCorrect	= 0.50;
 
         if (ticks < 0) {
             // Set the drive motors to the given speed
 //            robot.setPowerLeft(speed * leftCorrect);
 //            robot.setPowerRight(speed * rightCorrect);
-            robot.setPowerLeft(0.85);
-            robot.setPowerRight(0.60);
+//            robot.setPowerLeft(0.85);
+//            robot.setPowerRight(0.60);
 
             // Wait until both motors have reached the target
             while ( robot.getRightEncoder() > targetRight) {
                 mode.telemetry.addData("Data", robot.getRightEncoder());
                 mode.telemetry.addData("Encoder target", targetRight);
+                mode.telemetry.addData("gyro", robot.getGyroHeading());
+                /* Gyro Compensation */
+                if (robot.getGyroHeading() > 180) {
+                    robot.setPowerLeft(speed/2);
+                    robot.setPowerRight(1);
+                } else if (robot.getGyroHeading() < 180) {
+                    robot.setPowerLeft(1);
+                    robot.setPowerRight(speed/2);
+                } else {
+                    robot.setPowerLeft(speed * leftCorrect);
+                    robot.setPowerRight(speed * rightCorrect);
+                }
             }
 
             // Stop the drive motors here
@@ -121,15 +133,25 @@ public class JonsAlgo {
             robot.setPowerRight(0);
         } else if (ticks > 0){
             // Set the drive motors to the speed (in reverse)
-//            robot.setPowerLeft(-speed * leftCorrect);
-//            robot.setPowerRight(-speed * rightCorrect);
-            robot.setPowerLeft(-0.85);
-            robot.setPowerRight(-0.60);
+            robot.setPowerLeft(-speed * leftCorrect);
+            robot.setPowerRight(-speed * rightCorrect);
+//            robot.setPowerLeft(-0.85);
+//            robot.setPowerRight(-0.60);
 
             // Wait until both motors have reached the target
             while( robot.getRightEncoder() < targetRight) {
                 mode.telemetry.addData("Data2", robot.getRightEncoder());
                 mode.telemetry.addData("Encoder target", targetRight);
+                /* Gyro Compensation */
+//                if (robot.getGyroHeading() > 180) {
+//                    robot.setPowerLeft(speed/2);
+//                    robot.setPowerRight(1);
+//                } else if (robot.getGyroHeading() < 180) {
+//                    robot.setPowerLeft(1);
+//                    robot.setPowerRight(speed/2);
+//                } else {
+//                    robot.setPowerAll(speed);
+//                }
             }
 
             // Turn off the drive motors here
@@ -217,7 +239,17 @@ public class JonsAlgo {
 //        }
     }
 
-//    public void
+//    void gyroCompensate() {
+//        if (robot.getGyroHeading() > 180) {
+//            robot.setPowerLeft(speed/2);
+//            robot.setPowerRight(1);
+//        } else if (robot.getGyroHeading() < 180) {
+//            robot.setPowerLeft(1);
+//            robot.setPowerRight(speed/2);
+//        } else {
+//            robot.setPowerAll(speed);
+//        }
+//    }
 
     /**
      * Use the walls of the playing field to square up the robot.
