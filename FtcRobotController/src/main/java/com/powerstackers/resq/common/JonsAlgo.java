@@ -119,7 +119,7 @@ public class JonsAlgo {
                 if (robot.getGyroHeading() > 180) {
                     robot.setPowerLeft(speed/2);
                     robot.setPowerRight(1);
-                } else if (robot.getGyroHeading() < 180) {
+                } else if (robot.getGyroHeading() < 180 && robot.getGyroHeading() > 0) {
                     robot.setPowerLeft(1);
                     robot.setPowerRight(speed/2);
                 } else {
