@@ -72,6 +72,8 @@ public class AutonomousProgram extends LinearOpMode {
 
         } else if (allianceColor == BLUE) {
             robot.setChurroGrabbers(DoorSetting.CLOSE);
+            robot.calibrateGyro();
+            sleep(5000);
             robot.setBrush(MotorSetting.FORWARD);
 //            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(68), -0.4);
             robot.setBrush(MotorSetting.STOP);

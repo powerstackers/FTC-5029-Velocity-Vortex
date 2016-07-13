@@ -169,7 +169,7 @@ public class JonsAlgo {
      */
     public void turnDegreesleft(double degrees, double speed) throws InterruptedException {
 
-        double degreesSoFar = robot.getGyroHeading();
+        double degreesSoFar = 359;
 
 //        robot.calibrateGyro();
 
@@ -177,17 +177,21 @@ public class JonsAlgo {
 
 //        if (Range.clip(degrees ))
 
-        if (degrees > 180) {                                            //left
-            robot.setPowerLeft(-1 * speed);
-            robot.setPowerRight(speed);
-            mode.telemetry.addData("gyro1", robot.getGyroHeading());
-        } else if (degrees < 180 || degrees == 180) {                                     //right
-            robot.setPowerLeft(speed);
-            robot.setPowerRight(-1 * speed);
-            mode.telemetry.addData("gyro2", robot.getGyroHeading());
-        } else {
-            robot.setPowerAll(0);
-        }
+//        if (degrees > 180) {                                            //left
+//            robot.setPowerLeft(-1 * speed);
+//            robot.setPowerRight(speed);
+//            mode.telemetry.addData("gyro1", robot.getGyroHeading());
+//        } else if (degrees < 180 || degrees == 180) {                                     //right
+//            robot.setPowerLeft(speed);
+//            robot.setPowerRight(-1 * speed);
+//            mode.telemetry.addData("gyro2", robot.getGyroHeading());
+//        } else {
+//            robot.setPowerAll(0);
+//        }
+
+        robot.setPowerLeft(-1 * speed);
+        robot.setPowerRight(speed);
+        Thread.sleep(100);
         mode.telemetry.addData("Gyro", degrees + "," + degreesSoFar);
         // For as long as the current degree measure doesn't equal the target. This will work in the clockwise and
         // counterclockwise directions, since we are comparing the absolute values
