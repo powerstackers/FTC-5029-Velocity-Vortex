@@ -115,6 +115,7 @@ public class JonsAlgo {
                 mode.telemetry.addData("Data", robot.getRightEncoder());
                 mode.telemetry.addData("Encoder target", targetRight);
                 mode.telemetry.addData("gyro", robot.getGyroHeading());
+
                 /* Gyro Compensation */
                 if (robot.getGyroHeading() > 180) {
                     robot.setPowerLeft(speed/2);
@@ -142,16 +143,6 @@ public class JonsAlgo {
             while( robot.getRightEncoder() < targetRight) {
                 mode.telemetry.addData("Data2", robot.getRightEncoder());
                 mode.telemetry.addData("Encoder target", targetRight);
-                /* Gyro Compensation */
-//                if (robot.getGyroHeading() > 180) {
-//                    robot.setPowerLeft(speed/2);
-//                    robot.setPowerRight(1);
-//                } else if (robot.getGyroHeading() < 180) {
-//                    robot.setPowerLeft(1);
-//                    robot.setPowerRight(speed/2);
-//                } else {
-//                    robot.setPowerAll(speed);
-//                }
             }
 
             // Turn off the drive motors here
@@ -167,47 +158,58 @@ public class JonsAlgo {
      * @param  degrees  The distance in degrees to turn.
      * @param  speed    The speed at which to turn.
      */
-    public void turnDegreesleft(double degrees, double speed) throws InterruptedException {
+    public void turnDegreesRight(double degrees, double speed) throws InterruptedException {
 
-        double degreesSoFar = 359;
+        double degreesSoFar = robot.getGyroHeading();
+        double degreesToGo;
+        double degreesFixed;
 
-//        robot.calibrateGyro();
+        degreesToGo = (degreesSoFar + degrees);
 
-//        double degreesSoFar = 0;
-
-//        if (Range.clip(degrees ))
-
-//        if (degrees > 180) {                                            //left
-//            robot.setPowerLeft(-1 * speed);
-//            robot.setPowerRight(speed);
-//            mode.telemetry.addData("gyro1", robot.getGyroHeading());
-//        } else if (degrees < 180 || degrees == 180) {                                     //right
-//            robot.setPowerLeft(speed);
-//            robot.setPowerRight(-1 * speed);
-//            mode.telemetry.addData("gyro2", robot.getGyroHeading());
-//        } else {
-//            robot.setPowerAll(0);
-//        }
-
-        robot.setPowerLeft(-1 * speed);
-        robot.setPowerRight(speed);
-        Thread.sleep(100);
-        mode.telemetry.addData("Gyro", degrees + "," + degreesSoFar);
-        // For as long as the current degree measure doesn't equal the target. This will work in the clockwise and
-        // counterclockwise directions, since we are comparing the absolute values
-        while ((degreesSoFar) > (degrees)) {
-            mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
+        if (degreesToGo < 360) {                //right
+            robot.setPowerLeft(speed);
+            robot.setPowerRight(-1 * speed);
+            while ((degreesSoFar) < (degrees)) {
+                mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
+            }
+        } else if (degreesToGo > 360) {
+            degreesFixed = degreesToGo - 360;
+            robot.setPowerLeft(speed);
+            robot.setPowerRight(-1 * speed);
+            while ((degreesSoFar) < (degreesFixed)) {
+                mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
+            }
+        } else {
+            robot.setPowerAll(0);
         }
-
-        // Stop all drive motors
-        robot.setPowerAll(0);
-
-//        if (abs(degreesSoFar - degrees) > turnOvershootThreshold) {
-//            turnDegrees(-1*(degreesSoFar - degrees), 0.50);
-//        }
     }
 
-    public void turnDegreesright(double degrees, double speed) throws InterruptedException {
+    public void turnDegreesLeft(double degrees, double speed) throws InterruptedException {
+        double degreesSoFar = robot.getGyroHeading();
+        double degreesToGo;
+        double degreesFixed;
+
+        degreesToGo = (degreesSoFar - degrees);
+
+        if (degreesToGo > 0 ) {                //left
+            robot.setPowerLeft(-1 * speed);
+            robot.setPowerRight(speed);
+            while ((degreesSoFar) > (degrees)) {
+                mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
+            }
+        } else if (degreesToGo < 0 ) {
+            degreesFixed = 360 - degreesToGo;
+            robot.setPowerLeft(-1 * speed);
+            robot.setPowerRight(speed);
+            while ((degreesSoFar) > (degreesFixed)) {
+                mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
+            }
+        } else {
+            robot.setPowerAll(0);
+        }
+    }
+
+    void turnDegrees(double degrees, double speed) throws InterruptedException {
 
         double degreesSoFar = robot.getGyroHeading();
 
@@ -242,18 +244,6 @@ public class JonsAlgo {
 //            turnDegrees(-1*(degreesSoFar - degrees), 0.50);
 //        }
     }
-
-//    void gyroCompensate() {
-//        if (robot.getGyroHeading() > 180) {
-//            robot.setPowerLeft(speed/2);
-//            robot.setPowerRight(1);
-//        } else if (robot.getGyroHeading() < 180) {
-//            robot.setPowerLeft(1);
-//            robot.setPowerRight(speed/2);
-//        } else {
-//            robot.setPowerAll(speed);
-//        }
-//    }
 
     /**
      * Use the walls of the playing field to square up the robot.
