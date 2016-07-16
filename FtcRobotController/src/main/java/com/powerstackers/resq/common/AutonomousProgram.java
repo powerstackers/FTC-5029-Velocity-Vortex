@@ -59,14 +59,15 @@ public class AutonomousProgram extends LinearOpMode {
             robot.calibrateGyro();
             sleep(5000);
             robot.setBrush(MotorSetting.FORWARD);
-            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-129),0.8);
+            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-124),0.8);
             robot.setBrush(MotorSetting.STOP);
-            robot.calibrateGyro();
-            sleep(5000);
+//            robot.calibrateGyro();
+//            sleep(5000);
             robot.algorithm.turnDegreesRight(88, 0.85);
 //            robot.algorithm.turnDegrees(90, 0.8);
-            robot.setBrush(MotorSetting.REVERSE);
-            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-9), 0.8);
+//            robot.setBrush(MotorSetting.REVERSE);
+            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-14), 0.70);
+            sleep(1000);
             robot.setBrush(MotorSetting.STOP);
             robot.setClimberFlipper(DoorSetting.OPEN);
 
