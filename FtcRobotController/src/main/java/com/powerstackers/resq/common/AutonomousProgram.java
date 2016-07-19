@@ -58,6 +58,7 @@ public class AutonomousProgram extends LinearOpMode {
             robot.setChurroGrabbers(DoorSetting.CLOSE);
             robot.calibrateGyro();
             sleep(5000);
+            sleep(10000);
             robot.setBrush(MotorSetting.FORWARD);
             robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-124),0.8);
             robot.setBrush(MotorSetting.STOP);
@@ -76,9 +77,11 @@ public class AutonomousProgram extends LinearOpMode {
             robot.calibrateGyro();
             sleep(5000);
             robot.setBrush(MotorSetting.FORWARD);
+            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-119),0.8);
 //            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(68), -0.4);
+            robot.algorithm.turnDegreesRight(88, 0.8);
             robot.setBrush(MotorSetting.STOP);
-            robot.algorithm.turnDegreesLeft(315, 0.8);
+            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-14), 0.70);
 //            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(22), 0.4);
             robot.setClimberFlipper(DoorSetting.OPEN);
         } else {
