@@ -31,11 +31,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes.main;
 
-import com.powerstackers.resq.opmodes.BlueAlianceOP;
-import com.powerstackers.resq.opmodes.ColorSensorSense;
-import com.powerstackers.resq.opmodes.ProtobotTeleop;
-import com.powerstackers.resq.opmodes.RedAlianceOP;
-import com.powerstackers.resq.opmodes.Tedbot;
+import com.powerstackers.resq.opmodes.autonomous.ProtoBlue;
+import com.powerstackers.resq.opmodes.autonomous.TedbotAuto;
+import com.powerstackers.resq.opmodes.autonomous.ProtoAuto;
+import com.powerstackers.resq.opmodes.teleop.testbot1;
 import com.qualcomm.ftcrobotcontroller.opmodes.NullOp;
 import com.qualcomm.ftcrobotcontroller.opmodes.k9.K9IrSeeker;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
@@ -138,14 +137,15 @@ public class FtcOpModeRegister implements OpModeRegister {
          */
         // All of our opmodes make use of the annotations provided by the Swerve library.
         // You should use those on any class you want to register, rather than registering it here.
-    /*
-      manager.register("BlueAllianceOP", BlueAlianceOP.class);
-      manager.register("RedAllianceOP", RedAlianceOP.class);
-      manager.register("ColorSensorSense", ColorSensorSense.class);
-      manager.register("Protobot" , ProtobotTeleop.class);
+//        manager.register("BlueAllianceOP", BlueAlianceOP.class);
+//        manager.register("RedAllianceOP", RedAlianceOP.class);
+//        manager.register("ColorSensorSense", ColorSensorSense.class);
+//        manager.register("ProtobotOP", ProtobotTeleop.class);
 //      manager.register("Purple Pencil", PurplePencil.class);
-      manager.register("Tedbot", Tedbot.class);
-//      manager.register("WorkshopTeleop", WorkshopTeleop.class);
-  */
+//        manager.register("Tedbot", Tedbot.class);
+        manager.register("protored", ProtoBlue.class);
+        manager.register("Auto Ted", TedbotAuto.class);
+        manager.register("testbot1", testbot1.class);
+//        manager.register("protoAuto", ProtoAuto.class);
     }
 }
