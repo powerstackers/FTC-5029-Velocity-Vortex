@@ -40,8 +40,6 @@ import com.qualcomm.ftcrobotcontroller.opmodes.k9.K9IrSeeker;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
-import org.swerverobotics.library.internal.AnnotatedOpModeRegistrar;
-
 /**
  * Register Op Modes
  */
@@ -61,15 +59,9 @@ public class FtcOpModeRegister implements OpModeRegister {
      * or using a static @OpModeRegistrar method.
      *
      * @param manager the manager to use for manual registration
-     * @see org.swerverobotics.library.interfaces.Autonomous
-     * @see org.swerverobotics.library.interfaces.TeleOp
-     * @see org.swerverobotics.library.interfaces.Disabled
-     * @see org.swerverobotics.library.interfaces.OpModeRegistrar
-     * @see org.swerverobotics.library.examples.SynchTeleOp
      */
     @Override
     public void register(OpModeManager manager) {
-        AnnotatedOpModeRegistrar.register(manager);
 
     /*
      * Uncomment any of the following lines if you want to register an op mode,

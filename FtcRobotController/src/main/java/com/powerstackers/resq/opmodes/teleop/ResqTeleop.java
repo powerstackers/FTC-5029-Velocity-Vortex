@@ -26,9 +26,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.swerverobotics.library.interfaces.Disabled;
-import org.swerverobotics.library.interfaces.TeleOp;
-
 import static com.powerstackers.resq.common.enums.PublicEnums.AllianceColor;
 import static com.powerstackers.resq.common.enums.PublicEnums.DoorSetting;
 import static com.powerstackers.resq.common.enums.PublicEnums.MotorSetting;
@@ -37,8 +34,8 @@ import static com.powerstackers.resq.common.enums.PublicEnums.MotorSetting;
  * This is the opmode for use on our competition robot during teleop.
  * @author Jonathan Thomas
  */
-@TeleOp(name = "Res-Q Tele-op", group = "Powerstackers")
-@Disabled
+//@TeleOp(name = "Res-Q Tele-op", group = "Powerstackers")
+//@Disabled
 public class ResqTeleop extends OpMode {
 
     private static final float MINIMUM_JOYSTICK_THRESHOLD = 0.15F;
