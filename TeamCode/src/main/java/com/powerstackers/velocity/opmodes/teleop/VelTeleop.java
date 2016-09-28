@@ -6,7 +6,7 @@ import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 /**
- * Created by root on 9/25/16.
+ * @author Derek Helm
  */
 
 public class VelTeleop extends OpMode {
