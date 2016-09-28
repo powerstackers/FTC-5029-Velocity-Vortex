@@ -5,7 +5,7 @@ package com.powerstackers.resq.common;
  */
 public class ErrorHandling extends JonsAlgo {
     /**
-     * Create a new JonsAlgo object. RobotAuto passed in must have a working parent opmode.
+     * Create a new VelJonsAlgo object. RobotAuto passed in must have a working parent opmode.
      *
      * @param robot Robot object to use.
      */

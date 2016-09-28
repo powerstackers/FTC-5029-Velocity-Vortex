@@ -18,10 +18,10 @@
  *
  */
 
-package com.powerstackers.resq.opmodes.autonomous;
+package com.powerstackers.velocity.opmodes.autonomous;
 
-import com.powerstackers.resq.common.AutonomousProgram;
-import com.powerstackers.resq.common.enums.PublicEnums;
+import com.powerstackers.velocity.common.VelAutonomousProgram;
+import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
@@ -29,7 +29,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  *
  */
 @Autonomous(name = "Red autonomous", group = "Powerstackers")
-public class RedAutonomous extends AutonomousProgram {
+public class RedAutonomous extends VelAutonomousProgram {
     public RedAutonomous() {
         super(PublicEnums.AllianceColor.RED);
     }

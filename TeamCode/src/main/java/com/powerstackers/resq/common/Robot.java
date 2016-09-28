@@ -486,6 +486,6 @@ public class Robot {
      * @param degrees A double representing the distance to turn.
      */
     public void turnDegrees(double degrees) {
-        // TODO Actually make this method work //Put in JonsAlgo
+        // TODO Actually make this method work //Put in VelJonsAlgo
     }
 }

@@ -22,11 +22,12 @@ package com.powerstackers.resq.opmodes.autonomous;
 
 import com.powerstackers.resq.common.AutonomousProgram;
 import com.powerstackers.resq.common.enums.PublicEnums;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
  * @author Jonathan Thomas
  */
-//@Autonomous(name = "Blue autonomous", group = "Powerstackers")
+@Autonomous(name = "Blue autonomous", group = "Powerstackers")
 public class BlueAutonomous extends AutonomousProgram {
     public BlueAutonomous() {
         super(PublicEnums.AllianceColor.BLUE);

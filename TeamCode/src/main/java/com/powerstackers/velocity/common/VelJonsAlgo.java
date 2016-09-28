@@ -18,7 +18,7 @@
  *
  */
 
-package com.powerstackers.resq.common;
+package com.powerstackers.velocity.common;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -32,16 +32,16 @@ import static java.lang.Math.abs;
  *
  * @author Jonathan Thomas
  */
-public class JonsAlgo {
+public class VelJonsAlgo {
 
-    RobotAuto robot;
+    VelRobotAuto robot;
     OpMode mode;
 
     /**
      * Create a new VelJonsAlgo object. RobotAuto passed in must have a working parent opmode.
      * @param robot Robot object to use.
      */
-    public JonsAlgo(RobotAuto robot) {
+    public VelJonsAlgo(VelRobotAuto robot) {
         this.robot = robot;
         this.mode = robot.getParentOpMode();
     }
@@ -118,26 +118,24 @@ public class JonsAlgo {
 
                 /* Gyro Compensation */
                 if (robot.getGyroHeading() > 180) {
-                    robot.setPowerLeft(speed/2);
-                    robot.setPowerRight(1);
+                    //robot.setPowerLeft(speed/2);
+                    //robot.setPowerRight(1);
                 } else if (robot.getGyroHeading() < 180 && robot.getGyroHeading() > 0) {
-                    robot.setPowerLeft(1);
-                    robot.setPowerRight(speed/2);
+                    //robot.setPowerLeft(1);
+                    //robot.setPowerRight(speed/2);
                 } else {
-                    robot.setPowerLeft(speed * leftCorrect);
-                    robot.setPowerRight(speed * rightCorrect);
+                    //robot.setPowerLeft(speed * leftCorrect);
+                    //robot.setPowerRight(speed * rightCorrect);
                 }
             }
 
             // Stop the drive motors here
-            robot.setPowerLeft(0);
-            robot.setPowerRight(0);
+//            robot.setPowerLeft(0);
+//            robot.setPowerRight(0);
         } else if (ticks > 0){
             // Set the drive motors to the speed (in reverse)
-            robot.setPowerLeft(-speed * leftCorrect);
-            robot.setPowerRight(-speed * rightCorrect);
-//            robot.setPowerLeft(-0.85);
-//            robot.setPowerRight(-0.60);
+//            robot.setPowerLeft(-speed * leftCorrect);
+//            robot.setPowerRight(-speed * rightCorrect);
 
             // Wait until both motors have reached the target
             while( robot.getRightEncoder() < targetRight) {
@@ -146,8 +144,8 @@ public class JonsAlgo {
             }
 
             // Turn off the drive motors here
-            robot.setPowerLeft(0);
-            robot.setPowerRight(0);
+//            robot.setPowerLeft(0);
+//            robot.setPowerRight(0);
         }
     }
 
@@ -167,20 +165,20 @@ public class JonsAlgo {
         degreesToGo = (degreesSoFar + degrees);
 
         if (degreesToGo < 360) {                //right
-            robot.setPowerLeft(speed);
-            robot.setPowerRight(-1 * speed);
+//            robot.setPowerLeft(speed);
+//            robot.setPowerRight(-1 * speed);
             while ((degreesSoFar) < (degrees)) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
             }
         } else if (degreesToGo > 360) {
             degreesFixed = degreesToGo - 360;
-            robot.setPowerLeft(speed);
-            robot.setPowerRight(-1 * speed);
+//            robot.setPowerLeft(speed);
+//            robot.setPowerRight(-1 * speed);
             while ((degreesSoFar) < (degreesFixed)) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
             }
         } else {
-            robot.setPowerAll(0);
+//            robot.setPowerAll(0);
         }
     }
 
@@ -192,20 +190,20 @@ public class JonsAlgo {
         degreesToGo = (degreesSoFar - degrees);
 
         if (degreesToGo > 0 ) {                //left
-            robot.setPowerLeft(-1 * speed);
-            robot.setPowerRight(speed);
+//            robot.setPowerLeft(-1 * speed);
+//            robot.setPowerRight(speed);
             while ((degreesSoFar) > (degrees)) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
             }
         } else if (degreesToGo < 0 ) {
             degreesFixed = 360 - degreesToGo;
-            robot.setPowerLeft(-1 * speed);
-            robot.setPowerRight(speed);
+//            robot.setPowerLeft(-1 * speed);
+//            robot.setPowerRight(speed);
             while ((degreesSoFar) > (degreesFixed)) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
             }
         } else {
-            robot.setPowerAll(0);
+//            robot.setPowerAll(0);
         }
     }
 
@@ -213,22 +211,16 @@ public class JonsAlgo {
 
         double degreesSoFar = robot.getGyroHeading();
 
-//        robot.calibrateGyro();
-
-//        double degreesSoFar = 0;
-
-//        if (Range.clip(degrees ))
-
         if (degrees > 180) {                                            //left
-            robot.setPowerLeft(-1 * speed);
-            robot.setPowerRight(speed);
+//            robot.setPowerLeft(-1 * speed);
+//            robot.setPowerRight(speed);
             mode.telemetry.addData("gyro1", robot.getGyroHeading());
         } else if (degrees < 180 || degrees == 180) {                                     //right
-            robot.setPowerLeft(speed);
-            robot.setPowerRight(-1 * speed);
+//            robot.setPowerLeft(speed);
+//            robot.setPowerRight(-1 * speed);
             mode.telemetry.addData("gyro2", robot.getGyroHeading());
         } else {
-            robot.setPowerAll(0);
+//            robot.setPowerAll(0);
         }
         mode.telemetry.addData("Gyro", degrees + "," + degreesSoFar);
         // For as long as the current degree measure doesn't equal the target. This will work in the clockwise and
@@ -238,11 +230,7 @@ public class JonsAlgo {
         }
 
         // Stop all drive motors
-        robot.setPowerAll(0);
-
-//        if (abs(degreesSoFar - degrees) > turnOvershootThreshold) {
-//            turnDegrees(-1*(degreesSoFar - degrees), 0.50);
-//        }
+//        robot.setPowerAll(0);
     }
 
     /**
@@ -255,9 +243,9 @@ public class JonsAlgo {
 
         // If we are going to move forward into the wall
         if (forwardBackward) {
-            robot.setPowerAll(alignSpeed);
+//            robot.setPowerAll(alignSpeed);
         } else {
-            robot.setPowerAll(-alignSpeed);
+//            robot.setPowerAll(-alignSpeed);
         }
 
         // Store whether the left and right sides are finished aligning
@@ -275,23 +263,23 @@ public class JonsAlgo {
             // If the left motor hasn't changed an acceptable amount in the last second, then it has met resistance
             if (abs(leftPrevValue - robot.getLeftEncoder()) < stopThreshold && !leftDone) {
                 // Turn the motor off, and indicate that this side is aligned
-                robot.setPowerLeft(0);
+//                robot.setPowerLeft(0);
                 leftDone = true;
 
                 // Set the opposite drive motor to full power to finish aligning the robot
                 if (!rightDone) {
-                   robot.setPowerRight(forwardBackward?100:-100);
+//                   robot.setPowerRight(forwardBackward?100:-100);
                 }
             }
             // If the right motor hasn't changed an acceptable amount in the last second, then it has met resistance
             if (abs(rightPrevValue - robot.getRightEncoder()) < stopThreshold && !rightDone) {
                 // Turn the motor off, and indicate that this side is aligned
-                robot.setPowerRight(0);
+//                robot.setPowerRight(0);
                 rightDone = true;
 
                 // Set the opposite drive motor to full poewr to finish aligning the robot
                 if (!leftDone) {
-                    robot.setPowerLeft(forwardBackward?100:-100);
+//                    robot.setPowerLeft(forwardBackward?100:-100);
                 }
             }
 
