@@ -1,10 +1,30 @@
+/*
+ * Copyright (C) 2016 Powerstackers
+ *
+ * Basic configurations and capabilities of our robot.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package com.powerstackers.velocity.common;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
- * @author Derek Helm
+ * @author Cate Thomas
  */
 
 public class VelRobot {
@@ -19,10 +39,10 @@ public class VelRobot {
         |3         4|
         -------------
      */
-    DcMotor drive1;
-    DcMotor drive2;
-    DcMotor drive3;
-    DcMotor drive4;
+    private DcMotor drive1;
+    private DcMotor drive2;
+    private DcMotor drive3;
+    private DcMotor drive4;
 
 
     /**
@@ -45,8 +65,36 @@ public class VelRobot {
         stopMovement();
     }
 
+    /**
+     * Set the movement speeds of all four motors, based on a desired angle, speed, and rotation
+     * speed.
+     * DEREK! NO TOUCH!
+     * @param angle
+     * @param speed
+     * @param rotation
+     */
     public void setMovement(double angle, double speed, double rotation) {
-        
+        double multipliers[] = new double[4];
+        multipliers[0] = (speed * Math.sin(angle + (Math.PI/4))) + rotation;
+        multipliers[1] = (speed * Math.cos(angle + (Math.PI/4))) - rotation;
+        multipliers[2] = (speed * Math.cos(angle + (Math.PI/4))) + rotation;
+        multipliers[3] = (speed * Math.sin(angle + (Math.PI/4))) - rotation;
+
+        double largest = multipliers[0];
+        for (int i = 1; i < 4; i++) {
+            if (multipliers[i] > largest)
+                largest = multipliers[i];
+        }
+
+        for (int i = 0; i < 4; i++) {
+            multipliers[i] = multipliers[i] / largest;
+        }
+
+        drive1.setPower(multipliers[0]);
+        drive2.setPower(multipliers[1]);
+        drive3.setPower(multipliers[2]);
+        drive4.setPower(multipliers[3]);
+
     }
 
     public void stopMovement() {
