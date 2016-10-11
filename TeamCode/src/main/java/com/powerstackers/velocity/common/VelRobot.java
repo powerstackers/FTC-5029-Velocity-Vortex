@@ -22,6 +22,7 @@ package com.powerstackers.velocity.common;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 /**
  * @author Cate Thomas
@@ -102,5 +103,31 @@ public class VelRobot {
         drive2.setPower(0.0);
         drive3.setPower(0.0);
         drive4.setPower(0.0);
+    }
+
+    public static double mecDirection(Gamepad pad) {
+        double x = pad.left_stick_x;
+        double y = -pad.left_stick_y;   // The Y stick is inverted
+
+        if (x==0) {
+            return ((y > 0)? Math.PI / 2 : (Math.PI * 3) / 2);
+        } else {
+            double atan = Math.atan(y / x);
+            
+            if (x > 0) {
+                return ((y > 0)? atan : atan + (Math.PI * 2));
+            } else {
+                return atan + Math.PI;
+            }
+        }
+    }
+
+    public static double mecSpeed(Gamepad pad) {
+        return Math.sqrt((pad.left_stick_y * pad.left_stick_y)
+                + (pad.left_stick_x * pad.left_stick_x));
+    }
+
+    public static double mecSpin(Gamepad pad) {
+        return (double) pad.right_stick_x;
     }
 }
