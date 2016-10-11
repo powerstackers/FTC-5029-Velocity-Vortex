@@ -33,10 +33,10 @@ public class VelRobot {
     /*
     Looking at the robot from above:
         -------------
-        |1         2|
+        |1\\     //2|
         |           |
         |           |
-        |3         4|
+        |3//     \\4|
         -------------
      */
     private DcMotor drive1;
