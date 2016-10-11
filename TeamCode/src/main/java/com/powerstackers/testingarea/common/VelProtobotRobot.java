@@ -33,10 +33,10 @@ public class VelProtobotRobot {
     /*
     Looking at the robot from above:
         -------------
-        |1         2|
+        |1\\     //2|
         |           |
         |           |
-        |3         4|
+        |3//     \\4|
         -------------
      */
     private DcMotor drive1;
@@ -64,5 +64,26 @@ public class VelProtobotRobot {
         // TODO set motor modes
     }
 
-    
+    public void moveUpDown(double power){
+        drive1.setPower(power);
+        drive2.setPower(power);
+        drive3.setPower(power);
+        drive4.setPower(power);
+    }
+
+    public void moveLeftRight(double power){
+        drive1.setPower(power);
+        drive2.setPower(power);
+        drive3.setPower(-power);
+        drive4.setPower(-power);
+    }
+
+    public void turnLeftRight(double power) {
+        drive1.setPower(-power);
+        drive2.setPower(power);
+        drive3.setPower(-power);
+        drive4.setPower(power);
+    }
+
+
 }
