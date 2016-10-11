@@ -2,7 +2,9 @@ package com.powerstackers.testingarea.opmodes.teleop;
 
 import com.powerstackers.testingarea.common.VelProtobotRobot;
 import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import static java.lang.Math.abs;
@@ -11,6 +13,8 @@ import static java.lang.Math.abs;
  * @author Derek Helm
  */
 
+@TeleOp(name = "VEL-ProtoBotTeleop", group = "Powerstackers")
+@Disabled
 public class VelProtobotTeleop extends OpMode {
 
     private static final float MINIMUM_JOYSTICK_THRESHOLD = 0.15F;
