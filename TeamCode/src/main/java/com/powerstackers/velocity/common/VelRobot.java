@@ -77,6 +77,8 @@ public class VelRobot {
      * @param rotation The speed of rotation, ranging from -1:1
      */
     public void setMovement(double angle, double speed, double rotation) {
+        // TODO Minimum speed threshold?
+
         double multipliers[] = new double[4];
         multipliers[0] = (speed * Math.sin(angle + (Math.PI/4))) + rotation;
         multipliers[1] = (speed * Math.cos(angle + (Math.PI/4))) - rotation;
@@ -139,7 +141,7 @@ public class VelRobot {
      *  Get the translation speed value from the joystick.
      *
      * @param pad Gamepad to take control values from.
-     * @return Speed ranging from -1:1
+     * @return Speed ranging from 0:1
      */
     public static double mecSpeed(Gamepad pad) {
         return Math.sqrt((pad.left_stick_y * pad.left_stick_y)
