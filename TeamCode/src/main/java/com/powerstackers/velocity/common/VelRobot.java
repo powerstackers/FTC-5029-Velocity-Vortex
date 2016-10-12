@@ -25,9 +25,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 /**
+ * Basic configurations for our robot. This class contains methods to make the robot do stuff.
+ *
  * @author Cate Thomas
  */
-
 public class VelRobot {
 
 
@@ -48,6 +49,7 @@ public class VelRobot {
 
     /**
      * Construct a Robot object.
+     *
      * @param mode The OpMode in which the robot is being used.
      */
     public VelRobot(OpMode mode) {
@@ -69,10 +71,10 @@ public class VelRobot {
     /**
      * Set the movement speeds of all four motors, based on a desired angle, speed, and rotation
      * speed.
-     * DEREK! NO TOUCH!
-     * @param angle
-     * @param speed
-     * @param rotation
+     *
+     * @param angle The angle we want the robot to move, in radians, where "forward" is pi/2
+     * @param speed The movement speed we want, ranging from -1:1
+     * @param rotation The speed of rotation, ranging from -1:1
      */
     public void setMovement(double angle, double speed, double rotation) {
         double multipliers[] = new double[4];
@@ -98,6 +100,9 @@ public class VelRobot {
 
     }
 
+    /**
+     *  Completely stop the drive motors.
+     */
     public void stopMovement() {
         drive1.setPower(0.0);
         drive2.setPower(0.0);
@@ -105,15 +110,23 @@ public class VelRobot {
         drive4.setPower(0.0);
     }
 
+    /**
+     * Allows robot to go all the way froward and backwards on the y-axis
+     *
+     * @param pad Gamepad to take control values from.
+     * @return A direction of movement, in radians, where "forward" is pi/2
+     */
     public static double mecDirection(Gamepad pad) {
         double x = pad.left_stick_x;
         double y = -pad.left_stick_y;   // The Y stick is inverted
 
-        if (x==0) {
+        // If x is exactly 0, atan will be undefined. In that case, our angle is either 90 or 270.
+        if (x == 0) {
             return ((y > 0)? Math.PI / 2 : (Math.PI * 3) / 2);
         } else {
             double atan = Math.atan(y / x);
-            
+
+            // Make sure the angle is in the right quadrant.
             if (x > 0) {
                 return ((y > 0)? atan : atan + (Math.PI * 2));
             } else {
@@ -122,11 +135,23 @@ public class VelRobot {
         }
     }
 
+    /**
+     *  Get the translation speed value from the joystick.
+     *
+     * @param pad Gamepad to take control values from.
+     * @return Speed ranging from -1:1
+     */
     public static double mecSpeed(Gamepad pad) {
         return Math.sqrt((pad.left_stick_y * pad.left_stick_y)
                 + (pad.left_stick_x * pad.left_stick_x));
     }
 
+    /**
+     *  Get the spin speed value from the joystick.
+     *
+     * @param pad Gamepad to take control values from.
+     * @return Speed ranging from -1:1
+     */
     public static double mecSpin(Gamepad pad) {
         return (double) pad.right_stick_x;
     }
