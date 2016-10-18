@@ -3,12 +3,16 @@ package com.powerstackers.velocity.opmodes.teleop;
 import com.powerstackers.velocity.common.VelRobot;
 import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
  * @author Derek Helm
  */
 
+@TeleOp(name = "VEL-Teleop", group = "Powerstackers")
+@Disabled
 public class VelTeleop extends OpMode {
 
     //constructors
