@@ -132,7 +132,7 @@ public class VelRobot {
      * Allows robot to go all the way froward and backwards on the y-axis
      *
      * @param pad Gamepad to take control values from.
-     * @return A direction of movement, in radians, where "forward" is pi/2
+     * @return A directiovoidn of movement, in radians, where "forward" is pi/2
      */
     public static double mecDirection(Gamepad pad) {
         double x = pad.left_stick_x;
