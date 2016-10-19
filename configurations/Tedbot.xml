@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot>
+    <ServoController name="Servo Controller 1" serialNumber="AL00VDR5">
+    </ServoController>
+    <MotorController name="Motor Controller 1" serialNumber="AL00VGPX">
+        <Motor name="motorBLeft" port="1" />
+        <Motor name="motorBRight" port="2" />
+    </MotorController>
+    <DeviceInterfaceModule name="dim" serialNumber="AL00VDPL">
+    </DeviceInterfaceModule>
+</Robot>
