@@ -11,8 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * @author Derek Helm
  */
 
-@TeleOp(name = "VEL-Teleop", group = "Powerstackers")
-@Disabled
+@TeleOp(name="VEL-Teleop", group ="Powerstackers")
 public class VelTeleop extends OpMode {
 
     //constructors
