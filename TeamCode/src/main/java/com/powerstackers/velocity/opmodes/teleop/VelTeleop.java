@@ -20,6 +20,8 @@ public class VelTeleop extends OpMode {
     VelRobot robot;
 
     //declarations here vvv
+    boolean buttonVexMotorForward;
+    boolean buttonVexMotorBackward;
 
 
     /**
@@ -41,10 +43,20 @@ public class VelTeleop extends OpMode {
     public void loop() {
 
         //button maps here vvv
+        buttonVexMotorForward  = gamepad1.dpad_up;
+        buttonVexMotorBackward = gamepad1.dpad_down;
 
         //if else statements here vvv
+        if (buttonVexMotorForward) {
+            robot.vexPower(1);
+        } else if (buttonVexMotorBackward) {
+            robot.vexPower(-1);
+        } else {
+            robot.vexPower(0);
+        }
 
         //telemetry here vvv
+        telemetry.addData("VexMotor : ", robot.getVexPower());
 
     }
 
