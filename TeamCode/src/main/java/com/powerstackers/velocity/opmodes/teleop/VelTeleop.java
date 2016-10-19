@@ -1,9 +1,7 @@
 package com.powerstackers.velocity.opmodes.teleop;
 
 import com.powerstackers.velocity.common.VelRobot;
-import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -35,11 +33,28 @@ public class VelTeleop extends OpMode {
     public void init() {
         //init code is in main VelRobot class
         robot = new VelRobot(this);
+        telemetry.addData("Status", "Initialized");
 
+    }
+
+    /*
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
+    @Override
+    public void init_loop() {
+    }
+
+
+    /*
+     * Code to run ONCE when the driver hits PLAY
+     */
+    @Override
+    public void start() {
     }
 
     @Override
     public void loop() {
+        telemetry.addData("Status", "Running: ");
 
         //button maps here vvv
         buttonVexMotorForward  = gamepad1.dpad_up;
@@ -65,6 +80,7 @@ public class VelTeleop extends OpMode {
     @Override
     public void stop() {
         //stop code here vvv
+        robot.stopMovement();
 
     }
 }
