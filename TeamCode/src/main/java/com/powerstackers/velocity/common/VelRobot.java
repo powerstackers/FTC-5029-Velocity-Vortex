@@ -43,12 +43,12 @@ public class VelRobot {
         |3//     \\4|
         -------------
      */
-    private DcMotor drive1;
-    private DcMotor drive2;
-    private DcMotor drive3;
-    private DcMotor drive4;
+    public DcMotor drive1;
+    public DcMotor drive2;
+    public DcMotor drive3;
+    public DcMotor drive4;
 
-    private CRServo vexMotor;
+    public CRServo vexMotor;
 
 
     /**
@@ -57,12 +57,6 @@ public class VelRobot {
      * @param mode The OpMode in which the robot is being used.
      */
     public VelRobot(OpMode mode) {
-        drive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
-        drive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-        drive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-        drive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
-
-        vexMotor = mode.hardwareMap.crservo.get("vexMotor");
 
     }
 

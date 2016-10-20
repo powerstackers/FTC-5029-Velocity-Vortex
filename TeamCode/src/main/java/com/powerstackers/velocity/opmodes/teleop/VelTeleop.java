@@ -4,6 +4,7 @@ import com.powerstackers.velocity.common.VelRobot;
 import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * @author Derek Helm
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="VEL-Teleop", group ="Powerstackers")
 public class VelTeleop extends OpMode {
+    private ElapsedTime runtime = new ElapsedTime();
 
     //constructors
     AllianceColor allianceColor;
@@ -34,6 +36,12 @@ public class VelTeleop extends OpMode {
         //init code is in main VelRobot class
         robot = new VelRobot(this);
         telemetry.addData("Status", "Initialized");
+        robot.drive1 = hardwareMap.dcMotor.get("motorFrontLeft");
+        robot.drive2 = hardwareMap.dcMotor.get("motorFrontRight");
+        robot.drive3 = hardwareMap.dcMotor.get("motorBackLeft");
+        robot.drive4 = hardwareMap.dcMotor.get("motorBackRight");
+
+        robot.vexMotor = hardwareMap.crservo.get("vexMotor");
 
     }
 
@@ -50,6 +58,7 @@ public class VelTeleop extends OpMode {
      */
     @Override
     public void start() {
+        runtime.reset();
     }
 
     @Override
