@@ -47,6 +47,7 @@ public class VelTeleop extends OpMode {
      */
     @Override
     public void init_loop() {
+        telemetry.addLine("Hi! I'm working!");
     }
 
 

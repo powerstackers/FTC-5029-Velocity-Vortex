@@ -43,10 +43,10 @@ public class VelRobot {
         |3//     \\4|
         -------------
      */
-    public DcMotor drive1;
-    public DcMotor drive2;
-    public DcMotor drive3;
-    public DcMotor drive4;
+    private DcMotor drive1 = null;
+    private DcMotor drive2 = null;
+    private DcMotor drive3 = null;
+    private DcMotor drive4 = null;
 
 //    public CRServo vexMotor;
 
