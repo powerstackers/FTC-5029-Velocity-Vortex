@@ -21,9 +21,9 @@
 package com.powerstackers.velocity.common;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * Basic configurations for our robot. This class contains methods to make the robot do stuff.
@@ -48,7 +48,7 @@ public class VelRobot {
     private DcMotor drive3 = null;
     private DcMotor drive4 = null;
 
-//    public CRServo vexMotor;
+    private CRServo vexMotor;
 
 
     /**
@@ -70,6 +70,8 @@ public class VelRobot {
         drive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
         drive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
         drive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+
+        vexMotor = mode.hardwareMap.crservo.get("vexMotor");
         stopMovement();
     }
 
@@ -110,9 +112,9 @@ public class VelRobot {
     /**
      * set vexmotor power
      */
-//    public void vexPower(double power) {
-//        vexMotor.setPower(power);
-//    }
+    public void vexPower(double power) {
+        vexMotor.setPower(power);
+    }
 
     /**
      *  Completely stop the drive motors.
@@ -123,7 +125,7 @@ public class VelRobot {
         drive3.setPower(0.0);
         drive4.setPower(0.0);
 
-//        vexMotor.setPower(0);
+        vexMotor.setPower(0);
     }
 
     /**
@@ -175,7 +177,7 @@ public class VelRobot {
     /**
      * get VexMotor power
      */
-//    public double getVexPower() {
-//        return vexMotor.getPower();
-//    }
+    public double getVexPower() {
+        return vexMotor.getPower();
+    }
 }
