@@ -22,6 +22,13 @@ public class VelTeleop extends OpMode {
 //    boolean buttonVexMotorForward;
 //    boolean buttonVexMotorBackward;
 
+    /**
+    * Default constructor. Need this!!!
+    * @return
+    */
+    public VelTelop() {
+
+    }
 
     /**
      * Generate a new Teleop program with the given alliance color.
