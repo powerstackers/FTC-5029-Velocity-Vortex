@@ -105,13 +105,31 @@ public class VelTeleop extends OpMode {
         }
 
         // TODO: 10/27/16 add get stickTurnLeftRight Value -=left +=right
-        
+
+//        if (abs(stickMoveUpDown) > MINIMUM_JOYSTICK_THRESHOLD) {
+//            robot.setMovement((PI/2), -stickMoveUpDown, 0);
+//        } else if (abs(stickMoveLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
+//            if (stickMoveLeftRight < 0) {
+//                robot.setMovement();
+//            } else if (stickMoveLeftRight > 0) {
+//                robot.setMovement(((3 * PI) / 2), -stickMoveLeftRight, 0);
+//            }
+//        } else if (abs(stickTurnLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
+//            robot.setMovement((PI/2), -stickTurnLeftRight, -stickTurnLeftRight);
+//        } else {
+//                robot.stopMovement();
+//        }
+
         if (abs(stickMoveUpDown) > MINIMUM_JOYSTICK_THRESHOLD) {
             robot.setMovement((PI/2), -stickMoveUpDown, 0);
         } else if (abs(stickMoveLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
-            robot.setMovement(((3*PI)/2), -stickMoveLeftRight, 0);
+            if (stickMoveLeftRight < 0) {
+                robot.setMovement(PI, stickMoveLeftRight, 0);
+            } else if (stickMoveLeftRight > 0) {
+                robot.setMovement((2*PI), -stickMoveLeftRight, 0);
+            }
         } else if (abs(stickTurnLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
-            robot.setMovement((PI/2), -stickTurnLeftRight, -stickTurnLeftRight);
+            robot.setMovement(0, -stickTurnLeftRight, -stickTurnLeftRight);
         } else {
                 robot.stopMovement();
         }
