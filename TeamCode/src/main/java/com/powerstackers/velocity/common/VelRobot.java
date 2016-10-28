@@ -21,9 +21,10 @@
 package com.powerstackers.velocity.common;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+
+import static java.lang.Math.PI;
 
 /**
  * Basic configurations for our robot. This class contains methods to make the robot do stuff.
@@ -48,7 +49,7 @@ public class VelRobot {
     private DcMotor drive3 = null;
     private DcMotor drive4 = null;
 
-    private CRServo vexMotor;
+//    private CRServo vexMotor;
 
 
     /**
@@ -71,7 +72,7 @@ public class VelRobot {
         drive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
         drive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
 
-        vexMotor = mode.hardwareMap.crservo.get("vexMotor");
+//        vexMotor = mode.hardwareMap.crservo.get("vexMotor");
         stopMovement();
     }
 
@@ -87,10 +88,10 @@ public class VelRobot {
         // TODO Minimum speed threshold?
 
         double multipliers[] = new double[4];
-        multipliers[0] = (speed * Math.sin(angle + (Math.PI/4))) + rotation;
-        multipliers[1] = (speed * Math.cos(angle + (Math.PI/4))) - rotation;
-        multipliers[2] = (speed * Math.cos(angle + (Math.PI/4))) + rotation;
-        multipliers[3] = (speed * Math.sin(angle + (Math.PI/4))) - rotation;
+        multipliers[0] = (speed * Math.sin(angle + (PI/4))) + rotation;
+        multipliers[1] = (speed * Math.cos(angle + (PI/4))) - rotation;
+        multipliers[2] = (speed * Math.cos(angle + (PI/4))) + rotation;
+        multipliers[3] = (speed * Math.sin(angle + (PI/4))) - rotation;
 
         double largest = multipliers[0];
         for (int i = 1; i < 4; i++) {
@@ -104,17 +105,17 @@ public class VelRobot {
 
         drive1.setPower(multipliers[0]);
         drive2.setPower(multipliers[1]);
-        drive3.setPower(multipliers[2]);
-        drive4.setPower(multipliers[3]);
+        drive3.setPower(-(multipliers[2]));
+        drive4.setPower(-(multipliers[3]));
 
     }
 
     /**
      * set vexmotor power
      */
-    public void vexPower(double power) {
-        vexMotor.setPower(power);
-    }
+//    public void vexPower(double power) {
+//        vexMotor.setPower(power);
+//    }
 
     /**
      *  Completely stop the drive motors.
@@ -125,7 +126,7 @@ public class VelRobot {
         drive3.setPower(0.0);
         drive4.setPower(0.0);
 
-        vexMotor.setPower(0);
+//        vexMotor.setPower(0);
     }
 
     /**
@@ -134,21 +135,22 @@ public class VelRobot {
      * @param pad Gamepad to take control values from.
      * @return A directiovoidn of movement, in radians, where "forward" is pi/2
      */
+    // TODO: figure out why it cant strafe left or turn left and righ
     public static double mecDirection(Gamepad pad) {
         double x = pad.left_stick_x;
         double y = -pad.left_stick_y;   // The Y stick is inverted
 
         // If x is exactly 0, atan will be undefined. In that case, our angle is either 90 or 270.
         if (x == 0) {
-            return ((y > 0)? Math.PI / 2 : (Math.PI * 3) / 2);
+            return ((y > 0)? PI / 2 : (PI * 3) / 2);
         } else {
             double atan = Math.atan(y / x);
 
             // Make sure the angle is in the right quadrant.
             if (x > 0) {
-                return ((y > 0)? atan : atan + (Math.PI * 2));
+                return ((y > 0)? atan : atan + (PI * 2));
             } else {
-                return atan + Math.PI;
+                return atan + PI;
             }
         }
     }
@@ -160,8 +162,7 @@ public class VelRobot {
      * @return Speed ranging from 0:1
      */
     public static double mecSpeed(Gamepad pad) {
-        return Math.sqrt((pad.left_stick_y * pad.left_stick_y)
-                + (pad.left_stick_x * pad.left_stick_x));
+        return Math.sqrt((pad.left_stick_y * pad.left_stick_y) + (pad.left_stick_x * pad.left_stick_x));
     }
 
     /**
@@ -177,7 +178,57 @@ public class VelRobot {
     /**
      * get VexMotor power
      */
-    public double getVexPower() {
-        return vexMotor.getPower();
+//    public double getVexPower() {
+//        return vexMotor.getPower();
+//    }
+
+    /**
+     * get moter telemetry
+     */
+    public double getDrive1Power() {
+        return  drive1.getPower();
+    }
+    /**
+     * get moter telemetry
+     */
+    public double getDrive2Power() {
+        return  drive2.getPower();
+    }
+    /**
+     * get moter telemetry
+     */
+    public double getDrive3Power() {
+        return  drive3.getPower();
+    }
+    /**
+     * get moter telemetry
+     */
+    public double getDrive4Power() {
+        return  drive4.getPower();
+    }
+
+    /**
+     * get port nuber
+     */
+    public int getDrive1Port() {
+        return drive1.getPortNumber();
+    }
+    /**
+     * get port nuber
+     */
+    public int getDrive2Port() {
+        return drive2.getPortNumber();
+    }
+    /**
+     * get port nuber
+     */
+    public int getDrive3Port() {
+        return drive3.getPortNumber();
+    }
+    /**
+     * get port nuber
+     */
+    public int getDrive4Port() {
+        return drive4.getPortNumber();
     }
 }

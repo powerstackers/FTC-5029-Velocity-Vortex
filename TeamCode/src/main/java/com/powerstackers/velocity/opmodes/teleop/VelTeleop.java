@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 
 /**
@@ -26,15 +25,15 @@ public class VelTeleop extends OpMode {
     VelRobot robot;
 
     //declarations here vvv
-    float stickMoveUpDown;
+    float stickMove;
 //    float stickMoveDown;
 //    float stickMoveRight;
     float stickMoveLeftRight;
     float stickTurnRight;
     float stickTurnLeftRight;
 
-    boolean buttonVexMotorForward;
-    boolean buttonVexMotorBackward;
+//    boolean buttonVexMotorForward;
+//    boolean buttonVexMotorBackward;
 
     /**
     * Default constructor. Need this!!!
@@ -84,25 +83,26 @@ public class VelTeleop extends OpMode {
         telemetry.addData("Status", "Running: ");
 
         // Read the joystick and determine what motor setting to use.
-        stickMoveUpDown    = (float) scaleInput(Range.clip(-gamepad1.left_stick_y, -1, 1));
-//        stickMoveDown  = (float) scaleInput(Range.clip(+gamepad1 .left_stick_y, -1, 1));
-//        stickMoveRight = (float) scaleInput(Range.clip(+gamepad1.left_stick_x, -1, 1));
-        stickMoveLeftRight  = (float) scaleInput(Range.clip(-gamepad1.left_stick_x, -1, 1));
-//        stickTurnRight = (float) scaleInput(Range.clip(+gamepad1.right_stick_x, -1, 1));
-        stickTurnLeftRight  = (float) scaleInput(Range.clip(-gamepad1.right_stick_x, -1, 1));
+//        stickMoveUpDown    = (float) scaleInput(Range.clip(-gamepad1.left_stick_y, -1, 1));
+//        stickMoveLeftRight  = (float) scaleInput(Range.clip(-gamepad1.left_stick_x, -1, 1));
+//        stickTurnLeftRight  = (float) scaleInput(Range.clip(-gamepad1.right_stick_x, -1, 1));
+
+//        stickMove    = (float) scaleInput(Range.clip(, -1, 1));
+//        stickMoveLeftRight  = (float) scaleInput(Range.clip(-gamepad1.left_stick_x, -1, 1));
+//        stickTurnLeftRight  = (float) scaleInput(Range.clip(robot.mecSpin(gamepad1), -1, 1));
 
         //button maps here vvv
-        buttonVexMotorForward  = gamepad1.dpad_up;
-        buttonVexMotorBackward = gamepad1.dpad_down;
+//        buttonVexMotorForward  = gamepad1.dpad_up;
+//        buttonVexMotorBackward = gamepad1.dpad_down;
 
 //        if else statements here vvv
-        if (buttonVexMotorForward) {
-            robot.vexPower(1);
-        } else if (buttonVexMotorBackward) {
-            robot.vexPower(-1);
-        } else {
-            robot.vexPower(0);
-        }
+//        if (buttonVexMotorForward) {
+//            robot.vexPower(1);
+//        } else if (buttonVexMotorBackward) {
+//            robot.vexPower(-1);
+//        } else {
+//            robot.vexPower(0);
+//        }
 
         // TODO: 10/27/16 add get stickTurnLeftRight Value -=left +=right
 
@@ -120,22 +120,36 @@ public class VelTeleop extends OpMode {
 //                robot.stopMovement();
 //        }
 
-        if (abs(stickMoveUpDown) > MINIMUM_JOYSTICK_THRESHOLD) {
-            robot.setMovement((PI/2), -stickMoveUpDown, 0);
-        } else if (abs(stickMoveLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
-            if (stickMoveLeftRight < 0) {
-                robot.setMovement(PI, stickMoveLeftRight, 0);
-            } else if (stickMoveLeftRight > 0) {
-                robot.setMovement((2*PI), -stickMoveLeftRight, 0);
-            }
-        } else if (abs(stickTurnLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
-            robot.setMovement(0, -stickTurnLeftRight, -stickTurnLeftRight);
+        if (((abs(gamepad1.left_stick_y)) > MINIMUM_JOYSTICK_THRESHOLD) || ((abs(gamepad1.left_stick_x)) > MINIMUM_JOYSTICK_THRESHOLD) || ((abs(gamepad1.right_stick_x)) > MINIMUM_JOYSTICK_THRESHOLD)) {
+            robot.setMovement(robot.mecDirection(this.gamepad1), robot.mecSpeed(this.gamepad1), robot.mecSpin(this.gamepad1));
         } else {
-                robot.stopMovement();
+            robot.stopMovement();
         }
 
+//        if (abs(stickMove) > MINIMUM_JOYSTICK_THRESHOLD) {
+//            robot.setMovement(robot.mecDirection(gamepad1), stickMove, 0);
+//        } else if (abs(stickMoveLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
+//            if (stickMoveLeftRight < 0) {
+//                robot.setMovement(robot.mecDirection(gamepad1), stickMoveLeftRight, 0);
+//            } else if (stickMoveLeftRight > 0) {
+//                robot.setMovement((2*PI), robot.mecSpeed(gamepad1), 0);
+//            }
+//        } else if (abs(stickTurnLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
+//            robot.setMovement(0, stickTurnLeftRight, robot.mecSpin(gamepad1));
+//        } else {
+//                robot.stopMovement();
+//        }
+
 //        telemetry here vvv
-        telemetry.addData("VexMotor : ", robot.getVexPower());
+//        telemetry.addData("VexMotor : ", robot.getVexPower());
+        telemetry.addData("Drive1 port:", robot.getDrive1Port());
+        telemetry.addData("Power: ", robot.getDrive1Power());
+        telemetry.addData("Drive2 port:", robot.getDrive2Port());
+        telemetry.addData("Power: ", robot.getDrive2Power());
+        telemetry.addData("Drive3 port:", robot.getDrive3Port());
+        telemetry.addData("Power: ", robot.getDrive3Power());
+        telemetry.addData("Drive4 port:", robot.getDrive4Port());
+        telemetry.addData("Power: ", robot.getDrive4Power());
 
     }
 
