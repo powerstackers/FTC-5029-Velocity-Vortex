@@ -21,6 +21,7 @@
 package com.powerstackers.velocity.common;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -51,7 +52,7 @@ public class VelRobot {
     private DcMotor drive3 = null;
     private DcMotor drive4 = null;
 
-//    private CRServo vexMotor;
+    private CRServo vexMotor;
 
 
     /**
@@ -108,6 +109,7 @@ public class VelRobot {
         multipliers[3] = (speed * Math.sin(angle + (PI/4))) - rotation;
 
         double largest = multipliers[0];
+        // TODO shouldn't we be taking the absolute value here somewhere?
         for (int i = 1; i < 4; i++) {
             if (multipliers[i] > largest)
                 largest = multipliers[i];
@@ -127,9 +129,9 @@ public class VelRobot {
     /**
      * set vexmotor power
      */
-//    public void vexPower(double power) {
-//        vexMotor.setPower(power);
-//    }
+    public void vexPower(double power) {
+        vexMotor.setPower(power);
+    }
 
     /**
      *  Completely stop the drive motors.
@@ -204,6 +206,7 @@ public class VelRobot {
 //        return vexMotor.getPower();
 //    }
 
+// TODO Collaps all these into one method?
     /**
      * get moter telemetry
      */
