@@ -152,7 +152,7 @@ public class VelRobot {
      * @return A directon of movement, in radians, where "forward" is pi/2
      */
     // TODO: figure out why it cant strafe left or turn left and righ
-    public static double mecDirection(Gamepad pad) {
+    public static double mecDirectionFromJoystick(Gamepad pad) {
         double x = pad.left_stick_x;
         double y = -pad.left_stick_y;   // The Y stick is inverted
 
@@ -187,7 +187,7 @@ public class VelRobot {
      * @param pad Gamepad to take control values from.
      * @return Speed ranging from 0:1
      */
-    public static double mecSpeed(Gamepad pad) {
+    public static double mecSpeedFromJoystick(Gamepad pad) {
         // If the joystick is close enough to the middle, return a 0 (no movement)
         if (abs(pad.left_stick_x) < MINIMUM_JOYSTICK_THRESHOLD
             && abs(pad.left_stick_y) < MINIMUM_JOYSTICK_THRESHOLD){
@@ -199,13 +199,14 @@ public class VelRobot {
     }
 
     /**
-     *  Get the spin speed value from the joystick.
+     *  Get the spin speed value from the joystick. If the joystick is moved close enough to the
+     *  center, the method will return 0 (meaning no spin).
      *
      * @param pad Gamepad to take control values from.
      * @return Speed ranging from -1:1
      */
-    public static double mecSpin(Gamepad pad) {
-        return (double) pad.right_stick_x;
+    public static double mecSpinFromJoystick(Gamepad pad) {
+        return (double) ((abs(pad.right_stick_x) > MINIMUM_JOYSTICK_THRESHOLD) ? pad.right_stick_x : 0.0);
     }
 
     /**

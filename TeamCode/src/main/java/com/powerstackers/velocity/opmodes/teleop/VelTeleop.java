@@ -5,7 +5,6 @@ import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import static java.lang.Math.abs;
 
@@ -89,7 +88,7 @@ public class VelTeleop extends OpMode {
 
 //        stickMove    = (float) scaleInput(Range.clip(, -1, 1));
 //        stickMoveLeftRight  = (float) scaleInput(Range.clip(-gamepad1.left_stick_x, -1, 1));
-//        stickTurnLeftRight  = (float) scaleInput(Range.clip(robot.mecSpin(gamepad1), -1, 1));
+//        stickTurnLeftRight  = (float) scaleInput(Range.clip(robot.mecSpinFromJoystick(gamepad1), -1, 1));
 
         //button maps here vvv
 //        buttonVexMotorForward  = gamepad1.dpad_up;
@@ -121,21 +120,21 @@ public class VelTeleop extends OpMode {
 //        }
 
         if (((abs(gamepad1.left_stick_y)) > MINIMUM_JOYSTICK_THRESHOLD) || ((abs(gamepad1.left_stick_x)) > MINIMUM_JOYSTICK_THRESHOLD) || ((abs(gamepad1.right_stick_x)) > MINIMUM_JOYSTICK_THRESHOLD)) {
-            robot.setMovement(robot.mecDirection(this.gamepad1), robot.mecSpeed(this.gamepad1), robot.mecSpin(this.gamepad1));
+            robot.setMovement(robot.mecDirectionFromJoystick(this.gamepad1), robot.mecSpeedFromJoystick(this.gamepad1), robot.mecSpinFromJoystick(this.gamepad1));
         } else {
             robot.stopMovement();
         }
 
 //        if (abs(stickMove) > MINIMUM_JOYSTICK_THRESHOLD) {
-//            robot.setMovement(robot.mecDirection(gamepad1), stickMove, 0);
+//            robot.setMovement(robot.mecDirectionFromJoystick(gamepad1), stickMove, 0);
 //        } else if (abs(stickMoveLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
 //            if (stickMoveLeftRight < 0) {
-//                robot.setMovement(robot.mecDirection(gamepad1), stickMoveLeftRight, 0);
+//                robot.setMovement(robot.mecDirectionFromJoystick(gamepad1), stickMoveLeftRight, 0);
 //            } else if (stickMoveLeftRight > 0) {
-//                robot.setMovement((2*PI), robot.mecSpeed(gamepad1), 0);
+//                robot.setMovement((2*PI), robot.mecSpeedFromJoystick(gamepad1), 0);
 //            }
 //        } else if (abs(stickTurnLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
-//            robot.setMovement(0, stickTurnLeftRight, robot.mecSpin(gamepad1));
+//            robot.setMovement(0, stickTurnLeftRight, robot.mecSpinFromJoystick(gamepad1));
 //        } else {
 //                robot.stopMovement();
 //        }
