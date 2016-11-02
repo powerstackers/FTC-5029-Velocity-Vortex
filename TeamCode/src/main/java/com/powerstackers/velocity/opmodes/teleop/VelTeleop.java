@@ -31,8 +31,8 @@ public class VelTeleop extends OpMode {
     float stickTurnRight;
     float stickTurnLeftRight;
 
-//    boolean buttonVexMotorForward;
-//    boolean buttonVexMotorBackward;
+    boolean buttonVexMotorForward;
+    boolean buttonVexMotorBackward;
 
     /**
     * Default constructor. Need this!!!
@@ -91,17 +91,17 @@ public class VelTeleop extends OpMode {
 //        stickTurnLeftRight  = (float) scaleInput(Range.clip(robot.mecSpinFromJoystick(gamepad1), -1, 1));
 
         //button maps here vvv
-//        buttonVexMotorForward  = gamepad1.dpad_up;
-//        buttonVexMotorBackward = gamepad1.dpad_down;
+        buttonVexMotorForward  = gamepad1.dpad_up;
+        buttonVexMotorBackward = gamepad1.dpad_down;
 
 //        if else statements here vvv
-//        if (buttonVexMotorForward) {
-//            robot.vexPower(1);
-//        } else if (buttonVexMotorBackward) {
-//            robot.vexPower(-1);
-//        } else {
-//            robot.vexPower(0);
-//        }
+        if (buttonVexMotorForward) {
+            robot.vexPower(1);
+        } else if (buttonVexMotorBackward) {
+            robot.vexPower(-1);
+        } else {
+            robot.vexPower(0);
+        }
 
         // TODO: 10/27/16 add get stickTurnLeftRight Value -=left +=right
 

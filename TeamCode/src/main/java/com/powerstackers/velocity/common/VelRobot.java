@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import static java.lang.Math.PI;
+import static java.lang.Math.abs;
 
 /**
  * Basic configurations for our robot. This class contains methods to make the robot do stuff.
@@ -75,16 +76,16 @@ public class VelRobot {
         drive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
         drive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
 
-//        vexMotor = mode.hardwareMap.crservo.get("vexMotor");
+        vexMotor = mode.hardwareMap.crservo.get("vexMotor");
         stopMovement();
     }
 
     /**
      * Just a simple absolute value function.
-     * @param val Value to get absolute value of.
+     * @param val Value to get absolute value of.   not neccasary due to math.abs existing
      * @return Absolute value of the input.
      */
-    private static double abs(double val) {return (val > 0)? val : -val;}
+//    private static double abs(double val) {return (val > 0)? val : -val;}
 
     /**
      * Set the movement speeds of all four motors, based on a desired angle, speed, and rotation
@@ -210,9 +211,9 @@ public class VelRobot {
     /**
      * get VexMotor power
      */
-//    public double getVexPower() {
-//        return vexMotor.getPower();
-//    }
+    public double getVexPower() {
+        return vexMotor.getPower();
+    }
 
 // TODO Collaps all these into one method?
     /**
