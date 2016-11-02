@@ -141,17 +141,26 @@ public class VelRobot {
         double y = -pad.left_stick_y;   // The Y stick is inverted
 
         // If x is exactly 0, atan will be undefined. In that case, our angle is either 90 or 270.
-        if (x == 0) {
-            return ((y > 0)? PI / 2 : (PI * 3) / 2);
-        } else {
-            double atan = Math.atan(y / x);
+//        if (x == 0) {
+//            return ((y > 0)? PI / 2 : (PI * 3) / 2);
+//        } else {
+//            double atan = Math.atan(y / x);
+//
+//            // Make sure the angle is in the right quadrant.
+//            if (x > 0) {
+//                return ((y > 0)? atan : atan + (PI * 2));
+//            } else {
+//                return atan + PI;
+//            }
+//        }
 
-            // Make sure the angle is in the right quadrant.
-            if (x > 0) {
-                return ((y > 0)? atan : atan + (PI * 2));
-            } else {
-                return atan + PI;
-            }
+        double atan = Math.atan(y / x);
+        if (x > 0) {
+            return ((y > 0)? atan : atan + (PI * 2));
+        } else if (x < 0) {
+            return atan + -(2 * PI);
+        } else {
+            return ((y > 0)? PI / 2 : (PI * 3) / 2);
         }
     }
 
