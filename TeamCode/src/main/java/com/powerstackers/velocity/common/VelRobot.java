@@ -108,11 +108,10 @@ public class VelRobot {
         multipliers[2] = (speed * Math.cos(angle + (PI/4))) + rotation;
         multipliers[3] = (speed * Math.sin(angle + (PI/4))) - rotation;
 
-        double largest = multipliers[0];
-        // TODO shouldn't we be taking the absolute value here somewhere?
+        double largest = abs(multipliers[0]);
         for (int i = 1; i < 4; i++) {
-            if (multipliers[i] > largest)
-                largest = multipliers[i];
+            if (abs(multipliers[i]) > largest)
+                largest = abs(multipliers[i]);
         }
 
         for (int i = 0; i < 4; i++) {
@@ -121,8 +120,8 @@ public class VelRobot {
 
         drive1.setPower(multipliers[0]);
         drive2.setPower(multipliers[1]);
-        drive3.setPower(-(multipliers[2]));
-        drive4.setPower(-(multipliers[3]));
+        drive3.setPower(multipliers[2]);
+        drive4.setPower(multipliers[3]);
 
     }
 
@@ -151,7 +150,6 @@ public class VelRobot {
      * @param pad Gamepad to take control values from.
      * @return A directon of movement, in radians, where "forward" is pi/2
      */
-    // TODO: figure out why it cant strafe left or turn left and righ
     public static double mecDirectionFromJoystick(Gamepad pad) {
         double x = pad.left_stick_x;
         double y = -pad.left_stick_y;   // The Y stick is inverted
