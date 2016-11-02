@@ -21,6 +21,7 @@
 package com.powerstackers.velocity.common;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -34,7 +35,9 @@ import static java.lang.Math.PI;
 
 public class VelRobot {
 
-    OpMode mode;
+    private static final double MINIMUM_JOYSTICK_THRESHOLD = 0.15F;
+
+    protected OpMode mode;
     /*
     Looking at the robot from above:
         -------------
@@ -49,7 +52,7 @@ public class VelRobot {
     private DcMotor drive3 = null;
     private DcMotor drive4 = null;
 
-//    private CRServo vexMotor;
+    private CRServo vexMotor;
 
 
     /**
@@ -77,6 +80,13 @@ public class VelRobot {
     }
 
     /**
+     * Just a simple absolute value function.
+     * @param val Value to get absolute value of.
+     * @return Absolute value of the input.
+     */
+    private static double abs(double val) {return (val > 0)? val : -val;}
+
+    /**
      * Set the movement speeds of all four motors, based on a desired angle, speed, and rotation
      * speed.
      *
@@ -85,7 +95,12 @@ public class VelRobot {
      * @param rotation The speed of rotation, ranging from -1:1
      */
     public void setMovement(double angle, double speed, double rotation) {
-        // TODO Minimum speed threshold?
+
+        // None of this stuff should happen if the speed is 0.
+        if (speed == 0.0) {
+            stopMovement();
+            return;
+        }
 
         double multipliers[] = new double[4];
         multipliers[0] = (speed * Math.sin(angle + (PI/4))) + rotation;
@@ -94,6 +109,7 @@ public class VelRobot {
         multipliers[3] = (speed * Math.sin(angle + (PI/4))) - rotation;
 
         double largest = multipliers[0];
+        // TODO shouldn't we be taking the absolute value here somewhere?
         for (int i = 1; i < 4; i++) {
             if (multipliers[i] > largest)
                 largest = multipliers[i];
@@ -113,9 +129,9 @@ public class VelRobot {
     /**
      * set vexmotor power
      */
-//    public void vexPower(double power) {
-//        vexMotor.setPower(power);
-//    }
+    public void vexPower(double power) {
+        vexMotor.setPower(power);
+    }
 
     /**
      *  Completely stop the drive motors.
@@ -133,7 +149,7 @@ public class VelRobot {
      * Allows robot to go all the way froward and backwards on the y-axis
      *
      * @param pad Gamepad to take control values from.
-     * @return A directiovoidn of movement, in radians, where "forward" is pi/2
+     * @return A directon of movement, in radians, where "forward" is pi/2
      */
     // TODO: figure out why it cant strafe left or turn left and righ
     public static double mecDirection(Gamepad pad) {
@@ -165,13 +181,21 @@ public class VelRobot {
     }
 
     /**
-     *  Get the translation speed value from the joystick.
+     *  Get the translation speed value from the joystick. If the joysticks are moved close enough
+     *  to the center, the method will return 0 (meaning no movement).
      *
      * @param pad Gamepad to take control values from.
      * @return Speed ranging from 0:1
      */
     public static double mecSpeed(Gamepad pad) {
-        return Math.sqrt((pad.left_stick_y * pad.left_stick_y) + (pad.left_stick_x * pad.left_stick_x));
+        // If the joystick is close enough to the middle, return a 0 (no movement)
+        if (abs(pad.left_stick_x) < MINIMUM_JOYSTICK_THRESHOLD
+            && abs(pad.left_stick_y) < MINIMUM_JOYSTICK_THRESHOLD){
+            return 0.0;
+        } else {
+            return Math.sqrt((pad.left_stick_y * pad.left_stick_y)
+                + (pad.left_stick_x * pad.left_stick_x));
+        }
     }
 
     /**
@@ -191,6 +215,7 @@ public class VelRobot {
 //        return vexMotor.getPower();
 //    }
 
+// TODO Collaps all these into one method?
     /**
      * get moter telemetry
      */
