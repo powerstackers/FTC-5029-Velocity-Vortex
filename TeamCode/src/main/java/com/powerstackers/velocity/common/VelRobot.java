@@ -36,7 +36,7 @@ import static java.lang.Math.abs;
 
 public class VelRobot {
 
-    private static final double MINIMUM_JOYSTICK_THRESHOLD = 0.15F;
+//    private static final double MINIMUM_JOYSTICK_THRESHOLD = 0.15F;
 
     protected OpMode mode;
     /*
@@ -95,35 +95,52 @@ public class VelRobot {
      * @param speed The movement speed we want, ranging from -1:1
      * @param rotation The speed of rotation, ranging from -1:1
      */
-    public void setMovement(double angle, double speed, double rotation) {
+//    public void setMovement(double angle, double speed, double rotation) {
+//
+//        // None of this stuff should happen if the speed is 0.
+//        if (speed == 0.0) {
+//            stopMovement();
+//            return;
+//        }
+//
+//        double multipliers[] = new double[4];
+//        multipliers[0] = (speed * Math.sin(angle + (PI/4))) + rotation;
+//        multipliers[1] = (speed * Math.cos(angle + (PI/4))) - rotation;
+//        multipliers[2] = (speed * Math.cos(angle + (PI/4))) + rotation;
+//        multipliers[3] = (speed * Math.sin(angle + (PI/4))) - rotation;
+//
+//        double largest = abs(multipliers[0]);
+//        for (int i = 1; i < 4; i++) {
+//            if (abs(multipliers[i]) > largest)
+//                largest = abs(multipliers[i]);
+//        }
+//
+//        for (int i = 0; i < 4; i++) {
+//            multipliers[i] = multipliers[i] / largest;
+//        }
+//
+//        drive1.setPower(multipliers[0]);
+//        drive2.setPower(multipliers[1]);
+//        drive3.setPower(multipliers[2]);
+//        drive4.setPower(multipliers[3]);
+//
+//    }
 
-        // None of this stuff should happen if the speed is 0.
-        if (speed == 0.0) {
-            stopMovement();
-            return;
-        }
+    /**
+     * method 2 for meccanum
+     */
+    public  void magicMecanum(Gamepad gamepad) {
 
-        double multipliers[] = new double[4];
-        multipliers[0] = (speed * Math.sin(angle + (PI/4))) + rotation;
-        multipliers[1] = (speed * Math.cos(angle + (PI/4))) - rotation;
-        multipliers[2] = (speed * Math.cos(angle + (PI/4))) + rotation;
-        multipliers[3] = (speed * Math.sin(angle + (PI/4))) - rotation;
+        double Ch1, Ch3, Ch4;
 
-        double largest = abs(multipliers[0]);
-        for (int i = 1; i < 4; i++) {
-            if (abs(multipliers[i]) > largest)
-                largest = abs(multipliers[i]);
-        }
+        Ch1 = (-(gamepad.right_stick_x));
+        Ch3 = gamepad.left_stick_y;
+        Ch4 = gamepad.left_stick_x;
 
-        for (int i = 0; i < 4; i++) {
-            multipliers[i] = multipliers[i] / largest;
-        }
-
-        drive1.setPower(multipliers[0]);
-        drive2.setPower(multipliers[1]);
-        drive3.setPower(multipliers[2]);
-        drive4.setPower(multipliers[3]);
-
+        drive1.setPower(-(Ch3 + Ch1 + Ch4));
+        drive2.setPower(Ch3 - Ch1 - Ch4);
+        drive3.setPower(-(Ch3 + Ch1 - Ch4));
+        drive4.setPower(Ch3 - Ch1 + Ch4);
     }
 
     /**
@@ -151,9 +168,9 @@ public class VelRobot {
      * @param pad Gamepad to take control values from.
      * @return A directon of movement, in radians, where "forward" is pi/2
      */
-    public static double mecDirectionFromJoystick(Gamepad pad) {
-        double x = pad.left_stick_x;
-        double y = -pad.left_stick_y;   // The Y stick is inverted
+//    public static double mecDirectionFromJoystick(Gamepad pad) {
+//        double x = pad.left_stick_x;
+//        double y = -pad.left_stick_y;   // The Y stick is inverted
 
         // If x is exactly 0, atan will be undefined. In that case, our angle is either 90 or 270.
 //        if (x == 0) {
@@ -169,15 +186,15 @@ public class VelRobot {
 //            }
 //        }
 
-        double atan = Math.atan(y / x);
-        if (x > 0) {
-            return ((y > 0)? atan : atan + (PI * 2));
-        } else if (x < 0) {
-            return atan + -(2 * PI);
-        } else {
-            return ((y > 0)? PI / 2 : (PI * 3) / 2);
-        }
-    }
+//        double atan = Math.atan(y / x);
+//        if (x > 0) {
+//            return ((y > 0)? atan : atan + (PI * 2));
+//        } else if (x < 0) {
+//            return atan + -(2 * PI);
+//        } else {
+//            return ((y > 0)? PI / 2 : (PI * 3) / 2);
+//        }
+//    }
 
     /**
      *  Get the translation speed value from the joystick. If the joysticks are moved close enough
@@ -186,16 +203,16 @@ public class VelRobot {
      * @param pad Gamepad to take control values from.
      * @return Speed ranging from 0:1
      */
-    public static double mecSpeedFromJoystick(Gamepad pad) {
-        // If the joystick is close enough to the middle, return a 0 (no movement)
-        if (abs(pad.left_stick_x) < MINIMUM_JOYSTICK_THRESHOLD
-            && abs(pad.left_stick_y) < MINIMUM_JOYSTICK_THRESHOLD){
-            return 0.0;
-        } else {
-            return Math.sqrt((pad.left_stick_y * pad.left_stick_y)
-                + (pad.left_stick_x * pad.left_stick_x));
-        }
-    }
+//    public static double mecSpeedFromJoystick(Gamepad pad) {
+//        // If the joystick is close enough to the middle, return a 0 (no movement)
+//        if (abs(pad.left_stick_x) < MINIMUM_JOYSTICK_THRESHOLD
+//            && abs(pad.left_stick_y) < MINIMUM_JOYSTICK_THRESHOLD){
+//            return 0.0;
+//        } else {
+//            return Math.sqrt((pad.left_stick_y * pad.left_stick_y)
+//                + (pad.left_stick_x * pad.left_stick_x));
+//        }
+//    }
 
     /**
      *  Get the spin speed value from the joystick. If the joystick is moved close enough to the
@@ -204,9 +221,9 @@ public class VelRobot {
      * @param pad Gamepad to take control values from.
      * @return Speed ranging from -1:1
      */
-    public static double mecSpinFromJoystick(Gamepad pad) {
-        return (double) ((abs(pad.right_stick_x) > MINIMUM_JOYSTICK_THRESHOLD) ? pad.right_stick_x : 0.0);
-    }
+//    public static double mecSpinFromJoystick(Gamepad pad) {
+//        return (double) ((abs(pad.right_stick_x) > MINIMUM_JOYSTICK_THRESHOLD) ? pad.right_stick_x : 0.0);
+//    }
 
     /**
      * get VexMotor power

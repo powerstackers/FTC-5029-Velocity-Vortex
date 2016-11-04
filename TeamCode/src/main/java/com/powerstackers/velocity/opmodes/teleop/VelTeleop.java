@@ -120,7 +120,8 @@ public class VelTeleop extends OpMode {
 //        }
 
         if (((abs(gamepad1.left_stick_y)) > MINIMUM_JOYSTICK_THRESHOLD) || ((abs(gamepad1.left_stick_x)) > MINIMUM_JOYSTICK_THRESHOLD) || ((abs(gamepad1.right_stick_x)) > MINIMUM_JOYSTICK_THRESHOLD)) {
-            robot.setMovement(robot.mecDirectionFromJoystick(this.gamepad1), robot.mecSpeedFromJoystick(this.gamepad1), robot.mecSpinFromJoystick(this.gamepad1));
+            robot.magicMecanum(gamepad1);
+// robot.setMovement(robot.mecDirectionFromJoystick(this.gamepad1), robot.mecSpeedFromJoystick(this.gamepad1), robot.mecSpinFromJoystick(this.gamepad1));
         } else {
             robot.stopMovement();
         }
