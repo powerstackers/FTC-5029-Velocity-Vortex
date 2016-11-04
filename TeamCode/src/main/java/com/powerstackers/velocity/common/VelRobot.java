@@ -135,7 +135,7 @@ public class VelRobot {
 
         Ch1 = (-(gamepad.right_stick_x));
         Ch3 = gamepad.left_stick_y;
-        Ch4 = gamepad.left_stick_x;
+        Ch4 = (-(gamepad.left_stick_x));
 
         drive1.setPower(-(Ch3 + Ch1 + Ch4));
         drive2.setPower(Ch3 - Ch1 - Ch4);
