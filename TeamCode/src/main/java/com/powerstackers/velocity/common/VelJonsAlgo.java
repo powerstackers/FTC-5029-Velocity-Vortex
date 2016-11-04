@@ -101,7 +101,7 @@ public class VelJonsAlgo {
 //        long targetLeft = startLeft + ticks;
 
         double leftCorrect	= 1.0;
-        double rightCorrect	= 0.50;
+        double rightCorrect	= 1.0;
 
         if (ticks < 0) {
             // Set the drive motors to the given speed

@@ -159,7 +159,7 @@ public class VelRobot {
         drive3.setPower(0.0);
         drive4.setPower(0.0);
 
-//        vexMotor.setPower(0);
+        vexMotor.setPower(0);
     }
 
     /**
