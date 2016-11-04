@@ -24,6 +24,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
@@ -48,12 +51,17 @@ public class VelRobot {
         |3//     \\4|
         -------------
      */
-    private DcMotor drive1 = null;
-    private DcMotor drive2 = null;
-    private DcMotor drive3 = null;
-    private DcMotor drive4 = null;
+    protected DcMotor drive1 = null;
+    protected DcMotor drive2 = null;
+    protected DcMotor drive3 = null;
+    protected DcMotor drive4 = null;
 
-    private CRServo vexMotor;
+    protected Servo servoBeacon;
+
+    protected CRServo vexMotor;
+
+    protected GyroSensor sensorGyro;
+    protected ColorSensor sensorColor;
 
 
     /**

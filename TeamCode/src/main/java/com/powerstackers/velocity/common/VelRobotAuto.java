@@ -3,46 +3,20 @@ package com.powerstackers.velocity.common;
 import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import static com.powerstackers.velocity.common.VelRobotConstants.BEACON_RESTING;
 
 /**
+ * Basic configurations for our robot in autonomous mode. All the functionality of a teleop bot,
+ * and more!
+ * 
  * @author Derek Helm
  */
 
-public class VelRobotAuto {
+public class VelRobotAuto extends VelRobot {
 
-    public OpMode mode;
     public VelJonsAlgo algorithm;
-
-    //declarations
-    /*
-    Looking at the robot from above:
-        -------------
-        |1\\     //2|
-        |           |
-        |           |
-        |3//     \\4|
-        -------------
-     */
-    private DcMotor drive1 = null;
-    private DcMotor drive2 = null;
-    private DcMotor drive3 = null;
-    private DcMotor drive4 = null;
-
-    private Servo servoBeacon;
-
-    private CRServo vexMotor;
-
-    private GyroSensor sensorGyro;
-    private ColorSensor sensorColor;
-
 
     /**
      * Construct a Robot object.
@@ -50,18 +24,16 @@ public class VelRobotAuto {
      */
     public VelRobotAuto(OpMode mode) {
 
+        super(mode);
         //constructors
-        this.mode = mode;
         algorithm = new VelJonsAlgo(this);
-
-
     }
 
     /**
      * Initialize the robot's servos and sensors.
      */
     public void initializeRobot() /*throws InterruptedException */{
-
+        // TODO Is there any difference between autonomous initialize and teleop initialize?
         //init code for autonomous here vvv
         mode.telemetry.addData("Status", "Initialized");
         drive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
@@ -79,19 +51,6 @@ public class VelRobotAuto {
 
         stopMovement();
 
-    }
-
-
-    /**
-     *  Completely stop the drive motors.
-     */
-    public void stopMovement() {
-        drive1.setPower(0.0);
-        drive2.setPower(0.0);
-        drive3.setPower(0.0);
-        drive4.setPower(0.0);
-
-        vexMotor.setPower(0);
     }
 
     /**
