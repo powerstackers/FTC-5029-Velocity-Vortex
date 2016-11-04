@@ -76,7 +76,7 @@ public class VelRobot {
         drive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
         drive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
 
-        vexMotor = mode.hardwareMap.crservo.get("vexMotor");
+        vexMotor = mode.hardwareMap.crservo.get("vexServo");
         stopMovement();
     }
 

@@ -140,7 +140,7 @@ public class VelTeleop extends OpMode {
 //        }
 
 //        telemetry here vvv
-//        telemetry.addData("VexMotor : ", robot.getVexPower());
+        telemetry.addData("VexMotor : ", robot.getVexPower());
         telemetry.addData("Drive1 port:", robot.getDrive1Port());
         telemetry.addData("Power: ", robot.getDrive1Power());
         telemetry.addData("Drive2 port:", robot.getDrive2Port());
