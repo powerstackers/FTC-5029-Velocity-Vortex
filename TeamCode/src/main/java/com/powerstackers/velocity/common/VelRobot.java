@@ -113,9 +113,9 @@ public class VelRobot {
 
         double multipliers[] = new double[4];
         multipliers[0] = (speed * Math.sin(angle + (PI/4))) + rotation;
-        multipliers[1] = (speed * Math.cos(angle + (PI/4))) - rotation;
-        multipliers[2] = (speed * Math.cos(angle + (PI/4))) + rotation;
-        multipliers[3] = (speed * Math.sin(angle + (PI/4))) - rotation;
+        multipliers[1] = (speed * Math.cos(angle + (PI/4))) + rotation;
+        multipliers[2] = (speed * -Math.cos(angle + (PI/4))) + rotation;
+        multipliers[3] = (speed * -Math.sin(angle + (PI/4))) + rotation;
 
         double largest = abs(multipliers[0]);
         for (int i = 1; i < 4; i++) {
@@ -131,7 +131,6 @@ public class VelRobot {
         drive2.setPower(multipliers[1]);
         drive3.setPower(multipliers[2]);
         drive4.setPower(multipliers[3]);
-
     }
 
     /**
