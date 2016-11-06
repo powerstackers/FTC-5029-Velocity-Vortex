@@ -11,6 +11,8 @@ public class VelRobotConstants {
         public static final double BEACON_RESTING   = 0.5;
         public static final double TRIMM_MOTOR         = 0.88888888888;
 
+        public static final double MINIMUM_JOYSTICK_THRESHOLD = 0.15F;
+
         // Motor speeds
 
 }
