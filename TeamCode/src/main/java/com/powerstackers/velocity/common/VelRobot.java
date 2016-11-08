@@ -111,11 +111,12 @@ public class VelRobot {
             return;
         }
 
+        // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
         double multipliers[] = new double[4];
-        multipliers[0] = (speed * Math.sin(angle + (PI/4))) + rotation;
-        multipliers[1] = (speed * Math.cos(angle + (PI/4))) + rotation;
-        multipliers[2] = (speed * -Math.cos(angle + (PI/4))) + rotation;
-        multipliers[3] = (speed * -Math.sin(angle + (PI/4))) + rotation;
+        multipliers[0] = (speed * Math.sin(angle + (PI/4)))  + (rotation * 0.5);
+        multipliers[1] = (speed * Math.cos(angle + (PI/4)))  + (rotation * 0.5);
+        multipliers[2] = (speed * -Math.cos(angle + (PI/4))) + (rotation * 0.5);
+        multipliers[3] = (speed * -Math.sin(angle + (PI/4))) + (rotation * 0.5);
 
         double largest = abs(multipliers[0]);
         for (int i = 1; i < 4; i++) {
@@ -215,13 +216,15 @@ public class VelRobot {
     /**
      *  Get the spin speed value from the joystick. If the joystick is moved close enough to the
      *  center, the method will return 0 (meaning no spin).
+     *  It's important to note that pushing the stick to the left should mean a counter-clockwise
+     *  rotation; meaning, the stick needs to be reversed.
      *
      * @param pad Gamepad to take control values from.
      * @return Speed ranging from -1:1
      */
     public static double mecSpinFromJoystick(Gamepad pad) {
         return (double) ((abs(pad.right_stick_x) > VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD)
-                ? pad.right_stick_x : 0.0);
+                ? -pad.right_stick_x : 0.0);
     }
 
     /**
