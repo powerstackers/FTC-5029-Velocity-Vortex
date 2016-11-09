@@ -28,7 +28,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * @author Jonathan Thomas
  *
  */
-@Autonomous(name = "Red autonomous", group = "Powerstackers")
+@Autonomous(name = "Vel Red autonomous", group = "Powerstackers")
 public class RedAutonomous extends VelAutonomousProgram {
     public RedAutonomous() {
         super(PublicEnums.AllianceColor.RED);
