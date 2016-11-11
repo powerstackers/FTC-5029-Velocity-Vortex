@@ -1,6 +1,7 @@
 package com.powerstackers.velocity.common;
 
 import com.powerstackers.velocity.common.enums.PublicEnums;
+import com.powerstackers.velocity.common.enums.StartingPosition;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.BLUE;
@@ -13,10 +14,13 @@ import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.
 public class VelAutonomousProgram extends LinearOpMode {
 
     PublicEnums.AllianceColor allianceColor;
+    StartingPosition startingPosition;
     VelRobotAuto robot;
 
-    public VelAutonomousProgram(PublicEnums.AllianceColor allianceColor) {
+    public VelAutonomousProgram(PublicEnums.AllianceColor allianceColor,
+                                StartingPosition startingPosition) {
         this.allianceColor = allianceColor;
+        this.startingPosition = startingPosition;
     }
 
     @Override

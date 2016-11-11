@@ -22,14 +22,16 @@ package com.powerstackers.velocity.opmodes.autonomous;
 
 import com.powerstackers.velocity.common.VelAutonomousProgram;
 import com.powerstackers.velocity.common.enums.PublicEnums;
+import com.powerstackers.velocity.common.enums.StartingPosition;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
  * @author Jonathan Thomas
+ *
  */
-@Autonomous(name = "Vel Blue autonomous", group = "Powerstackers")
-public class BlueAutonomous extends VelAutonomousProgram {
-    public BlueAutonomous() {
-        super(PublicEnums.AllianceColor.BLUE);
+@Autonomous(name = "Red Auto Start Near", group = "Powerstackers")
+public class RedAutonomous_StartNear extends VelAutonomousProgram {
+    public RedAutonomous_StartNear() {
+        super(PublicEnums.AllianceColor.RED, StartingPosition.CLOSE_TO_RAMP);
     }
 }
