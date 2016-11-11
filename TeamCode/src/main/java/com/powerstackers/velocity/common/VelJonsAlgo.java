@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Powerstackers
+ * Copyright (C) 2016 Powerstackers
  *
  * Code for autonomous.
  *
@@ -20,7 +20,9 @@
 
 package com.powerstackers.velocity.common;
 
+import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.Range;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
@@ -55,9 +57,9 @@ public class VelJonsAlgo {
      * revolution. Since the gearbox increases the number of rotations by a factor of 40, the final
      * count is 7 * 40 = 280. For 20 or 60 reduction motors, the  number would be different.
      */
-    double ticksPerRevolution = 1120; // Number of encoder ticks per motor rotation
-    double wheelDiameter = 4;         // Diameter of your wheels in inches
-    double driveGearMultiplier = 1.0; // Drive gear multiplier.
+    static double ticksPerRevolution = 1120; // Number of encoder ticks per motor rotation
+    static double wheelDiameter = 4;         // Diameter of your wheels in inches
+    static double driveGearMultiplier = 1.0; // Drive gear multiplier.
     // EXAMPLE: If your drive train is geared 2:1 (1 motor rotation = 2 wheel rotations), set this to 2
 //    double turnOvershootThreshold = 0.1;
 
@@ -69,7 +71,8 @@ public class VelJonsAlgo {
      * @param  inches double containing the distance you want to travel.
      * @return        that distance in encoder ticks.
      */
-    public long inchesToTicks(double inches) {
+    public static double cmToTicks(double inches) {
+        // TODO This is wrong now.
         return (long) ((1/driveGearMultiplier)*ticksPerRevolution*(inches/(PI*wheelDiameter)));
     }
 
@@ -81,141 +84,37 @@ public class VelJonsAlgo {
      * @param  ticks long representing the distance in ticks.
      * @return       that distance in inches.
      */
-    public double ticksToInches(long ticks) {
+    public static double ticksToCm(long ticks) {
+        // TODO This is wrong.
         return (ticks/ticksPerRevolution)*driveGearMultiplier*(PI*wheelDiameter);
     }
 
     /**
-     * Move the robot across the playing field.
+     * Move the robot across the playing field a certain distance.
      * Indicating a negative speed or distance will cause the robot to move in reverse.
-     * @param  ticks The distance that we want to travel.
+     * @param  distance The distance that we want to travel, in centimeters.
+     * @param angle The angle to move at, in radians.
      * @param  speed The speed at which to travel.
      */
-    public void goTicks(long ticks, double speed) {
-
-//        long startLeft = robot.getLeftEncoder();
-        long startRight = robot.getRightEncoder();
-
-        // Target encoder values for the left and right motors
-        long targetRight = startRight + ticks;
-//        long targetLeft = startLeft + ticks;
-
-        double leftCorrect	= 1.0;
-        double rightCorrect	= 1.0;
-
-        if (ticks < 0) {
-            // Set the drive motors to the given speed
-//            robot.setPowerLeft(speed * leftCorrect);
-//            robot.setPowerRight(speed * rightCorrect);
-//            robot.setPowerLeft(0.85);
-//            robot.setPowerRight(0.60);
-
-            // Wait until both motors have reached the target
-            while ( robot.getRightEncoder() > targetRight) {
-                mode.telemetry.addData("Data", robot.getRightEncoder());
-                mode.telemetry.addData("Encoder target", targetRight);
-                mode.telemetry.addData("gyro", robot.getGyroHeading());
-
-                /* Gyro Compensation */
-                if (robot.getGyroHeading() > 180) {
-                    //robot.setPowerLeft(speed/2);
-                    //robot.setPowerRight(1);
-                } else if (robot.getGyroHeading() < 180 && robot.getGyroHeading() > 0) {
-                    //robot.setPowerLeft(1);
-                    //robot.setPowerRight(speed/2);
-                } else {
-                    //robot.setPowerLeft(speed * leftCorrect);
-                    //robot.setPowerRight(speed * rightCorrect);
-                }
-            }
-
-            // Stop the drive motors here
-//            robot.setPowerLeft(0);
-//            robot.setPowerRight(0);
-        } else if (ticks > 0){
-            // Set the drive motors to the speed (in reverse)
-//            robot.setPowerLeft(-speed * leftCorrect);
-//            robot.setPowerRight(-speed * rightCorrect);
-
-            // Wait until both motors have reached the target
-            while( robot.getRightEncoder() < targetRight) {
-                mode.telemetry.addData("Data2", robot.getRightEncoder());
-                mode.telemetry.addData("Encoder target", targetRight);
-            }
-
-            // Turn off the drive motors here
-//            robot.setPowerLeft(0);
-//            robot.setPowerRight(0);
-        }
+    public void goDistanceInCm(double distance, double angle, double speed) {
+        // TODO Figure out how to do this.
     }
 
     /**
-     * Turn the robot a certain number of degrees.
-     * Indicating a negative degree number will turn the robot clockwise. A positive number will
-     * turn the robot counterclockwise.
-     * @param  degrees  The distance in degrees to turn.
-     * @param  speed    The speed at which to turn.
+     * Turn the robot a certain number of degrees from center.
+     * @param degrees Number of DEGREES to turn. Positive is counterclockwise, negative is clockwise.
+     * @param speed Speed at which to turn.
+     * @throws InterruptedException Make sure that we don't get trapped in this method when interrupted.
      */
-    public void turnDegreesRight(double degrees, double speed) throws InterruptedException {
-
-        double degreesSoFar = robot.getGyroHeading();
-        double degreesToGo;
-        double degreesFixed;
-
-        degreesToGo = (degreesSoFar + degrees);
-
-        if (degreesToGo < 360) {                //right
-//            robot.setPowerLeft(speed);
-//            robot.setPowerRight(-1 * speed);
-            while ((degreesSoFar) < (degrees)) {
-                mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
-            }
-        } else if (degreesToGo > 360) {
-            degreesFixed = degreesToGo - 360;
-//            robot.setPowerLeft(speed);
-//            robot.setPowerRight(-1 * speed);
-            while ((degreesSoFar) < (degreesFixed)) {
-                mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
-            }
-        } else {
-//            robot.setPowerAll(0);
-        }
-    }
-
-    public void turnDegreesLeft(double degrees, double speed) throws InterruptedException {
-        double degreesSoFar = robot.getGyroHeading();
-        double degreesToGo;
-        double degreesFixed;
-
-        degreesToGo = (degreesSoFar - degrees);
-
-        if (degreesToGo > 0 ) {                //left
-//            robot.setPowerLeft(-1 * speed);
-//            robot.setPowerRight(speed);
-            while ((degreesSoFar) > (degrees)) {
-                mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
-            }
-        } else if (degreesToGo < 0 ) {
-            degreesFixed = 360 - degreesToGo;
-//            robot.setPowerLeft(-1 * speed);
-//            robot.setPowerRight(speed);
-            while ((degreesSoFar) > (degreesFixed)) {
-                mode.telemetry.addData("gyrocompare", degreesSoFar=robot.getGyroHeading());
-            }
-        } else {
-//            robot.setPowerAll(0);
-        }
-    }
-
     void turnDegrees(double degrees, double speed) throws InterruptedException {
 
         double degreesSoFar = robot.getGyroHeading();
 
-        if (degrees > 180) {                                            //left
+        if (degrees > 180) {
 //            robot.setPowerLeft(-1 * speed);
 //            robot.setPowerRight(speed);
             mode.telemetry.addData("gyro1", robot.getGyroHeading());
-        } else if (degrees < 180 || degrees == 180) {                                     //right
+        } else if (degrees < 180 || degrees == 180) {
 //            robot.setPowerLeft(speed);
 //            robot.setPowerRight(-1 * speed);
             mode.telemetry.addData("gyro2", robot.getGyroHeading());
@@ -234,57 +133,38 @@ public class VelJonsAlgo {
     }
 
     /**
-     * Use the walls of the playing field to square up the robot.
-     * @param forwardBackward Boolean true if we are facing the wall, false if we are not.
+     * Tap the beacon on the correct side.
+     * @param allianceColor The color that we are currently playing as.
      */
-    void wallAlign(boolean forwardBackward) throws InterruptedException {
+    public void tapBeacon(PublicEnums.AllianceColor allianceColor) {
+        PublicEnums.AllianceColor dominantColor;
+        double positionBeaconServo;
 
-        double alignSpeed = 40;
-
-        // If we are going to move forward into the wall
-        if (forwardBackward) {
-//            robot.setPowerAll(alignSpeed);
+        // Detect the color shown on the beacon's left half, and record it.
+        if (robot.sensorColor.red() > robot.sensorColor.blue()) {
+            dominantColor = PublicEnums.AllianceColor.RED;
         } else {
-//            robot.setPowerAll(-alignSpeed);
+            dominantColor = PublicEnums.AllianceColor.BLUE;
         }
 
-        // Store whether the left and right sides are finished aligning
-        boolean rightDone = false;
-        boolean leftDone = false;
-
-        long leftPrevValue = robot.getLeftEncoder();
-        long rightPrevValue = robot.getRightEncoder();
-        long stopThreshold = 300;
-
-        while (!rightDone && !leftDone) {
-            // Wait for 1 second to give the motors time to move, if they're going to
-            wait(100);
-
-            // If the left motor hasn't changed an acceptable amount in the last second, then it has met resistance
-            if (abs(leftPrevValue - robot.getLeftEncoder()) < stopThreshold && !leftDone) {
-                // Turn the motor off, and indicate that this side is aligned
-//                robot.setPowerLeft(0);
-                leftDone = true;
-
-                // Set the opposite drive motor to full power to finish aligning the robot
-                if (!rightDone) {
-//                   robot.setPowerRight(forwardBackward?100:-100);
-                }
-            }
-            // If the right motor hasn't changed an acceptable amount in the last second, then it has met resistance
-            if (abs(rightPrevValue - robot.getRightEncoder()) < stopThreshold && !rightDone) {
-                // Turn the motor off, and indicate that this side is aligned
-//                robot.setPowerRight(0);
-                rightDone = true;
-
-                // Set the opposite drive motor to full poewr to finish aligning the robot
-                if (!leftDone) {
-//                    robot.setPowerLeft(forwardBackward?100:-100);
-                }
-            }
-
-            leftPrevValue = robot.getLeftEncoder();
-            rightPrevValue = robot.getRightEncoder();
+        // Tap the correct side based on the dominant color.
+        if (dominantColor == allianceColor) {
+            positionBeaconServo = VelRobotConstants.BEACON_TAP_LEFT;
+        } else {
+            positionBeaconServo = VelRobotConstants.BEACON_TAP_RIGHT;
         }
+
+        // Trim the servo value and set the servo position.
+        positionBeaconServo = trimServoValue(positionBeaconServo);
+        robot.servoBeacon.setPosition(positionBeaconServo);
+    }
+
+    /**
+     * Trim a servo value between the minimum and maximum ranges.
+     * @param servoValue Value to trim.
+     * @return A raw double with the trimmed value.
+     */
+    private static double trimServoValue(double servoValue) {
+        return Range.clip(servoValue, 0.0, 1.0);
     }
 }

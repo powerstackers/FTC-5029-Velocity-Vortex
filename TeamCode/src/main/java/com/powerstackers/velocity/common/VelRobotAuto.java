@@ -53,42 +53,8 @@ public class VelRobotAuto extends VelRobot {
 
     }
 
-    /**
-     * Trim a servo value between the minimum and maximum ranges.
-     * @param servoValue Value to trim.
-     * @return A raw double with the trimmed value.
-     */
-    private double trimServoValue(double servoValue) {
-        return Range.clip(servoValue, 0.0, 1.0);
-    }
 
-    /**
-     * Tap the beacon on the correct side.
-     * @param allianceColor The color that we are currently playing as.
-     */
-    public void tapBeacon(AllianceColor allianceColor) {
 
-        AllianceColor dominantColor;
-        double positionBeaconServo;
-
-        // Detect the color shown on the beacon's left half, and record it.
-        if (sensorColor.red() > sensorColor.blue()) {
-            dominantColor = AllianceColor.RED;
-        } else {
-            dominantColor = AllianceColor.BLUE;
-        }
-
-        // Tap the correct side based on the dominant color.
-        if (dominantColor == allianceColor) {
-            positionBeaconServo = VelRobotConstants.BEACON_TAP_LEFT;
-        } else {
-            positionBeaconServo = VelRobotConstants.BEACON_TAP_RIGHT;
-        }
-
-//         Trim the servo value and set the servo position.
-        positionBeaconServo = trimServoValue(positionBeaconServo);
-        servoBeacon.setPosition(positionBeaconServo);
-    }
 
     public long getLeftEncoder() {
         return drive1.getCurrentPosition();

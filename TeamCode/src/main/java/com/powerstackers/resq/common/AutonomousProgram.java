@@ -60,11 +60,11 @@ public class AutonomousProgram extends LinearOpMode {
             sleep(5000);
             robot.setBrush(MotorSetting.FORWARD);
             robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-119),0.8);
-//            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(68), -0.4);
+//            robot.algorithm.goDistanceInCm(robot.algorithm.cmToTicks(68), -0.4);
             robot.algorithm.turnDegreesRight(88, 0.8);
             robot.setBrush(MotorSetting.STOP);
             robot.algorithm.goTicks(robot.algorithm.inchesToTicks(-14), 0.70);
-//            robot.algorithm.goTicks(robot.algorithm.inchesToTicks(22), 0.4);
+//            robot.algorithm.goDistanceInCm(robot.algorithm.cmToTicks(22), 0.4);
             robot.setClimberFlipper(DoorSetting.OPEN);
 
         } else if (allianceColor == BLUE) {
