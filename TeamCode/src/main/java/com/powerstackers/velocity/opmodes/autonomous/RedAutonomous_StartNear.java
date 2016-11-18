@@ -24,12 +24,14 @@ import com.powerstackers.velocity.common.VelAutonomousProgram;
 import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.StartingPosition;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * @author Jonathan Thomas
  *
  */
 @Autonomous(name = "Red Auto Start Near", group = "Powerstackers")
+@Disabled
 public class RedAutonomous_StartNear extends VelAutonomousProgram {
     public RedAutonomous_StartNear() {
         super(PublicEnums.AllianceColor.RED, StartingPosition.CLOSE_TO_RAMP);
