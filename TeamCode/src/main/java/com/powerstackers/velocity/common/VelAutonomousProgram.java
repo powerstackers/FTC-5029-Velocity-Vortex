@@ -31,7 +31,6 @@ import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.
 /**
  * @author Derek Helm
  */
-
 public class VelAutonomousProgram extends LinearOpMode {
 
     PublicEnums.AllianceColor allianceColor;
