@@ -55,9 +55,9 @@ public class VelRobotAuto extends VelRobot {
      */
     private static final double wheelDiameter = 10.0;
     /**
-     * Gear ratio between the motor and the drive wheels. Used in c
+     * Gear ratio between the motor and the drive wheels. Used in calculating distance.
      */
-    private static final double driveGearMultiplier = 1.0;
+    private static final double driveGearMultiplier = 1.5;
 //    double turnOvershootThreshold = 0.1;
 
     LinearOpMode mode;
