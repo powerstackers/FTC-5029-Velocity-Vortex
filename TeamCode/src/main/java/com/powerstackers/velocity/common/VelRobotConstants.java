@@ -13,6 +13,11 @@ public class VelRobotConstants {
 
         public static final double MINIMUM_JOYSTICK_THRESHOLD = 0.15F;
 
+        public static final double SERVO_ARMS_RELEASE_RESTING = 0.0;
+        public static final double SERVO_ARMS_RELEASE_OPEN = 0.0;
+        public static final double SERVO_ARMS_GRAB_TIGHT = 0.0;
+        public static final double SERVO_ARMS_GRAB_LOOSE = 0.0;
+
         // Motor speeds
 
 }

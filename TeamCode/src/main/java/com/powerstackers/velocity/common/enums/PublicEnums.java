@@ -5,10 +5,6 @@ package com.powerstackers.velocity.common.enums;
  */
 public class PublicEnums {
 
-    public enum DoorSetting {
-        OPEN, CLOSE
-    }
-
     public enum MotorSetting {
         REVERSE, STOP, FORWARD
     }
@@ -17,8 +13,7 @@ public class PublicEnums {
         RED, BLUE
     }
 
-    public enum TiltSetting {
-        RIGHT, RESTING, LEFT
-
+    public enum GrabberSetting {
+        TIGHT, LOOSE
     }
 }

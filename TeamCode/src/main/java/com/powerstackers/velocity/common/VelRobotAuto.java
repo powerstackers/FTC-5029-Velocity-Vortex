@@ -1,9 +1,6 @@
 package com.powerstackers.velocity.common;
 
-import com.powerstackers.velocity.common.enums.PublicEnums;
-import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.Range;
 
 import static com.powerstackers.velocity.common.VelRobotConstants.BEACON_RESTING;
 
@@ -36,10 +33,10 @@ public class VelRobotAuto extends VelRobot {
         // TODO Is there any difference between autonomous initialize and teleop initialize?
         //init code for autonomous here vvv
         mode.telemetry.addData("Status", "Initialized");
-        drive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
-        drive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-        drive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-        drive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+        motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+        motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+        motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+        motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
 
         servoBeacon = mode.hardwareMap.servo.get("servoBeacon");
         servoBeacon.setPosition(BEACON_RESTING);
@@ -57,11 +54,11 @@ public class VelRobotAuto extends VelRobot {
 
 
     public long getLeftEncoder() {
-        return drive1.getCurrentPosition();
+        return motorDrive1.getCurrentPosition();
     }
 
     public long getRightEncoder() {
-        return drive2.getCurrentPosition();
+        return motorDrive2.getCurrentPosition();
     }
 
     public double getGyroHeading() {
