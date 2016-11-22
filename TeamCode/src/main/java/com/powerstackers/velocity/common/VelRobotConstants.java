@@ -33,20 +33,35 @@ class VelRobotConstants {
     static final double BEACON_RESTING   = 0.5;
     public static final double TRIMM_MOTOR         = 0.88888888888;
 
+    /** Joystick must be pushed past this poing to register as being pushed. */
     static final double MINIMUM_JOYSTICK_THRESHOLD = 0.15F;
 
+    /** Ball grab release servo in the upright and locked position. */
     static final double SERVO_ARMS_RELEASE_RESTING = 0.0;
+    /** Ball grab release servo in the open position, letting the ball grabber drop. */
     static final double SERVO_ARMS_RELEASE_OPEN = 0.0;
+    /** Ball grabber in the grabbing position. */
     static final double SERVO_ARMS_GRAB_TIGHT = 0.0;
+    /** Ball grabber in the loose position, i.e. not grabbing. */
     static final double SERVO_ARMS_GRAB_LOOSE = 0.0;
 
+    /** Direction pointing forward from the robot, in radians. */
     static final double DIRECTION_NORTH = PI/2;
+    /** Direction pointing backward from the robot, in radians. */
     static final double DIRECTION_SOUTH = (3*PI)/2;
+    /** Direction pointing left of the robot, in radians. */
     static final double DIRECTION_EAST = 0.0;
+    /** Direction pointing right of the robot, in radians. */
     static final double DIRECTION_WEST = PI;
 
+    /** Direction pointing forward and to the right, in radians. */
     static final double DIRECTION_NORTHEAST = PI/4;
+    /** Direction pointing forward and to the left, in radians. */
     static final double DIRECTION_SOUTHEAST = (7*PI)/4;
+    /** Direction pointing backward and to the left, in radians. */
     static final double DIRECTION_NORTHWEST = (3*PI)/4;
+    /** Direction pointing backward and to the right, in radians. */
     static final double DIRECTION_SOUTHWEST = (5*PI)/4;
+
+
 }

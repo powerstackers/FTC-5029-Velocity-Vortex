@@ -38,17 +38,26 @@ import static java.lang.Math.PI;
 
 public class VelRobotAuto extends VelRobot {
 
-
+    /**
+     * Reduction on motor gearbox.
+     */
+    private static final double gearbox = 40;
     /**
      * Stores the number of encoder ticks in one motor revolution.
-     * For AndyMark Neverest 40's, it's 280. The encoder tick count is actually 7 pulses per
-     * revolution. Since the gearbox increases the number of rotations by a factor of 40, the final
-     * count is 7 * 40 = 280. For 20 or 60 reduction motors, the  number would be different.
+     * For AndyMark Neverest 40's, it's 1120. The encoder tick count is actually 7 pulses per
+     * revolution of the encoder disk, with 4 revolutions per cycle. Since the gearbox increases the
+     * number of rotations by a factor of 40, the final count is 7 * 4 * 40 = 1120. For 20 or 60
+     * reduction motors, the  number would be different.
      */
-    static double ticksPerRevolution = 1120; // Number of encoder ticks per motor rotation
-    static double wheelDiameter = 4;         // Diameter of your wheels in inches
-    static double driveGearMultiplier = 1.0; // Drive gear multiplier.
-    // EXAMPLE: If your drive train is geared 2:1 (1 motor rotation = 2 wheel rotations), set this to 2
+    private static final double ticksPerRevolution = 28 * gearbox;
+    /**
+     * Motor diameter in centimeters.
+     */
+    private static final double wheelDiameter = 10.0;
+    /**
+     * Gear ratio between the motor and the drive wheels. Used in c
+     */
+    private static final double driveGearMultiplier = 1.0;
 //    double turnOvershootThreshold = 0.1;
 
     LinearOpMode mode;
@@ -58,33 +67,7 @@ public class VelRobotAuto extends VelRobot {
      * @param mode The OpMode in which the robot is being used.
      */
     public VelRobotAuto(LinearOpMode mode) {
-
         super(mode);
-        //constructors
-    }
-
-    /**
-     * Initialize the robot's servos and sensors.
-     */
-    public void initializeRobot() /*throws InterruptedException */{
-        // TODO Is there any difference between autonomous initialize and teleop initialize?
-        //init code for autonomous here vvv
-        mode.telemetry.addData("Status", "Initialized");
-        motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
-        motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-        motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-        motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
-
-        servoBeacon = mode.hardwareMap.servo.get("servoBeacon");
-        servoBeacon.setPosition(BEACON_RESTING);
-
-        vexMotor = mode.hardwareMap.crservo.get("vexServo");
-
-        sensorColor = mode.hardwareMap.colorSensor.get("sensorColor");
-        sensorColor.enableLed(true);
-
-        stopMovement();
-
     }
 
     /**
