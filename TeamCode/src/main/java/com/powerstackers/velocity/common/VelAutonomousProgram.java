@@ -20,9 +20,9 @@
 
 package com.powerstackers.velocity.common;
 
-import com.powerstackers.velocity.common.enums.PublicEnums;
+import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
+import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
 import com.powerstackers.velocity.common.enums.StartingPosition;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.BLUE;
@@ -33,11 +33,11 @@ import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.
  */
 public class VelAutonomousProgram extends LinearOpMode {
 
-    PublicEnums.AllianceColor allianceColor;
+    AllianceColor allianceColor;
     StartingPosition startingPosition;
     VelRobotAuto robot;
 
-    public VelAutonomousProgram(PublicEnums.AllianceColor allianceColor,
+    public VelAutonomousProgram(AllianceColor allianceColor,
                                 StartingPosition startingPosition) {
         this.allianceColor = allianceColor;
         this.startingPosition = startingPosition;
@@ -52,17 +52,23 @@ public class VelAutonomousProgram extends LinearOpMode {
         // Wait for the start of the match!Thread.interrupted()
         this.waitForStart();
 
-        if (allianceColor == RED) {
+        // Turn on the shooters now, to give them time to spin up
+        robot.setShooter(MotorSetting.FORWARD);
 
-            //red autonomous code here vvv
+        // Move into position
+        robot.goDistanceInCm(65.0, VelRobotConstants.DIRECTION_NORTH, 1.0);
 
-        } else if (allianceColor == BLUE) {
+        // Feed balls into shooter
+        robot.setBallPickup(MotorSetting.FORWARD);
 
-            //blue autonomous code here vvv
+        // Wait for balls to shoot
+        sleep(3000);
 
-        } else {
-            telemetry.addData("choosered", "deprecated: ");
-            stop();
-        }
+        // Stop shooter
+        robot.setBallPickup(MotorSetting.STOP);
+        robot.setShooter(MotorSetting.STOP);
+
+        // Move into ball
+        robot.goDistanceInCm(65.0, VelRobotConstants.DIRECTION_NORTH, 1.0);
     }
 }

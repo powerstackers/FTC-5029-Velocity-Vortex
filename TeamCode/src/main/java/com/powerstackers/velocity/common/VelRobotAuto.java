@@ -21,7 +21,9 @@
 package com.powerstackers.velocity.common;
 
 import com.powerstackers.velocity.common.enums.PublicEnums;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import static com.powerstackers.velocity.common.VelRobotConstants.BEACON_RESTING;
@@ -49,11 +51,13 @@ public class VelRobotAuto extends VelRobot {
     // EXAMPLE: If your drive train is geared 2:1 (1 motor rotation = 2 wheel rotations), set this to 2
 //    double turnOvershootThreshold = 0.1;
 
+    LinearOpMode mode;
+
     /**
      * Construct a Robot object.
      * @param mode The OpMode in which the robot is being used.
      */
-    public VelRobotAuto(OpMode mode) {
+    public VelRobotAuto(LinearOpMode mode) {
 
         super(mode);
         //constructors
@@ -150,8 +154,34 @@ public class VelRobotAuto extends VelRobot {
      * @param  speed The speed at which to travel.
      */
     public void goDistanceInCm(double distance, double angle, double speed) {
-        // TODO Figure out how to do this.
+        // TODO Only goes forward, can't strafe.
+        zeroEncoders();
+        setMovement(angle, speed, 0.0);
+        while(motorDrive1.getCurrentPosition() < cmToTicks(distance)) {}
+        stopMovement();
     }
+
+    /**
+     * Reset the encoders on all motors.
+     */
+    public void zeroEncoders() {
+        motorDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorDrive3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorDrive4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        try {
+            mode.idle();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
 
     /**
      * Converts a distance in encoder ticks to a distance in inches.
@@ -161,7 +191,7 @@ public class VelRobotAuto extends VelRobot {
      * @param  ticks long representing the distance in ticks.
      * @return       that distance in inches.
      */
-    public static double ticksToCm(long ticks) {
+    public static double ticksToCm(int ticks) {
         // TODO This is wrong.
         return (ticks/ticksPerRevolution)*driveGearMultiplier*(PI*wheelDiameter);
     }
@@ -174,12 +204,11 @@ public class VelRobotAuto extends VelRobot {
      * @param  inches double containing the distance you want to travel.
      * @return        that distance in encoder ticks.
      */
-    public static double cmToTicks(double inches) {
+    public static int cmToTicks(double inches) {
         // TODO This is wrong now.
-        return (long) ((1/driveGearMultiplier)*ticksPerRevolution*(inches/(PI*wheelDiameter)));
+        return (int) ((1/driveGearMultiplier)*ticksPerRevolution*(inches/(PI*wheelDiameter)));
     }
-
-
+    
     /**
      * Trim a servo value between the minimum and maximum ranges.
      * @param servoValue Value to trim.
