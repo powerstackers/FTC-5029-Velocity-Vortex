@@ -57,7 +57,7 @@ public class VelRobotAuto extends VelRobot {
     /**
      * Gear ratio between the motor and the drive wheels. Used in c
      */
-    private static final double driveGearMultiplier = 1.0;
+    private static final double driveGearMultiplier = 2.0;
 //    double turnOvershootThreshold = 0.1;
 
     LinearOpMode mode;
