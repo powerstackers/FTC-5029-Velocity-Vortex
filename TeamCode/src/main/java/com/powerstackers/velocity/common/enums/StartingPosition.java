@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Powerstackers
  *
- * Teleop code for Velocity Vortex.
+ * Enum for the robot's starting position.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@
 package com.powerstackers.velocity.common.enums;
 
 /**
+ * The position on the field in which our robot starts.
  * @author Jonathan
  */
-
 public enum StartingPosition {
     FAR_FROM_RAMP, MIDDLE, CLOSE_TO_RAMP
 }

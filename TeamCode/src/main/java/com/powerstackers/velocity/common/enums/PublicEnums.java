@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Powerstackers
  *
- * Teleop code for Velocity Vortex.
+ * Enums used for different purposes.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,18 +21,22 @@
 package com.powerstackers.velocity.common.enums;
 
 /**
+ * Enumerations used to represent settings for hardware devices.
  * @author  Derek on 1/23/2016.
  */
 public class PublicEnums {
 
+    /** Represents a motor which can have one of three settings: forward, stop, and reverse.  */
     public enum MotorSetting {
         REVERSE, STOP, FORWARD
     }
 
+    /** The color alliance that we have been placed on. */
     public enum AllianceColor {
         RED, BLUE
     }
 
+    /** The setting of the grabber, either tight (grabbing the ball) or loose (not grabbing it). */
     public enum GrabberSetting {
         TIGHT, LOOSE
     }
