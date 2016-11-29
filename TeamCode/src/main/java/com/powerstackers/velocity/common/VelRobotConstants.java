@@ -37,13 +37,14 @@ class VelRobotConstants {
     static final double MINIMUM_JOYSTICK_THRESHOLD = 0.15F;
 
     /** Ball grab release servo in the upright and locked position. */
-    static final double SERVO_ARMS_RELEASE_RESTING = 0.0;
+    static final double SERVO_BALL_GRAB_STOWED = 0.0;
     /** Ball grab release servo in the open position, letting the ball grabber drop. */
-    static final double SERVO_ARMS_RELEASE_OPEN = 0.0;
+    static final double SERVO_BALL_GRAB_OPEN = 0.0;
     /** Ball grabber in the grabbing position. */
-    static final double SERVO_ARMS_GRAB_TIGHT = 0.0;
-    /** Ball grabber in the loose position, i.e. not grabbing. */
-    static final double SERVO_ARMS_GRAB_LOOSE = 0.0;
+    static final double SERVO_BALL_GRAB_TIGHT = 0.0;
+
+    static final double MOTOR_SHOOTER_POWER = 1.0;
+    static final double MOTOR_LIFT_POWER = 1.0;
 
     /** Direction pointing forward from the robot, in radians. */
     static final double DIRECTION_NORTH = PI/2;

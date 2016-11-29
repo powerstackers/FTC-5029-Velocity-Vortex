@@ -20,7 +20,6 @@
 
 package com.powerstackers.velocity.common;
 
-import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.GrabberSetting;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -65,8 +64,7 @@ public class VelRobot {
 
 
     protected Servo servoBeacon;
-    protected Servo servoArmsGrab;
-    protected Servo servoArmsRelease;
+    protected Servo servoBallGrab;
 
     protected CRServo vexMotor;
 
@@ -98,13 +96,11 @@ public class VelRobot {
         motorShooter2 = mode.hardwareMap.dcMotor.get("motorShooter2");
         motorLift = mode.hardwareMap.dcMotor.get("motorLift");
 
-        servoArmsGrab = mode.hardwareMap.servo.get("servoArmsGrab");
-        servoArmsRelease = mode.hardwareMap.servo.get("servoArmsRelease");
+        servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
 
         vexMotor = mode.hardwareMap.crservo.get("vexServo");
         stopMovement();
-        servoArmsRelease.setPosition(VelRobotConstants.SERVO_ARMS_RELEASE_RESTING);
-        servoArmsGrab.setPosition(VelRobotConstants.SERVO_ARMS_GRAB_LOOSE);
+        servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
     }
 
     /**
@@ -135,8 +131,8 @@ public class VelRobot {
     public void setShooter(MotorSetting setting) {
         switch (setting) {
             case FORWARD:
-                motorShooter1.setPower(1.0);
-                motorShooter2.setPower(1.0);
+                motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
+                motorShooter2.setPower(-VelRobotConstants.MOTOR_SHOOTER_POWER);
                 break;
             case STOP:
                 motorShooter1.setPower(0.0);
@@ -156,10 +152,10 @@ public class VelRobot {
     public void setLift(MotorSetting setting) {
         switch (setting) {
             case FORWARD:
-                motorLift.setPower(1.0);
+                motorLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
                 break;
             case REVERSE:
-                motorLift.setPower(-1.0);
+                motorLift.setPower(-VelRobotConstants.MOTOR_LIFT_POWER);
                 break;
             case STOP:
                 motorLift.setPower(0.0);
@@ -174,7 +170,7 @@ public class VelRobot {
      * Release the ball grabber.
      */
     public void releaseBallGrab() {
-        servoArmsRelease.setPosition(VelRobotConstants.SERVO_ARMS_RELEASE_OPEN);
+        servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_OPEN);
     }
 
     /**
@@ -182,8 +178,8 @@ public class VelRobot {
      * @param setting GrabberSetting telling which position to set to.
      */
     public void setBallGrab(GrabberSetting setting) {
-            servoArmsGrab.setPosition(setting == GrabberSetting.LOOSE?
-                    VelRobotConstants.SERVO_ARMS_GRAB_LOOSE : VelRobotConstants.SERVO_ARMS_GRAB_TIGHT);
+            servoBallGrab.setPosition(setting == GrabberSetting.LOOSE?
+                    VelRobotConstants.SERVO_BALL_GRAB_OPEN : VelRobotConstants.SERVO_BALL_GRAB_TIGHT);
     }
 
 

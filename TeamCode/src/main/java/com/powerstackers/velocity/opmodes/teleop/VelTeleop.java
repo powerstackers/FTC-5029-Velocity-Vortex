@@ -55,6 +55,8 @@ public class VelTeleop extends OpMode {
     boolean buttonGrabberRelease;
     boolean buttonBallSqueeze;
 
+    boolean flag_grabberBeenReleased = false;
+
     /**
     * Default constructor. Need this!!!
     * @return
@@ -139,12 +141,15 @@ public class VelTeleop extends OpMode {
         robot.setLift(buttonLiftUp? MotorSetting.FORWARD :
                 (buttonLiftDown? MotorSetting.REVERSE : MotorSetting.STOP));
 
-        // Set the ball grabber
-        robot.setBallGrab(buttonBallSqueeze? GrabberSetting.TIGHT : GrabberSetting.LOOSE);
+        // Only move the ball grabber after it has been deployed
+        if (flag_grabberBeenReleased) {
+            robot.setBallGrab(buttonBallSqueeze ? GrabberSetting.TIGHT : GrabberSetting.LOOSE);
+        }
 
         // Release the ball grabber
         if (buttonGrabberRelease) {
             robot.releaseBallGrab();
+            flag_grabberBeenReleased = true;
         }
 
 //        telemetry here vvv
