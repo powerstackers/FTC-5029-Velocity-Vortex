@@ -71,6 +71,7 @@ public class VelRobot {
     protected GyroSensor sensorGyro;
     protected ColorSensor sensorColor;
 
+    private boolean ENGAGE_STUPID_MODE = true;
 
     /**
      * Construct a Robot object.
@@ -91,16 +92,22 @@ public class VelRobot {
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
-        motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
-        motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter1");
-        motorShooter2 = mode.hardwareMap.dcMotor.get("motorShooter2");
-        motorLift = mode.hardwareMap.dcMotor.get("motorLift");
+        // Don't configure these motors in stupid mode.
+        if (!ENGAGE_STUPID_MODE) {
+            motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
+            motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter1");
+            motorShooter2 = mode.hardwareMap.dcMotor.get("motorShooter2");
+            motorLift = mode.hardwareMap.dcMotor.get("motorLift");
 
-        servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
+            servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
+        }
+
+
 
         vexMotor = mode.hardwareMap.crservo.get("vexServo");
         stopMovement();
-        servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
+        if (!ENGAGE_STUPID_MODE)
+            servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
     }
 
     /**
@@ -108,6 +115,7 @@ public class VelRobot {
      * @param setting MotorSetting enum telling what setting to use.
      */
     public void setBallPickup(MotorSetting setting) {
+        if (ENGAGE_STUPID_MODE) return;
         switch (setting) {
             case FORWARD:
                 motorPickup.setPower(1.0);
@@ -129,6 +137,7 @@ public class VelRobot {
      * @param setting MotorSetting enum telling what setting to use.
      */
     public void setShooter(MotorSetting setting) {
+        if (ENGAGE_STUPID_MODE) return;
         switch (setting) {
             case FORWARD:
                 motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
@@ -150,6 +159,7 @@ public class VelRobot {
      * @param setting MotorSetting telling which setting to use.
      */
     public void setLift(MotorSetting setting) {
+        if (ENGAGE_STUPID_MODE) return;
         switch (setting) {
             case FORWARD:
                 motorLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
@@ -170,6 +180,7 @@ public class VelRobot {
      * Release the ball grabber.
      */
     public void releaseBallGrab() {
+        if (ENGAGE_STUPID_MODE) return;
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_OPEN);
     }
 
@@ -178,8 +189,9 @@ public class VelRobot {
      * @param setting GrabberSetting telling which position to set to.
      */
     public void setBallGrab(GrabberSetting setting) {
-            servoBallGrab.setPosition(setting == GrabberSetting.LOOSE?
-                    VelRobotConstants.SERVO_BALL_GRAB_OPEN : VelRobotConstants.SERVO_BALL_GRAB_TIGHT);
+        if (ENGAGE_STUPID_MODE) return;
+        servoBallGrab.setPosition(setting == GrabberSetting.LOOSE?
+                VelRobotConstants.SERVO_BALL_GRAB_OPEN : VelRobotConstants.SERVO_BALL_GRAB_TIGHT);
     }
 
 
@@ -244,6 +256,7 @@ public class VelRobot {
      * set vexmotor power
      */
     public void vexPower(double power) {
+        if (ENGAGE_STUPID_MODE) return;
         vexMotor.setPower(power);
     }
 

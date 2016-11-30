@@ -153,16 +153,10 @@ public class VelTeleop extends OpMode {
         }
 
 //        telemetry here vvv
-        telemetry.addData("VexMotor : ", robot.getVexPower());
-        telemetry.addData("Drive1 port:", robot.getDrive1Port());
-        telemetry.addData("Power: ", robot.getDrive1Power());
-        telemetry.addData("Drive2 port:", robot.getDrive2Port());
-        telemetry.addData("Power: ", robot.getDrive2Power());
-        telemetry.addData("Drive3 port:", robot.getDrive3Port());
-        telemetry.addData("Power: ", robot.getDrive3Power());
-        telemetry.addData("Drive4 port:", robot.getDrive4Port());
-        telemetry.addData("Power: ", robot.getDrive4Power());
-
+        telemetry.addData("left x", gamepad1.left_stick_x);
+        telemetry.addData("left y", gamepad1.left_stick_y);
+        telemetry.addData("right x", gamepad1.right_stick_x);
+        telemetry.addData("rotation", VelRobot.mecSpinFromJoystick(gamepad1));
     }
 
     /**
