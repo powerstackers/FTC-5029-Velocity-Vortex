@@ -20,6 +20,8 @@
 
 package com.powerstackers.velocity.common;
 
+import com.powerstackers.velocity.common.enums.PublicEnums.GrabberSetting;
+import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -51,18 +53,25 @@ public class VelRobot {
         |3//     \\4|
         -------------
      */
-    protected DcMotor drive1 = null;
-    protected DcMotor drive2 = null;
-    protected DcMotor drive3 = null;
-    protected DcMotor drive4 = null;
+    protected DcMotor motorDrive1;
+    protected DcMotor motorDrive2;
+    protected DcMotor motorDrive3;
+    protected DcMotor motorDrive4;
+    protected DcMotor motorPickup;
+    protected DcMotor motorShooter1;
+    protected DcMotor motorShooter2;
+    protected DcMotor motorLift;
+
 
     protected Servo servoBeacon;
+    protected Servo servoBallGrab;
 
     protected CRServo vexMotor;
 
     protected GyroSensor sensorGyro;
     protected ColorSensor sensorColor;
 
+    private boolean ENGAGE_STUPID_MODE = true;
 
     /**
      * Construct a Robot object.
@@ -79,21 +88,113 @@ public class VelRobot {
     public void initializeRobot() /*throws InterruptedException */{
         // TODO set motor modes
         mode.telemetry.addData("Status", "Initialized");
-        drive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
-        drive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-        drive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-        drive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+        motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+        motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+        motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+        motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+        // Don't configure these motors in stupid mode.
+        if (!ENGAGE_STUPID_MODE) {
+            motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
+            motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter1");
+            motorShooter2 = mode.hardwareMap.dcMotor.get("motorShooter2");
+            motorLift = mode.hardwareMap.dcMotor.get("motorLift");
+
+            servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
+        }
+
+
 
         vexMotor = mode.hardwareMap.crservo.get("vexServo");
         stopMovement();
+        if (!ENGAGE_STUPID_MODE)
+            servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
     }
 
     /**
-     * Just a simple absolute value function.
-     * @param val Value to get absolute value of.   not neccasary due to math.abs existing
-     * @return Absolute value of the input.
+     * Set the direction of the particle pickup motor.
+     * @param setting MotorSetting enum telling what setting to use.
      */
-//    private static double abs(double val) {return (val > 0)? val : -val;}
+    public void setBallPickup(MotorSetting setting) {
+        if (ENGAGE_STUPID_MODE) return;
+        switch (setting) {
+            case FORWARD:
+                motorPickup.setPower(1.0);
+                break;
+            case REVERSE:
+                motorPickup.setPower(-1.0);
+                break;
+            case STOP:
+                motorPickup.setPower(0.0);
+                break;
+            default:
+                motorPickup.setPower(0.0);
+                break;
+        }
+    }
+
+    /**
+     * Set the shooter motors.
+     * @param setting MotorSetting enum telling what setting to use.
+     */
+    public void setShooter(MotorSetting setting) {
+        if (ENGAGE_STUPID_MODE) return;
+        switch (setting) {
+            case FORWARD:
+                motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
+                motorShooter2.setPower(-VelRobotConstants.MOTOR_SHOOTER_POWER);
+                break;
+            case STOP:
+                motorShooter1.setPower(0.0);
+                motorShooter2.setPower(0.0);
+                break;
+            default:
+                motorShooter1.setPower(0.0);
+                motorShooter2.setPower(0.0);
+                break;
+        }
+    }
+
+    /**
+     * Set the lift motor.
+     * @param setting MotorSetting telling which setting to use.
+     */
+    public void setLift(MotorSetting setting) {
+        if (ENGAGE_STUPID_MODE) return;
+        switch (setting) {
+            case FORWARD:
+                motorLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
+                break;
+            case REVERSE:
+                motorLift.setPower(-VelRobotConstants.MOTOR_LIFT_POWER);
+                break;
+            case STOP:
+                motorLift.setPower(0.0);
+                break;
+            default:
+                motorLift.setPower(0.0);
+                break;
+        }
+    }
+
+    /**
+     * Release the ball grabber.
+     */
+    public void releaseBallGrab() {
+        if (ENGAGE_STUPID_MODE) return;
+        servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_OPEN);
+    }
+
+    /**
+     * Set the cap ball grabber.
+     * @param setting GrabberSetting telling which position to set to.
+     */
+    public void setBallGrab(GrabberSetting setting) {
+        if (ENGAGE_STUPID_MODE) return;
+        servoBallGrab.setPosition(setting == GrabberSetting.LOOSE?
+                VelRobotConstants.SERVO_BALL_GRAB_OPEN : VelRobotConstants.SERVO_BALL_GRAB_TIGHT);
+    }
+
+
 
     /**
      * Set the movement speeds of all four motors, based on a desired angle, speed, and rotation
@@ -106,7 +207,7 @@ public class VelRobot {
     public void setMovement(double angle, double speed, double rotation) {
 
         // None of this stuff should happen if the speed is 0.
-        if (speed == 0.0) {
+        if (speed == 0.0 && rotation == 0.0) {
             stopMovement();
             return;
         }
@@ -128,10 +229,10 @@ public class VelRobot {
             multipliers[i] = multipliers[i] / largest;
         }
 
-        drive1.setPower(multipliers[0]);
-        drive2.setPower(multipliers[1]);
-        drive3.setPower(multipliers[2]);
-        drive4.setPower(multipliers[3]);
+        motorDrive1.setPower(multipliers[0]);
+        motorDrive2.setPower(multipliers[1]);
+        motorDrive3.setPower(multipliers[2]);
+        motorDrive4.setPower(multipliers[3]);
     }
 
     /**
@@ -145,16 +246,17 @@ public class VelRobot {
         Ch3 = gamepad.left_stick_y;
         Ch4 = (-(gamepad.left_stick_x));
 
-        drive1.setPower(-(Ch3 + Ch1 + Ch4));
-        drive2.setPower(Ch3 - Ch1 - Ch4);
-        drive3.setPower(-(Ch3 + Ch1 - Ch4));
-        drive4.setPower(Ch3 - Ch1 + Ch4);
+        motorDrive1.setPower(-(Ch3 + Ch1 + Ch4));
+        motorDrive2.setPower(Ch3 - Ch1 - Ch4);
+        motorDrive3.setPower(-(Ch3 + Ch1 - Ch4));
+        motorDrive4.setPower(Ch3 - Ch1 + Ch4);
     }
 
     /**
      * set vexmotor power
      */
     public void vexPower(double power) {
+        if (ENGAGE_STUPID_MODE) return;
         vexMotor.setPower(power);
     }
 
@@ -162,10 +264,10 @@ public class VelRobot {
      *  Completely stop the drive motors.
      */
     public void stopMovement() {
-        drive1.setPower(0.0);
-        drive2.setPower(0.0);
-        drive3.setPower(0.0);
-        drive4.setPower(0.0);
+        motorDrive1.setPower(0.0);
+        motorDrive2.setPower(0.0);
+        motorDrive3.setPower(0.0);
+        motorDrive4.setPower(0.0);
 
         vexMotor.setPower(0);
     }
@@ -178,7 +280,7 @@ public class VelRobot {
      */
     public static double mecDirectionFromJoystick(Gamepad pad) {
         double x = pad.left_stick_x;
-        double y = -pad.left_stick_y;   // The Y stick is inverted
+        double y = pad.left_stick_y;   // The Y stick is inverted
 
         // If x is exactly 0, atan will be undefined. In that case, our angle is either 90 or 270.
         if (x == 0) {
@@ -239,49 +341,49 @@ public class VelRobot {
      * get moter telemetry
      */
     public double getDrive1Power() {
-        return  drive1.getPower();
+        return  motorDrive1.getPower();
     }
     /**
      * get moter telemetry
      */
     public double getDrive2Power() {
-        return  drive2.getPower();
+        return  motorDrive2.getPower();
     }
     /**
      * get moter telemetry
      */
     public double getDrive3Power() {
-        return  drive3.getPower();
+        return  motorDrive3.getPower();
     }
     /**
      * get moter telemetry
      */
     public double getDrive4Power() {
-        return  drive4.getPower();
+        return  motorDrive4.getPower();
     }
 
     /**
      * get port nuber
      */
     public int getDrive1Port() {
-        return drive1.getPortNumber();
+        return motorDrive1.getPortNumber();
     }
     /**
      * get port nuber
      */
     public int getDrive2Port() {
-        return drive2.getPortNumber();
+        return motorDrive2.getPortNumber();
     }
     /**
      * get port nuber
      */
     public int getDrive3Port() {
-        return drive3.getPortNumber();
+        return motorDrive3.getPortNumber();
     }
     /**
      * get port nuber
      */
     public int getDrive4Port() {
-        return drive4.getPortNumber();
+        return motorDrive4.getPortNumber();
     }
 }

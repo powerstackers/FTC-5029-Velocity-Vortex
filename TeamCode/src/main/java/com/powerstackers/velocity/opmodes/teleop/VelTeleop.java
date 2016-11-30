@@ -1,12 +1,33 @@
+/*
+ * Copyright (C) 2016 Powerstackers
+ *
+ * Teleop code for Velocity Vortex.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package com.powerstackers.velocity.opmodes.teleop;
 
 import com.powerstackers.velocity.common.VelRobot;
+import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
+import com.powerstackers.velocity.common.enums.PublicEnums.GrabberSetting;
+import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import static java.lang.Math.abs;
 
 /**
  * @author Derek Helm
@@ -23,16 +44,18 @@ public class VelTeleop extends OpMode {
     AllianceColor allianceColor;
     VelRobot robot;
 
-    //declarations here vvv
-    float stickMove;
-//    float stickMoveDown;
-//    float stickMoveRight;
-    float stickMoveLeftRight;
-    float stickTurnRight;
-    float stickTurnLeftRight;
 
     boolean buttonVexMotorForward;
     boolean buttonVexMotorBackward;
+    boolean buttonParticlePickupIn;
+    boolean buttonParticlePickupOut;
+    boolean buttonShooter;
+    boolean buttonLiftUp;
+    boolean buttonLiftDown;
+    boolean buttonGrabberRelease;
+    boolean buttonBallSqueeze;
+
+    boolean flag_grabberBeenReleased = false;
 
     /**
     * Default constructor. Need this!!!
@@ -82,17 +105,17 @@ public class VelTeleop extends OpMode {
         telemetry.addData("Status", "Running: ");
 
         // Read the joystick and determine what motor setting to use.
-//        stickMoveUpDown    = (float) scaleInput(Range.clip(-gamepad1.left_stick_y, -1, 1));
-//        stickMoveLeftRight  = (float) scaleInput(Range.clip(-gamepad1.left_stick_x, -1, 1));
-//        stickTurnLeftRight  = (float) scaleInput(Range.clip(-gamepad1.right_stick_x, -1, 1));
-
-//        stickMove    = (float) scaleInput(Range.clip(, -1, 1));
-//        stickMoveLeftRight  = (float) scaleInput(Range.clip(-gamepad1.left_stick_x, -1, 1));
-//        stickTurnLeftRight  = (float) scaleInput(Range.clip(robot.mecSpinFromJoystick(gamepad1), -1, 1));
 
         //button maps here vvv
         buttonVexMotorForward  = gamepad1.dpad_up;
         buttonVexMotorBackward = gamepad1.dpad_down;
+        buttonParticlePickupIn = gamepad2.left_bumper;
+        buttonParticlePickupOut = gamepad2.left_trigger > 0.5;
+        buttonShooter = gamepad2.a;
+        buttonLiftUp = gamepad2.right_bumper;
+        buttonLiftDown = gamepad2.right_trigger > 0.5;
+        buttonGrabberRelease = gamepad2.b;
+        buttonBallSqueeze = gamepad2.x;
 
 //        if else statements here vvv
         if (buttonVexMotorForward) {
@@ -103,54 +126,37 @@ public class VelTeleop extends OpMode {
             robot.vexPower(0);
         }
 
-        // TODO: 10/27/16 add get stickTurnLeftRight Value -=left +=right
+        // Set the movement of the robot's wheels
+        robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
+                VelRobot.mecSpeedFromJoystick(gamepad1), VelRobot.mecSpinFromJoystick(gamepad1));
 
-//        if (abs(stickMoveUpDown) > MINIMUM_JOYSTICK_THRESHOLD) {
-//            robot.setMovement((PI/2), -stickMoveUpDown, 0);
-//        } else if (abs(stickMoveLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
-//            if (stickMoveLeftRight < 0) {
-//                robot.setMovement();
-//            } else if (stickMoveLeftRight > 0) {
-//                robot.setMovement(((3 * PI) / 2), -stickMoveLeftRight, 0);
-//            }
-//        } else if (abs(stickTurnLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
-//            robot.setMovement((PI/2), -stickTurnLeftRight, -stickTurnLeftRight);
-//        } else {
-//                robot.stopMovement();
-//        }
+        // Set particle pickup motor
+        robot.setBallPickup(buttonParticlePickupIn? MotorSetting.FORWARD :
+                (buttonParticlePickupOut? MotorSetting.REVERSE : MotorSetting.STOP));
 
-        if (((abs(gamepad1.left_stick_y)) > MINIMUM_JOYSTICK_THRESHOLD) || ((abs(gamepad1.left_stick_x)) > MINIMUM_JOYSTICK_THRESHOLD) || ((abs(gamepad1.right_stick_x)) > MINIMUM_JOYSTICK_THRESHOLD)) {
-            robot.magicMecanum(gamepad1);
-// robot.setMovement(robot.mecDirectionFromJoystick(this.gamepad1), robot.mecSpeedFromJoystick(this.gamepad1), robot.mecSpinFromJoystick(this.gamepad1));
-        } else {
-            robot.stopMovement();
+        // Set particle shooter
+        robot.setShooter(buttonShooter? MotorSetting.FORWARD : MotorSetting.STOP);
+
+        // Set lift motor
+        robot.setLift(buttonLiftUp? MotorSetting.FORWARD :
+                (buttonLiftDown? MotorSetting.REVERSE : MotorSetting.STOP));
+
+        // Only move the ball grabber after it has been deployed
+        if (flag_grabberBeenReleased) {
+            robot.setBallGrab(buttonBallSqueeze ? GrabberSetting.TIGHT : GrabberSetting.LOOSE);
         }
 
-//        if (abs(stickMove) > MINIMUM_JOYSTICK_THRESHOLD) {
-//            robot.setMovement(robot.mecDirectionFromJoystick(gamepad1), stickMove, 0);
-//        } else if (abs(stickMoveLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
-//            if (stickMoveLeftRight < 0) {
-//                robot.setMovement(robot.mecDirectionFromJoystick(gamepad1), stickMoveLeftRight, 0);
-//            } else if (stickMoveLeftRight > 0) {
-//                robot.setMovement((2*PI), robot.mecSpeedFromJoystick(gamepad1), 0);
-//            }
-//        } else if (abs(stickTurnLeftRight) > MINIMUM_JOYSTICK_THRESHOLD) {
-//            robot.setMovement(0, stickTurnLeftRight, robot.mecSpinFromJoystick(gamepad1));
-//        } else {
-//                robot.stopMovement();
-//        }
+        // Release the ball grabber
+        if (buttonGrabberRelease) {
+            robot.releaseBallGrab();
+            flag_grabberBeenReleased = true;
+        }
 
 //        telemetry here vvv
-        telemetry.addData("VexMotor : ", robot.getVexPower());
-        telemetry.addData("Drive1 port:", robot.getDrive1Port());
-        telemetry.addData("Power: ", robot.getDrive1Power());
-        telemetry.addData("Drive2 port:", robot.getDrive2Port());
-        telemetry.addData("Power: ", robot.getDrive2Power());
-        telemetry.addData("Drive3 port:", robot.getDrive3Port());
-        telemetry.addData("Power: ", robot.getDrive3Power());
-        telemetry.addData("Drive4 port:", robot.getDrive4Port());
-        telemetry.addData("Power: ", robot.getDrive4Power());
-
+        telemetry.addData("left x", gamepad1.left_stick_x);
+        telemetry.addData("left y", gamepad1.left_stick_y);
+        telemetry.addData("right x", gamepad1.right_stick_x);
+        telemetry.addData("rotation", VelRobot.mecSpinFromJoystick(gamepad1));
     }
 
     /**
