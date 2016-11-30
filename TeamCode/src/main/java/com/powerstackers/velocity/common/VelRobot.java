@@ -195,7 +195,7 @@ public class VelRobot {
     public void setMovement(double angle, double speed, double rotation) {
 
         // None of this stuff should happen if the speed is 0.
-        if (speed == 0.0) {
+        if (speed == 0.0 && rotation == 0.0) {
             stopMovement();
             return;
         }
@@ -267,7 +267,7 @@ public class VelRobot {
      */
     public static double mecDirectionFromJoystick(Gamepad pad) {
         double x = pad.left_stick_x;
-        double y = -pad.left_stick_y;   // The Y stick is inverted
+        double y = pad.left_stick_y;   // The Y stick is inverted
 
         // If x is exactly 0, atan will be undefined. In that case, our angle is either 90 or 270.
         if (x == 0) {
