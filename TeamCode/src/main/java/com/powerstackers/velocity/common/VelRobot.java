@@ -71,7 +71,7 @@ public class VelRobot {
     protected GyroSensor sensorGyro;
     protected ColorSensor sensorColor;
 
-    private boolean ENGAGE_STUPID_MODE = true;
+    private boolean ENGAGE_STUPID_MODE = false;
 
     /**
      * Construct a Robot object.

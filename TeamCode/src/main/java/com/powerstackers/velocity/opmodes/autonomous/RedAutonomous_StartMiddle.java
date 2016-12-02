@@ -30,7 +30,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * @author Jonathan
  */
 @Autonomous(name = "Red Auto Start Middle", group = "Powerstackers")
-@Disabled
 public class RedAutonomous_StartMiddle extends VelAutonomousProgram {
     public RedAutonomous_StartMiddle() {
         super(PublicEnums.AllianceColor.RED, StartingPosition.MIDDLE);
