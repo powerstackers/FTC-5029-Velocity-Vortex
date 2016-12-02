@@ -118,10 +118,10 @@ public class VelRobot {
         if (ENGAGE_STUPID_MODE) return;
         switch (setting) {
             case FORWARD:
-                motorPickup.setPower(1.0);
+                motorPickup.setPower(VelRobotConstants.MOTOR_PICKUP_POWER);
                 break;
             case REVERSE:
-                motorPickup.setPower(-1.0);
+                motorPickup.setPower(-VelRobotConstants.MOTOR_PICKUP_POWER);
                 break;
             case STOP:
                 motorPickup.setPower(0.0);

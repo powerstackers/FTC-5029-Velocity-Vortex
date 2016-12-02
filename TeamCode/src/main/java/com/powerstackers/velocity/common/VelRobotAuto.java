@@ -137,10 +137,11 @@ public class VelRobotAuto extends VelRobot {
      * @param  speed The speed at which to travel.
      */
     public void goDistanceInCm(double distance, double angle, double speed) {
-        // TODO Only goes forward, can't strafe.
         zeroEncoders();
         setMovement(angle, speed, 0.0);
-        while(motorDrive1.getCurrentPosition() < cmToTicks(distance)) {}
+        // Track using the back left motor.
+        // Why? It's the only one my fat fingers could get the plug into.
+        while(motorDrive3.getCurrentPosition() < cmToTicks(distance)) {}
         stopMovement();
     }
 
@@ -184,12 +185,12 @@ public class VelRobotAuto extends VelRobot {
      * <p>We calculate this by taking the number of wheel rotations (inches/(PI*wheelDiameter))
      * multiplied by the inverse of the gear ratio, to get the number of motor rotations. Multiply
      * one more time by the number of motor encoder ticks per one motor revolution.
-     * @param  inches double containing the distance you want to travel.
-     * @return        that distance in encoder ticks.
+     * @param  cm   double containing the distance you want to travel.
+     * @return      that distance in encoder ticks.
      */
-    public static int cmToTicks(double inches) {
+    public static int cmToTicks(double cm) {
         // TODO This is wrong now.
-        return (int) ((1/driveGearMultiplier)*ticksPerRevolution*(inches/(PI*wheelDiameter)));
+        return (int) ((1/driveGearMultiplier)*ticksPerRevolution*(cm/(PI*wheelDiameter)));
     }
     
     /**

@@ -56,7 +56,7 @@ public class VelAutonomousProgram extends LinearOpMode {
         robot.setShooter(MotorSetting.FORWARD);
 
         // Move into position
-        robot.goDistanceInCm(65.0, VelRobotConstants.DIRECTION_NORTH, 1.0);
+        robot.goDistanceInCm(65.0, VelRobotConstants.DIRECTION_SOUTH, 1.0);
 
         // Feed balls into shooter
         robot.setBallPickup(MotorSetting.FORWARD);
@@ -69,6 +69,6 @@ public class VelAutonomousProgram extends LinearOpMode {
         robot.setShooter(MotorSetting.STOP);
 
         // Move into ball
-        robot.goDistanceInCm(65.0, VelRobotConstants.DIRECTION_NORTH, 1.0);
+        robot.goDistanceInCm(65.0, VelRobotConstants.DIRECTION_SOUTH, 1.0);
     }
 }
