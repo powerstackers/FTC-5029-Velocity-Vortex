@@ -95,10 +95,15 @@ public class VelRobot {
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
         motorLift = mode.hardwareMap.dcMotor.get("motorLift");
+        motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter1");
+        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorShooter1.setMaxSpeed((int) (1600.0 * 0.74));
+
         // Don't configure these motors in stupid mode.
         if (!ENGAGE_STUPID_MODE) {
             motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
-            motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter1");
+
             motorShooter2 = mode.hardwareMap.dcMotor.get("motorShooter2");
 
             vexMotor = mode.hardwareMap.crservo.get("vexServo");
@@ -115,7 +120,7 @@ public class VelRobot {
 
     /**
      * Get the revolutions per minute of the shooter motor.
-     * @return
+     * @return Double representing the rpm.
      */
     public double getShooterRPM() {
 
@@ -161,15 +166,15 @@ public class VelRobot {
         switch (setting) {
             case FORWARD:
                 motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
-                motorShooter2.setPower(-VelRobotConstants.MOTOR_SHOOTER_POWER);
+                //motorShooter2.setPower(-VelRobotConstants.MOTOR_SHOOTER_POWER);
                 break;
             case STOP:
                 motorShooter1.setPower(0.0);
-                motorShooter2.setPower(0.0);
+                //motorShooter2.setPower(0.0);
                 break;
             default:
                 motorShooter1.setPower(0.0);
-                motorShooter2.setPower(0.0);
+                //motorShooter2.setPower(0.0);
                 break;
         }
     }
