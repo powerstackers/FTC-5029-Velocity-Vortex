@@ -31,7 +31,6 @@ class VelRobotConstants {
     static final double BEACON_TAP_LEFT  = 0.8;
     static final double BEACON_TAP_RIGHT = 0.2;
     static final double BEACON_RESTING   = 0.5;
-    public static final double TRIMM_MOTOR         = 0.88888888888;
 
     /** Joystick must be pushed past this poing to register as being pushed. */
     static final double MINIMUM_JOYSTICK_THRESHOLD = 0.08F;
@@ -45,6 +44,9 @@ class VelRobotConstants {
 
     static final double MOTOR_SHOOTER_POWER = -0.5;
     static final double MOTOR_SHOOTER_MAX_RPM = 1600.0;
+    static final double MOTOR_SHOOTER_TARGET_RPM = 1350.0;
+    static int MOTOR_SHOOTER_RPM_INCREMENT = 50;
+
     static final double MOTOR_LIFT_POWER = 1.0;
     public static final double MOTOR_PICKUP_POWER = -1.0;
 

@@ -57,6 +57,8 @@ public class VelTeleop extends OpMode {
     boolean buttonBallSqueeze;
 
     boolean flag_grabberBeenReleased = false;
+    boolean flag_shootButtonJustPressed = false;
+    boolean flag_shooterIsOn = false;
 
     /**
     * Default constructor. Need this!!!
@@ -141,8 +143,19 @@ public class VelTeleop extends OpMode {
         robot.setBallPickup(buttonParticlePickupIn? MotorSetting.FORWARD :
                 (buttonParticlePickupOut? MotorSetting.REVERSE : MotorSetting.STOP));
 
-        // Set particle shooter
-       // robot.setShooter(buttonShooter? MotorSetting.FORWARD : MotorSetting.STOP);
+        // Toggle the shooter on every press of the A button
+        if (buttonShooter && !flag_shootButtonJustPressed) {
+            flag_shootButtonJustPressed = true;
+            flag_shooterIsOn = !flag_shooterIsOn;
+        } else if (!buttonShooter) {
+            flag_shootButtonJustPressed = false;
+        }
+
+        if (flag_shooterIsOn) {
+            robot.rampShooter();
+        } else {
+            robot.setShooter(MotorSetting.STOP);
+        }
 
         // Set lift motor
         robot.setLift(buttonLiftUp? MotorSetting.FORWARD :

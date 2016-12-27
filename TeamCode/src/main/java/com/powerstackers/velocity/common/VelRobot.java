@@ -86,8 +86,7 @@ public class VelRobot {
     /**
      * Initialize the robot's servos and sensors.
      */
-    public void initializeRobot() /*throws InterruptedException */{
-        // TODO set motor modes
+    public void initializeRobot() {
         mode.telemetry.addData("Status", "Initialized");
         motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
@@ -349,5 +348,14 @@ public class VelRobot {
      */
     public int getShooterEncVal() {
         return motorShooter1.getCurrentPosition();
+    }
+
+    /**
+     * Ramp up the shooter to avoid damage. Increases the RPM by a set increment every interval.
+     */
+    public void rampShooter() {
+        if (getShooterRPM() < VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM) {
+            setShooterRpm((int) getShooterRPM() + VelRobotConstants.MOTOR_SHOOTER_RPM_INCREMENT);
+        }
     }
 }
