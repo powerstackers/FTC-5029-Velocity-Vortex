@@ -43,7 +43,7 @@ class VelRobotConstants {
     /** Ball grabber in the grabbing position. */
     static final double SERVO_BALL_GRAB_TIGHT = 0.0;
 
-    static final double MOTOR_SHOOTER_POWER = -1.0;
+    static final double MOTOR_SHOOTER_POWER = -0.5;
     static final double MOTOR_LIFT_POWER = 1.0;
     public static final double MOTOR_PICKUP_POWER = -1.0;
 

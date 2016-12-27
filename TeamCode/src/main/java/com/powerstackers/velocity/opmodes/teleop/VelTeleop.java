@@ -25,6 +25,7 @@ import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
 import com.powerstackers.velocity.common.enums.PublicEnums.GrabberSetting;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
+import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -107,6 +108,9 @@ public class VelTeleop extends OpMode {
         telemetry.addData("shooterEncVal", robot.getShooterEncVal());
         telemetry.addData("Status", "Running: ");
 
+        robot.setShooter(MotorSetting.FORWARD);
+        DbgLog.msg("RPM-- " + robot.getShooterRPM());
+
         // Read the joystick and determine what motor setting to use.
 
         //button maps here vvv
@@ -138,7 +142,7 @@ public class VelTeleop extends OpMode {
                 (buttonParticlePickupOut? MotorSetting.REVERSE : MotorSetting.STOP));
 
         // Set particle shooter
-        robot.setShooter(buttonShooter? MotorSetting.FORWARD : MotorSetting.STOP);
+       // robot.setShooter(buttonShooter? MotorSetting.FORWARD : MotorSetting.STOP);
 
         // Set lift motor
         robot.setLift(buttonLiftUp? MotorSetting.FORWARD :
