@@ -29,6 +29,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
@@ -72,6 +73,7 @@ public class VelRobot {
     protected ColorSensor sensorColor;
 
     private boolean ENGAGE_STUPID_MODE = false;
+    private ElapsedTime timer = new ElapsedTime();
 
     /**
      * Construct a Robot object.
@@ -92,22 +94,41 @@ public class VelRobot {
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+        motorLift = mode.hardwareMap.dcMotor.get("motorLift");
         // Don't configure these motors in stupid mode.
         if (!ENGAGE_STUPID_MODE) {
             motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
             motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter1");
             motorShooter2 = mode.hardwareMap.dcMotor.get("motorShooter2");
-            motorLift = mode.hardwareMap.dcMotor.get("motorLift");
 
+            vexMotor = mode.hardwareMap.crservo.get("vexServo");
             servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         }
 
 
 
-        vexMotor = mode.hardwareMap.crservo.get("vexServo");
+
         stopMovement();
         if (!ENGAGE_STUPID_MODE)
             servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
+    }
+
+    /**
+     * Get the revolutions per minute of the shooter motor.
+     * @return
+     */
+    public double getShooterRPM() {
+
+        int endEncoder;
+        int startEncoder = motorShooter1.getCurrentPosition();
+        timer.reset();
+
+        while(timer.milliseconds() < 100) {}
+
+        endEncoder = motorShooter1.getCurrentPosition();
+
+        return (endEncoder - startEncoder) * (600.0/44.4);
+
     }
 
     /**
@@ -137,7 +158,6 @@ public class VelRobot {
      * @param setting MotorSetting enum telling what setting to use.
      */
     public void setShooter(MotorSetting setting) {
-        if (ENGAGE_STUPID_MODE) return;
         switch (setting) {
             case FORWARD:
                 motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
@@ -236,23 +256,6 @@ public class VelRobot {
     }
 
     /**
-     * method 2 for meccanum
-     */
-    public  void magicMecanum(Gamepad gamepad) {
-
-        double Ch1, Ch3, Ch4;
-
-        Ch1 = (-(gamepad.right_stick_x));
-        Ch3 = gamepad.left_stick_y;
-        Ch4 = (-(gamepad.left_stick_x));
-
-        motorDrive1.setPower(-(Ch3 + Ch1 + Ch4));
-        motorDrive2.setPower(Ch3 - Ch1 - Ch4);
-        motorDrive3.setPower(-(Ch3 + Ch1 - Ch4));
-        motorDrive4.setPower(Ch3 - Ch1 + Ch4);
-    }
-
-    /**
      * set vexmotor power
      */
     public void vexPower(double power) {
@@ -329,61 +332,7 @@ public class VelRobot {
                 ? -pad.right_stick_x : 0.0);
     }
 
-    /**
-     * get VexMotor power
-     */
-    public double getVexPower() {
-        return vexMotor.getPower();
-    }
-
-// TODO Collaps all these into one method?
-    /**
-     * get moter telemetry
-     */
-    public double getDrive1Power() {
-        return  motorDrive1.getPower();
-    }
-    /**
-     * get moter telemetry
-     */
-    public double getDrive2Power() {
-        return  motorDrive2.getPower();
-    }
-    /**
-     * get moter telemetry
-     */
-    public double getDrive3Power() {
-        return  motorDrive3.getPower();
-    }
-    /**
-     * get moter telemetry
-     */
-    public double getDrive4Power() {
-        return  motorDrive4.getPower();
-    }
-
-    /**
-     * get port nuber
-     */
-    public int getDrive1Port() {
-        return motorDrive1.getPortNumber();
-    }
-    /**
-     * get port nuber
-     */
-    public int getDrive2Port() {
-        return motorDrive2.getPortNumber();
-    }
-    /**
-     * get port nuber
-     */
-    public int getDrive3Port() {
-        return motorDrive3.getPortNumber();
-    }
-    /**
-     * get port nuber
-     */
-    public int getDrive4Port() {
-        return motorDrive4.getPortNumber();
+    public int getShooterEncVal() {
+        return motorShooter1.getCurrentPosition();
     }
 }

@@ -102,6 +102,9 @@ public class VelTeleop extends OpMode {
 
     @Override
     public void loop() {
+
+        telemetry.addData("Shooter RPM", robot.getShooterRPM());
+        telemetry.addData("shooterEncVal", robot.getShooterEncVal());
         telemetry.addData("Status", "Running: ");
 
         // Read the joystick and determine what motor setting to use.
