@@ -176,7 +176,7 @@ public class VelRobot {
      * Set the RPM of the shooter motor. Sets the speed as a percentage of the maximum RPM.
      * @param rpm RPM of motor that we want to set, can be positive or negative.
      */
-    public void setShooterRpm(int rpm) {
+    private void setShooterRpm(int rpm) {
         if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
             motorShooter1.setPower(rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
         } else {
