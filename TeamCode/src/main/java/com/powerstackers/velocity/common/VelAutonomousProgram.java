@@ -52,23 +52,39 @@ public class VelAutonomousProgram extends LinearOpMode {
         // Wait for the start of the match!Thread.interrupted()
         this.waitForStart();
 
-        // Turn on the shooters now, to give them time to spin up
-        robot.setShooter(MotorSetting.FORWARD);
+        if (allianceColor == BLUE && startingPosition == StartingPosition.FAR_FROM_RAMP) {
 
-        // Move into position
-        robot.goDistanceInCm(65.0, VelRobotConstants.DIRECTION_SOUTH, 1.0);
+        } else if (allianceColor == BLUE && startingPosition == StartingPosition.MIDDLE) {
 
-        // Feed balls into shooter
-        robot.setBallPickup(MotorSetting.FORWARD);
+        } else if (allianceColor == BLUE) {
 
-        // Wait for balls to shoot
-        sleep(3000);
+        } else if (allianceColor == RED && startingPosition == StartingPosition.FAR_FROM_RAMP) {
 
-        // Stop shooter
-        robot.setBallPickup(MotorSetting.STOP);
-        robot.setShooter(MotorSetting.STOP);
+        } else if (allianceColor == RED && startingPosition == StartingPosition.MIDDLE) {
 
-        // Move into ball
-        robot.goDistanceInCm(65.0, VelRobotConstants.DIRECTION_SOUTH, 1.0);
+        } else if (allianceColor == RED) {
+
+        } else {
+
+        }
+            //vvvvTEST?vvv
+//        // Turn on the shooters now, to give them time to spin up
+//        robot.setShooter(MotorSetting.FORWARD);
+//
+//        // Move into position
+//        robot.goDistanceInCm(65.0, VelRobotConstants.DIRECTION_SOUTH, 1.0);
+//
+//        // Feed balls into shooter
+//        robot.setBallPickup(MotorSetting.FORWARD);
+//
+//        // Wait for balls to shoot
+//        sleep(3000);
+//
+//        // Stop shooter
+//        robot.setBallPickup(MotorSetting.STOP);
+//        robot.setShooter(MotorSetting.STOP);
+//
+//        // Move into ball
+//        robot.goDistanceInCm(65.0, VelRobotConstants.DIRECTION_SOUTH, 1.0);
     }
 }
