@@ -47,7 +47,7 @@ public class VelRobot {
     protected OpMode mode;
     /*
     Looking at the robot from above:
-        -------------
+        ------F------
         |1\\     //2|
         |           |
         |           |
@@ -71,6 +71,8 @@ public class VelRobot {
 
     protected GyroSensor sensorGyro;
     protected ColorSensor sensorColor;
+    protected ColorSensor sensorColorGroundL;
+    protected ColorSensor sensorColorGroundR;
 
     private boolean ENGAGE_STUPID_MODE = false;
     private ElapsedTime timer = new ElapsedTime();

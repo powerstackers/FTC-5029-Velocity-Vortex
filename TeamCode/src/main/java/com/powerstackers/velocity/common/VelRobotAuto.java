@@ -98,6 +98,32 @@ public class VelRobotAuto extends VelRobot {
     }
 
     /**
+     * detect white bar on ground in front of beacon
+     */
+    private boolean detectWhiteL(){
+        if (sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green()){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    private boolean detectWhiteR(){
+        if (sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green()){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public void setPowerLeft(double power){
+        motorDrive1.setPower(power);
+        motorDrive3.setPower(power);
+    }
+    public void setPowerRight(double power){
+        motorDrive2.setPower(power);
+        motorDrive4.setPower(power);
+    }
+
+    /**
      * Turn the robot a certain number of degrees from center.
      * @param degrees Number of DEGREES to turn. Positive is counterclockwise, negative is clockwise.
      * @param speed Speed at which to turn.
