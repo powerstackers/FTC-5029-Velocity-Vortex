@@ -275,28 +275,13 @@ public class VelRobot {
     }
 
     /**
-     * Allows robot to go all the way froward and backwards on the y-axis
+     * Allows robot to go all the way forward and backwards on the y-axis
      *
      * @param pad Gamepad to take control values from.
      * @return A direction of movement, in radians, where "forward" is pi/2
      */
     public static double mecDirectionFromJoystick(Gamepad pad) {
-        double x = pad.left_stick_x;
-        double y = pad.left_stick_y;   // The Y stick is inverted
-
-        // If x is exactly 0, atan will be undefined. In that case, our angle is either 90 or 270.
-        if (x == 0) {
-            return ((y > 0)? PI / 2 : (PI * 3) / 2);
-        } else {
-            double atan = Math.atan(y / x);
-
-            // Make sure the angle is in the right quadrant.
-            if (x > 0) {
-                return ((y > 0) ? atan : atan + (PI * 2));
-            } else {
-                return atan + PI;
-            }
-        }
+        return Math.atan2(pad.left_stick_y, pad.left_stick_x);
     }
 
     /**
