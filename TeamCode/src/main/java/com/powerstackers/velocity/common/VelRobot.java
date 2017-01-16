@@ -63,7 +63,6 @@ public class VelRobot {
     protected DcMotor motorShooter2;
     protected DcMotor motorLift;
 
-
     protected Servo servoBeacon;
     protected Servo servoBallGrab;
 
@@ -89,8 +88,7 @@ public class VelRobot {
     /**
      * Initialize the robot's servos and sensors.
      */
-    public void initializeRobot() /*throws InterruptedException */{
-        // TODO set motor modes
+    public void initializeRobot() {
         mode.telemetry.addData("Status", "Initialized");
         motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
@@ -100,20 +98,15 @@ public class VelRobot {
         motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter1");
         motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorShooter1.setMaxSpeed((int) (1600.0 * 0.74));
+        motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
 
         // Don't configure these motors in stupid mode.
         if (!ENGAGE_STUPID_MODE) {
             motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
-
             motorShooter2 = mode.hardwareMap.dcMotor.get("motorShooter2");
-
             vexMotor = mode.hardwareMap.crservo.get("vexServo");
             servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         }
-
-
-
 
         stopMovement();
         if (!ENGAGE_STUPID_MODE)
@@ -178,6 +171,19 @@ public class VelRobot {
                 motorShooter1.setPower(0.0);
                 //motorShooter2.setPower(0.0);
                 break;
+        }
+    }
+
+    /**
+     * Set the RPM of the shooter motor. Sets the speed as a percentage of the maximum RPM.
+     * @param rpm RPM of motor that we want to set, can be positive or negative.
+     */
+    private void setShooterRpm(int rpm) {
+        if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
+            motorShooter1.setPower(rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
+        } else {
+            motorShooter1.setMaxSpeed(rpm > 0? (int) VelRobotConstants.MOTOR_SHOOTER_MAX_RPM
+                    : (int) -VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
         }
     }
 
@@ -335,11 +341,23 @@ public class VelRobot {
      * @return Speed ranging from -1:1
      */
     public static double mecSpinFromJoystick(Gamepad pad) {
-        return (double) ((abs(pad.right_stick_x) > VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD)
-                ? -pad.right_stick_x : 0.0);
+        return (abs(pad.right_stick_x) > VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD)
+                ? -pad.right_stick_x : 0.0;
     }
 
+    /**
+     * @return Int representation of the motor position.
+     */
     public int getShooterEncVal() {
         return motorShooter1.getCurrentPosition();
+    }
+
+    /**
+     * Ramp up the shooter to avoid damage. Increases the RPM by a set increment every interval.
+     */
+    public void rampShooter() {
+        if (getShooterRPM() < VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM) {
+            setShooterRpm((int) getShooterRPM() + VelRobotConstants.MOTOR_SHOOTER_RPM_INCREMENT);
+        }
     }
 }

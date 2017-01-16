@@ -21,10 +21,9 @@
 package com.powerstackers.velocity.opmodes.teleop;
 
 import com.powerstackers.velocity.common.VelRobot;
-import com.powerstackers.velocity.common.enums.PublicEnums;
-import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
 import com.powerstackers.velocity.common.enums.PublicEnums.GrabberSetting;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
+import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -37,50 +36,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class VelTeleop extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
+    private VelRobot robot;
 
-    private static final float MINIMUM_JOYSTICK_THRESHOLD = 0.15F;
-
-    //constructors
-    AllianceColor allianceColor;
-    VelRobot robot;
-
-
-    boolean buttonVexMotorForward;
-    boolean buttonVexMotorBackward;
-    boolean buttonParticlePickupIn;
-    boolean buttonParticlePickupOut;
-    boolean buttonShooter;
-    boolean buttonLiftUp;
-    boolean buttonLiftDown;
-    boolean buttonGrabberRelease;
-    boolean buttonBallSqueeze;
-
-    boolean flag_grabberBeenReleased = false;
-
-    /**
-    * Default constructor. Need this!!!
-    * @return
-    */
-    public VelTeleop() {
-
-    }
-
-    /**
-     * Generate a new Teleop program with the given alliance color.
-     * @param allianceColor The color that we are playing as this round.
-     */
-    public VelTeleop(AllianceColor allianceColor) {
-        this.allianceColor = allianceColor;
-    }
+    private boolean flag_grabberBeenReleased = false;
+    private boolean flag_shootButtonJustPressed = false;
+    private boolean flag_shooterIsOn = false;
 
     @Override
     public void init() {
         //init code is in main VelRobot class
         robot = new VelRobot(this);
         robot.initializeRobot(); //is this a thing?
-
-
-
     }
 
     /*
@@ -90,7 +56,6 @@ public class VelTeleop extends OpMode {
     public void init_loop() {
         telemetry.addLine("Hi! I'm working!");
     }
-
 
     /*
      * Code to run ONCE when the driver hits PLAY
@@ -107,18 +72,21 @@ public class VelTeleop extends OpMode {
         telemetry.addData("shooterEncVal", robot.getShooterEncVal());
         telemetry.addData("Status", "Running: ");
 
+        robot.setShooter(MotorSetting.FORWARD);
+        DbgLog.msg("RPM-- " + robot.getShooterRPM());
+
         // Read the joystick and determine what motor setting to use.
 
         //button maps here vvv
-        buttonVexMotorForward  = gamepad1.dpad_up;
-        buttonVexMotorBackward = gamepad1.dpad_down;
-        buttonParticlePickupIn = gamepad2.left_bumper;
-        buttonParticlePickupOut = gamepad2.left_trigger > 0.5;
-        buttonShooter = gamepad2.a;
-        buttonLiftUp = gamepad2.right_bumper;
-        buttonLiftDown = gamepad2.right_trigger > 0.5;
-        buttonGrabberRelease = gamepad2.b;
-        buttonBallSqueeze = gamepad2.x;
+        boolean buttonVexMotorForward  = gamepad1.dpad_up;
+        boolean buttonVexMotorBackward = gamepad1.dpad_down;
+        boolean buttonParticlePickupIn = gamepad2.left_bumper;
+        boolean buttonParticlePickupOut = gamepad2.left_trigger > 0.5;
+        boolean buttonShooter = gamepad2.a;
+        boolean buttonLiftUp = gamepad2.right_bumper;
+        boolean buttonLiftDown = gamepad2.right_trigger > 0.5;
+        boolean buttonGrabberRelease = gamepad2.b;
+        boolean buttonBallSqueeze = gamepad2.x;
 
 //        if else statements here vvv
         if (buttonVexMotorForward) {
@@ -137,8 +105,19 @@ public class VelTeleop extends OpMode {
         robot.setBallPickup(buttonParticlePickupIn? MotorSetting.FORWARD :
                 (buttonParticlePickupOut? MotorSetting.REVERSE : MotorSetting.STOP));
 
-        // Set particle shooter
-        robot.setShooter(buttonShooter? MotorSetting.FORWARD : MotorSetting.STOP);
+        // Toggle the shooter on every press of the A button
+        if (buttonShooter && !flag_shootButtonJustPressed) {
+            flag_shootButtonJustPressed = true;
+            flag_shooterIsOn = !flag_shooterIsOn;
+        } else if (!buttonShooter) {
+            flag_shootButtonJustPressed = false;
+        }
+
+        if (flag_shooterIsOn) {
+            robot.rampShooter();
+        } else {
+            robot.setShooter(MotorSetting.STOP);
+        }
 
         // Set lift motor
         robot.setLift(buttonLiftUp? MotorSetting.FORWARD :
@@ -170,39 +149,5 @@ public class VelTeleop extends OpMode {
         //stop code here vvv
         robot.stopMovement();
 
-    }
-
-    /**
-     * This method scales the joystick input so for low joystick values, the
-     * scaled value is less than linear.  This is to make it easier to drive
-     * the robot more precisely at slower speeds.
-     */
-    double scaleInput(double dVal)  {
-        double[] scaleArray = { 0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
-                0.30, 0.36, 0.43, 0.50, 0.60, 0.72, 0.85, 1.00, 1.00 };
-
-        // get the corresponding index for the scaleInput array.
-        int index = (int) (dVal * 16.0);
-
-        // index should be positive.
-        if (index < 0) {
-            index = -index;
-        }
-
-        // index cannot exceed size of array minus 1.
-        if (index > 16) {
-            index = 16;
-        }
-
-        // get value from the array.
-        double dScale;
-        if (dVal < 0) {
-            dScale = -scaleArray[index];
-        } else {
-            dScale = scaleArray[index];
-        }
-
-        // return scaled value.
-        return dScale;
     }
 }
