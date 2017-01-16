@@ -29,6 +29,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 /**
  * @author Jonathan
  */
+@SuppressWarnings("unused")
 @Autonomous(name = "Red Auto Start Far", group = "Powerstackers")
 @Disabled
 public class RedAutonomous_StartFar extends VelAutonomousProgram {

@@ -32,10 +32,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * @author Derek Helm
  */
 
+@SuppressWarnings("unused")
 @TeleOp(name="VEL-Teleop", group ="Powerstackers")
 public class VelTeleop extends OpMode {
 
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
     private VelRobot robot;
 
     private boolean flag_grabberBeenReleased = false;
@@ -87,15 +88,6 @@ public class VelTeleop extends OpMode {
         boolean buttonLiftDown = gamepad2.right_trigger > 0.5;
         boolean buttonGrabberRelease = gamepad2.b;
         boolean buttonBallSqueeze = gamepad2.x;
-
-//        if else statements here vvv
-        if (buttonVexMotorForward) {
-            robot.vexPower(1);
-        } else if (buttonVexMotorBackward) {
-            robot.vexPower(-1);
-        } else {
-            robot.vexPower(0);
-        }
 
         // Set the movement of the robot's wheels
         robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),

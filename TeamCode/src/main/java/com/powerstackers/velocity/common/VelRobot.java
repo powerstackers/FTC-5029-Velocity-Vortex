@@ -23,7 +23,6 @@ package com.powerstackers.velocity.common;
 import com.powerstackers.velocity.common.enums.PublicEnums.GrabberSetting;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -44,7 +43,7 @@ public class VelRobot {
 
 
 
-    protected OpMode mode;
+    protected final OpMode mode;
     /*
     Looking at the robot from above:
         ------F------
@@ -54,27 +53,25 @@ public class VelRobot {
         |3//     \\4|
         -------------
      */
-    protected DcMotor motorDrive1;
-    protected DcMotor motorDrive2;
-    protected DcMotor motorDrive3;
-    protected DcMotor motorDrive4;
-    protected DcMotor motorPickup;
-    protected DcMotor motorShooter1;
-    protected DcMotor motorShooter2;
-    protected DcMotor motorLift;
+    DcMotor motorDrive1;
+    DcMotor motorDrive2;
+    DcMotor motorDrive3;
+    DcMotor motorDrive4;
 
-    protected Servo servoBeacon;
-    protected Servo servoBallGrab;
+    private DcMotor motorPickup;
+    private DcMotor motorShooter1;
+    private DcMotor motorLift;
 
-    protected CRServo vexMotor;
+    Servo servoBeacon;
+    private Servo servoBallGrab;
 
-    protected GyroSensor sensorGyro;
-    protected ColorSensor sensorColor;
+    GyroSensor sensorGyro;
+    ColorSensor sensorColor;
     protected ColorSensor sensorColorGroundL;
     protected ColorSensor sensorColorGroundR;
 
-    private boolean ENGAGE_STUPID_MODE = false;
-    private ElapsedTime timer = new ElapsedTime();
+    private final boolean ENGAGE_DEBUG_MODE = false;
+    private final ElapsedTime timer = new ElapsedTime();
 
     /**
      * Construct a Robot object.
@@ -100,16 +97,14 @@ public class VelRobot {
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
 
-        // Don't configure these motors in stupid mode.
-        if (!ENGAGE_STUPID_MODE) {
+        // Don't configure these motors in debug mode.
+        if (!ENGAGE_DEBUG_MODE) {
             motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
-            motorShooter2 = mode.hardwareMap.dcMotor.get("motorShooter2");
-            vexMotor = mode.hardwareMap.crservo.get("vexServo");
             servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         }
 
         stopMovement();
-        if (!ENGAGE_STUPID_MODE)
+        if (!ENGAGE_DEBUG_MODE)
             servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
     }
 
@@ -123,6 +118,7 @@ public class VelRobot {
         int startEncoder = motorShooter1.getCurrentPosition();
         timer.reset();
 
+        //noinspection StatementWithEmptyBody
         while(timer.milliseconds() < 100) {}
 
         endEncoder = motorShooter1.getCurrentPosition();
@@ -136,7 +132,7 @@ public class VelRobot {
      * @param setting MotorSetting enum telling what setting to use.
      */
     public void setBallPickup(MotorSetting setting) {
-        if (ENGAGE_STUPID_MODE) return;
+        if (ENGAGE_DEBUG_MODE) return;
         switch (setting) {
             case FORWARD:
                 motorPickup.setPower(VelRobotConstants.MOTOR_PICKUP_POWER);
@@ -192,7 +188,7 @@ public class VelRobot {
      * @param setting MotorSetting telling which setting to use.
      */
     public void setLift(MotorSetting setting) {
-        if (ENGAGE_STUPID_MODE) return;
+        if (ENGAGE_DEBUG_MODE) return;
         switch (setting) {
             case FORWARD:
                 motorLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
@@ -213,7 +209,7 @@ public class VelRobot {
      * Release the ball grabber.
      */
     public void releaseBallGrab() {
-        if (ENGAGE_STUPID_MODE) return;
+        if (ENGAGE_DEBUG_MODE) return;
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_OPEN);
     }
 
@@ -222,7 +218,7 @@ public class VelRobot {
      * @param setting GrabberSetting telling which position to set to.
      */
     public void setBallGrab(GrabberSetting setting) {
-        if (ENGAGE_STUPID_MODE) return;
+        if (ENGAGE_DEBUG_MODE) return;
         servoBallGrab.setPosition(setting == GrabberSetting.LOOSE?
                 VelRobotConstants.SERVO_BALL_GRAB_OPEN : VelRobotConstants.SERVO_BALL_GRAB_TIGHT);
     }
@@ -269,14 +265,6 @@ public class VelRobot {
     }
 
     /**
-     * set vexmotor power
-     */
-    public void vexPower(double power) {
-        if (ENGAGE_STUPID_MODE) return;
-        vexMotor.setPower(power);
-    }
-
-    /**
      *  Completely stop the drive motors.
      */
     public void stopMovement() {
@@ -284,15 +272,13 @@ public class VelRobot {
         motorDrive2.setPower(0.0);
         motorDrive3.setPower(0.0);
         motorDrive4.setPower(0.0);
-
-        vexMotor.setPower(0);
     }
 
     /**
      * Allows robot to go all the way froward and backwards on the y-axis
      *
      * @param pad Gamepad to take control values from.
-     * @return A directon of movement, in radians, where "forward" is pi/2
+     * @return A direction of movement, in radians, where "forward" is pi/2
      */
     public static double mecDirectionFromJoystick(Gamepad pad) {
         double x = pad.left_stick_x;

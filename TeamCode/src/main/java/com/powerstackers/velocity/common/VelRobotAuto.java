@@ -26,7 +26,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-import static com.powerstackers.velocity.common.VelRobotConstants.BEACON_RESTING;
 import static java.lang.Math.PI;
 
 /**
@@ -101,18 +100,10 @@ public class VelRobotAuto extends VelRobot {
      * detect white bar on ground in front of beacon
      */
     private boolean detectWhiteL(){
-        if (sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green()){
-            return true;
-        }else {
-            return false;
-        }
+        return sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green();
     }
     private boolean detectWhiteR(){
-        if (sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green()){
-            return true;
-        }else {
-            return false;
-        }
+        return sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green();
     }
     public void setPowerLeft(double power){
         motorDrive1.setPower(power);
@@ -129,7 +120,7 @@ public class VelRobotAuto extends VelRobot {
      * @param speed Speed at which to turn.
      * @throws InterruptedException Make sure that we don't get trapped in this method when interrupted.
      */
-    void turnDegrees(double degrees, double speed) throws InterruptedException {
+    void turnDegrees(double degrees, double speed) {
 
         double degreesSoFar = getGyroHeading();
 
@@ -167,6 +158,7 @@ public class VelRobotAuto extends VelRobot {
         setMovement(angle, speed, 0.0);
         // Track using the back left motor.
         // Why? It's the only one my fat fingers could get the plug into.
+        //noinspection StatementWithEmptyBody
         while(motorDrive3.getCurrentPosition() < cmToTicks(distance)) {}
         stopMovement();
     }
@@ -174,7 +166,7 @@ public class VelRobotAuto extends VelRobot {
     /**
      * Reset the encoders on all motors.
      */
-    public void zeroEncoders() {
+    private void zeroEncoders() {
         motorDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorDrive3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -214,7 +206,7 @@ public class VelRobotAuto extends VelRobot {
      * @param  cm   double containing the distance you want to travel.
      * @return      that distance in encoder ticks.
      */
-    public static int cmToTicks(double cm) {
+    private static int cmToTicks(double cm) {
         // TODO This is wrong now.
         return (int) ((1/driveGearMultiplier)*ticksPerRevolution*(cm/(PI*wheelDiameter)));
     }
@@ -236,7 +228,7 @@ public class VelRobotAuto extends VelRobot {
         return motorDrive2.getCurrentPosition();
     }
 
-    public double getGyroHeading() {
+    private double getGyroHeading() {
         return  sensorGyro.getHeading();
     }
 

@@ -29,6 +29,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 /**
  * @author Jonathan Thomas
  */
+@SuppressWarnings("unused")
 @Autonomous(name = "Blue Auto Start Near", group = "Powerstackers")
 @Disabled
 public class BlueAutonomous_StartNear extends VelAutonomousProgram {
