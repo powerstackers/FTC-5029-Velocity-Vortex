@@ -23,9 +23,9 @@ package com.powerstackers.velocity.common;
 import com.powerstackers.velocity.common.enums.PublicEnums.GrabberSetting;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -40,8 +40,6 @@ import static java.lang.Math.abs;
  */
 
 public class VelRobot {
-
-
 
     protected final OpMode mode;
     /*
@@ -58,19 +56,18 @@ public class VelRobot {
     DcMotor motorDrive3;
     DcMotor motorDrive4;
 
-    private DcMotor motorPickup;
+    private DcMotor motorPickup = null;
     private DcMotor motorShooter1;
     private DcMotor motorLift;
 
-    Servo servoBeacon;
-    private Servo servoBallGrab;
+    Servo servoBeacon = null;
+    private Servo servoBallGrab = null;
 
     GyroSensor sensorGyro;
     ColorSensor sensorColor;
     protected ColorSensor sensorColorGroundL;
     protected ColorSensor sensorColorGroundR;
 
-    private final boolean ENGAGE_DEBUG_MODE = false;
     private final ElapsedTime timer = new ElapsedTime();
 
     /**
@@ -86,30 +83,28 @@ public class VelRobot {
      * Initialize the robot's servos and sensors.
      */
     public void initializeRobot() {
-        mode.telemetry.addData("Status", "Initialized");
         motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
         motorLift = mode.hardwareMap.dcMotor.get("motorLift");
+        motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
+
         motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter1");
         motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
 
-        // Don't configure these motors in debug mode.
-        if (!ENGAGE_DEBUG_MODE) {
-            motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
-            servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
-        }
+        servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
+        servoBeacon = mode.hardwareMap.servo.get("servoBeacon");
 
         stopMovement();
-        if (!ENGAGE_DEBUG_MODE)
-            servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
+        servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
+        mode.telemetry.addData("Status", "Initialized");
     }
 
     /**
-     * Get the revolutions per minute of the shooter motor.
+     * Get the revolutions per minute of the shooter motor. Eats up 100ms!
      * @return Double representing the rpm.
      */
     public double getShooterRPM() {
@@ -124,7 +119,6 @@ public class VelRobot {
         endEncoder = motorShooter1.getCurrentPosition();
 
         return (endEncoder - startEncoder) * (600.0/44.4);
-
     }
 
     /**
@@ -132,7 +126,6 @@ public class VelRobot {
      * @param setting MotorSetting enum telling what setting to use.
      */
     public void setBallPickup(MotorSetting setting) {
-        if (ENGAGE_DEBUG_MODE) return;
         switch (setting) {
             case FORWARD:
                 motorPickup.setPower(VelRobotConstants.MOTOR_PICKUP_POWER);
@@ -157,15 +150,12 @@ public class VelRobot {
         switch (setting) {
             case FORWARD:
                 motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
-                //motorShooter2.setPower(-VelRobotConstants.MOTOR_SHOOTER_POWER);
                 break;
             case STOP:
                 motorShooter1.setPower(0.0);
-                //motorShooter2.setPower(0.0);
                 break;
             default:
                 motorShooter1.setPower(0.0);
-                //motorShooter2.setPower(0.0);
                 break;
         }
     }
@@ -188,7 +178,6 @@ public class VelRobot {
      * @param setting MotorSetting telling which setting to use.
      */
     public void setLift(MotorSetting setting) {
-        if (ENGAGE_DEBUG_MODE) return;
         switch (setting) {
             case FORWARD:
                 motorLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
@@ -209,7 +198,6 @@ public class VelRobot {
      * Release the ball grabber.
      */
     public void releaseBallGrab() {
-        if (ENGAGE_DEBUG_MODE) return;
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_OPEN);
     }
 
@@ -218,12 +206,9 @@ public class VelRobot {
      * @param setting GrabberSetting telling which position to set to.
      */
     public void setBallGrab(GrabberSetting setting) {
-        if (ENGAGE_DEBUG_MODE) return;
         servoBallGrab.setPosition(setting == GrabberSetting.LOOSE?
                 VelRobotConstants.SERVO_BALL_GRAB_OPEN : VelRobotConstants.SERVO_BALL_GRAB_TIGHT);
     }
-
-
 
     /**
      * Set the movement speeds of all four motors, based on a desired angle, speed, and rotation
@@ -275,7 +260,7 @@ public class VelRobot {
     }
 
     /**
-     * Allows robot to go all the way forward and backwards on the y-axis
+     * Get direction of travel from the joystick.
      *
      * @param pad Gamepad to take control values from.
      * @return A direction of movement, in radians, where "forward" is pi/2
