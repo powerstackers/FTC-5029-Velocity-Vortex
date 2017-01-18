@@ -98,7 +98,8 @@ public class VelTeleop extends OpMode {
                 (buttonParticlePickupOut? MotorSetting.REVERSE : MotorSetting.STOP));
 
         // Toggle the shooter on every press of the A button
-        if (buttonShooter && !flag_shootButtonJustPressed) {
+        /*
+        if (buttonShooter && !flag_shootButtonJustPressed) { ~richie did this
             flag_shootButtonJustPressed = true;
             flag_shooterIsOn = !flag_shooterIsOn;
         } else if (!buttonShooter) {
@@ -107,6 +108,14 @@ public class VelTeleop extends OpMode {
 
         if (flag_shooterIsOn) {
             robot.rampShooter();
+        } else {
+            robot.setShooter(MotorSetting.STOP);
+        }
+        */
+
+        // Set the Shootor motor value.
+        if (buttonShooter) {
+            robot.setShooter(MotorSetting.FORWARD);
         } else {
             robot.setShooter(MotorSetting.STOP);
         }
@@ -131,7 +140,12 @@ public class VelTeleop extends OpMode {
         telemetry.addData("left y", gamepad1.left_stick_y);
         telemetry.addData("right x", gamepad1.right_stick_x);
         telemetry.addData("rotation", VelRobot.mecSpinFromJoystick(gamepad1));
-        telemetry.addData("color ARGB: ", robot.getARGB());
+        telemetry.addData("shooting Power: ", robot.getShooterPower());
+        telemetry.addData("Encoder: ", robot.getEncoderShooter());
+//        telemetry.addData("color Alpha: ", robot.getAlpha());
+//        telemetry.addData("color Red: ", robot.getRed());
+//        telemetry.addData("color Green: ", robot.getGreen());
+//        telemetry.addData("color Blue: ", robot.getGreen());
     }
 
     /**

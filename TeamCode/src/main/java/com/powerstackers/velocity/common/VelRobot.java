@@ -146,6 +146,30 @@ public class VelRobot {
         }
     }
 
+    int counter = 0;
+    int startEncoder = 0;
+    int endEncoder = startEncoder;
+    int compare = startEncoder + 104;
+
+    /**
+     * rpm/power limiter
+     */
+    public double getDynamicPower() {
+
+        if(counter == 0) {
+            startEncoder = motorShooter1.getCurrentPosition();
+            endEncoder = startEncoder;
+            compare = startEncoder + 120;
+
+            while (endEncoder != compare) {
+                endEncoder = motorShooter1.getCurrentPosition();
+                return -0.40;
+            }
+        }
+            counter = 1;
+            return -0.05;
+    }
+
     /**
      * Set the shooter motors.
      * @param setting MotorSetting enum telling what setting to use.
@@ -153,10 +177,12 @@ public class VelRobot {
     public void setShooter(MotorSetting setting) {
         switch (setting) {
             case FORWARD:
-                motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
+                motorShooter1.setPower(getDynamicPower());
+//                motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
                 break;
             case STOP:
                 motorShooter1.setPower(0.0);
+                counter = 0;
                 break;
             default:
                 motorShooter1.setPower(0.0);
@@ -325,7 +351,30 @@ public class VelRobot {
         }
     }
 
-    public int getARGB() {
-        return sensorColor.argb();
+    public double getShooterPower(){
+        return motorShooter1.getPower();
     }
+
+    public int getEncoderShooter(){
+        return motorShooter1.getCurrentPosition();
+    }
+//    public int getARGB() {
+//        return sensorColor.argb();
+//    }
+
+//    public int getRed() {
+//        return sensorColor.red();
+//    }
+//
+//    public int getBlue() {
+//        return sensorColor.blue();
+//    }
+//
+//    public int getGreen() {
+//        return sensorColor.green();
+//    }
+
+//    public int getAlpha() {
+//        return sensorColor.alpha();
+//    }
 }

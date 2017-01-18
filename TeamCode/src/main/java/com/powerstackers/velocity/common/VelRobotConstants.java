@@ -42,7 +42,7 @@ class VelRobotConstants {
     /** Ball grabber in the grabbing position. */
     static final double SERVO_BALL_GRAB_TIGHT = 0.0;
 
-    static final double MOTOR_SHOOTER_POWER = -0.5;
+    static final double MOTOR_SHOOTER_POWER = -0.10;
     static final double MOTOR_SHOOTER_MAX_RPM = 1600.0;
     static final double MOTOR_SHOOTER_TARGET_RPM = 1350.0;
     static final int MOTOR_SHOOTER_RPM_INCREMENT = 50;
