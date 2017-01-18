@@ -25,6 +25,7 @@ import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -89,6 +90,7 @@ public class VelRobot {
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
         motorRLift  = mode.hardwareMap.dcMotor.get("motorRightLift");
+        motorRLift.setDirection(DcMotorSimple.Direction.REVERSE);
         motorLLift  = mode.hardwareMap.dcMotor.get("motorLeftLift");
         motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
 
@@ -182,16 +184,20 @@ public class VelRobot {
     public void setLift(MotorSetting setting) {
         switch (setting) {
             case FORWARD:
-                motorLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
+                motorLLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
+                motorRLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
                 break;
             case REVERSE:
-                motorLift.setPower(-VelRobotConstants.MOTOR_LIFT_POWER);
+                motorLLift.setPower(-VelRobotConstants.MOTOR_LIFT_POWER);
+                motorRLift.setPower(-VelRobotConstants.MOTOR_LIFT_POWER);
                 break;
             case STOP:
-                motorLift.setPower(0.0);
+                motorLLift.setPower(0.0);
+                motorRLift.setPower(0.0);
                 break;
             default:
-                motorLift.setPower(0.0);
+                motorLLift.setPower(0.0);
+                motorRLift.setPower(0.0);
                 break;
         }
     }
@@ -317,5 +323,9 @@ public class VelRobot {
         if (getShooterRPM() < VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM) {
             setShooterRpm((int) getShooterRPM() + VelRobotConstants.MOTOR_SHOOTER_RPM_INCREMENT);
         }
+    }
+
+    public int getARGB() {
+        return sensorColor.argb();
     }
 }

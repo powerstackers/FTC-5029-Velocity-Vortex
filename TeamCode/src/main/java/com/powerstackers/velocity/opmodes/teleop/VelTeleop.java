@@ -131,6 +131,7 @@ public class VelTeleop extends OpMode {
         telemetry.addData("left y", gamepad1.left_stick_y);
         telemetry.addData("right x", gamepad1.right_stick_x);
         telemetry.addData("rotation", VelRobot.mecSpinFromJoystick(gamepad1));
+        telemetry.addData("color ARGB: ", robot.getARGB());
     }
 
     /**
