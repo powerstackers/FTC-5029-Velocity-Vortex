@@ -58,7 +58,8 @@ public class VelRobot {
 
     private DcMotor motorPickup = null;
     private DcMotor motorShooter1;
-    private DcMotor motorLift;
+    private DcMotor motorRLift;
+    private DcMotor motorLLift;
 
     Servo servoBeacon = null;
     private Servo servoBallGrab = null;
@@ -87,16 +88,17 @@ public class VelRobot {
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
-        motorLift = mode.hardwareMap.dcMotor.get("motorLift");
+        motorRLift  = mode.hardwareMap.dcMotor.get("motorRightLift");
+        motorLLift  = mode.hardwareMap.dcMotor.get("motorLeftLift");
         motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
 
-        motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter1");
+        motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
         motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
 
         servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
-        servoBeacon = mode.hardwareMap.servo.get("servoBeacon");
+        servoBeacon   = mode.hardwareMap.servo.get("servoBeacon");
 
         stopMovement();
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);

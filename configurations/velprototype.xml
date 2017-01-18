@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <MotorController name="Right Motor Controller" serialNumber="AL00VGKQ">
+        <Motor name="motorBackRight" port="1" />
+        <Motor name="motorFrontRight" port="2" />
+    </MotorController>
+    <MotorController name="Left Motor Controller" serialNumber="AL00XQJ3">
+        <Motor name="motorBackLeft" port="1" />
+        <Motor name="motorFrontLeft" port="2" />
+    </MotorController>
+    <MotorController name="aux left Motor Controller" serialNumber="AL00VGKN">
+        <Motor name="motorBallPickup" port="1" />
+        <Motor name="motorShooter2" port="2" />
+    </MotorController>
+    <MotorController name="aux right motor controller " serialNumber="AL00XSVF">
+        <Motor name="motorLift" port="1" />
+        <Motor name="motorShooter1" port="2" />
+    </MotorController>
+</Robot>
