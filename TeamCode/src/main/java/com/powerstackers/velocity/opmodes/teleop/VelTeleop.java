@@ -39,9 +39,9 @@ public class VelTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private VelRobot robot;
 
-//    private boolean flag_grabberBeenReleased = false;
-//    private boolean flag_shootButtonJustPressed = false;
-//    private boolean flag_shooterIsOn = false;
+    private boolean flag_grabberBeenReleased = false;
+    private boolean flag_shootButtonJustPressed = false;
+    private boolean flag_shooterIsOn = false;
 
     @Override
     public void init() {
