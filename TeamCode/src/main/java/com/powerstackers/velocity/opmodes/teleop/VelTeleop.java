@@ -39,9 +39,9 @@ public class VelTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private VelRobot robot;
 
-    private boolean flag_grabberBeenReleased = false;
-    private boolean flag_shootButtonJustPressed = false;
-    private boolean flag_shooterIsOn = false;
+//    private boolean flag_grabberBeenReleased = false;
+//    private boolean flag_shootButtonJustPressed = false;
+//    private boolean flag_shooterIsOn = false;
 
     @Override
     public void init() {
@@ -73,21 +73,21 @@ public class VelTeleop extends OpMode {
         telemetry.addData("shooterEncVal", robot.getShooterEncVal());
         telemetry.addData("Status", "Running: ");
 
-        robot.setShooter(MotorSetting.FORWARD);
+//        robot.setShooter(MotorSetting.FORWARD);
         //DbgLog.msg("RPM-- " + robot.getShooterRPM());
 
         // Read the joystick and determine what motor setting to use.
 
         //button maps here vvv
-        boolean buttonVexMotorForward  = gamepad1.dpad_up;
-        boolean buttonVexMotorBackward = gamepad1.dpad_down;
-        boolean buttonParticlePickupIn = gamepad2.left_bumper;
+        boolean buttonVexMotorForward   = gamepad1.dpad_up;
+        boolean buttonVexMotorBackward  = gamepad1.dpad_down;
+        boolean buttonParticlePickupIn  = gamepad2.left_bumper;
         boolean buttonParticlePickupOut = gamepad2.left_trigger > 0.5;
-        boolean buttonShooter = gamepad2.a;
-        boolean buttonLiftUp = gamepad2.right_bumper;
-        boolean buttonLiftDown = gamepad2.right_trigger > 0.5;
-        boolean buttonGrabberRelease = gamepad2.b;
-        boolean buttonBallSqueeze = gamepad2.x;
+        boolean buttonShooter           = gamepad2.a;
+        boolean buttonLiftUp            = gamepad2.right_bumper;
+        boolean buttonLiftDown          = gamepad2.right_trigger > 0.5;
+        boolean buttonGrabberRelease    = gamepad2.b;
+        boolean buttonBallSqueeze       = gamepad2.x;
 
         // Set the movement of the robot's wheels
         robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),

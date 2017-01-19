@@ -48,7 +48,7 @@ class VelRobotConstants {
     static final int MOTOR_SHOOTER_RPM_INCREMENT = 50;
 
     static final double MOTOR_LIFT_POWER = 1.0;
-    public static final double MOTOR_PICKUP_POWER = -1.0;
+    static final double MOTOR_PICKUP_POWER = -1.0;
 
     static final double DIRECTION_NORTH = PI/2;
     static final double DIRECTION_SOUTH = (3*PI)/2;

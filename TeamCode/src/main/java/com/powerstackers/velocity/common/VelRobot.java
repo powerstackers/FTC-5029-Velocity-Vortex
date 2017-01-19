@@ -159,15 +159,15 @@ public class VelRobot {
         if(counter == 0) {
             startEncoder = motorShooter1.getCurrentPosition();
             endEncoder = startEncoder;
-            compare = startEncoder + 120;
+            compare = startEncoder + 90;
 
             while (endEncoder != compare) {
                 endEncoder = motorShooter1.getCurrentPosition();
-                return -0.35;
+                return -0.30;
             }
         }
             counter = 1;
-            return -0.1;
+            return -0.25;
     }
 
     /**
