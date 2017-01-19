@@ -94,8 +94,13 @@ public class VelTeleop extends OpMode {
                 VelRobot.mecSpeedFromJoystick(gamepad1), VelRobot.mecSpinFromJoystick(gamepad1));
 
         // Set particle pickup motor
-        robot.setBallPickup(buttonParticlePickupIn? MotorSetting.FORWARD :
-                (buttonParticlePickupOut? MotorSetting.REVERSE : MotorSetting.STOP));
+        if (buttonParticlePickupIn) {
+            robot.setBallPickup(MotorSetting.REVERSE);
+        } else if (buttonParticlePickupOut) {
+            robot.setBallPickup(MotorSetting.FORWARD);
+        } else {
+            robot.setBallPickup(MotorSetting.STOP);
+        }
 
         // Toggle the shooter on every press of the A button
         /*
@@ -121,8 +126,13 @@ public class VelTeleop extends OpMode {
         }
 
         // Set lift motor
-        robot.setLift(buttonLiftUp? MotorSetting.FORWARD :
-                (buttonLiftDown? MotorSetting.REVERSE : MotorSetting.STOP));
+        if (buttonLiftUp) {
+            robot.setLift(MotorSetting.FORWARD);
+        } else if (buttonLiftDown){
+            robot.setLift(MotorSetting.REVERSE);
+        } else {
+            robot.setLift(MotorSetting.STOP);
+        }
 
         // Only move the ball grabber after it has been deployed
         if (flag_grabberBeenReleased) {

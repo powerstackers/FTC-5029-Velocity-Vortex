@@ -163,11 +163,11 @@ public class VelRobot {
 
             while (endEncoder != compare) {
                 endEncoder = motorShooter1.getCurrentPosition();
-                return -0.40;
+                return -0.35;
             }
         }
             counter = 1;
-            return -0.05;
+            return -0.1;
     }
 
     /**

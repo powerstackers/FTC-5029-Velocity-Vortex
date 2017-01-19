@@ -120,7 +120,7 @@ public class VelRobotAuto extends VelRobot {
      * @param speed Speed at which to turn.
      * @throws InterruptedException Make sure that we don't get trapped in this method when interrupted.
      */
-    void turnDegrees(double degrees, double speed) {
+    void turnDegrees(double degrees, double speed) throws InterruptedException {
 
         double degreesSoFar = getGyroHeading();
 
