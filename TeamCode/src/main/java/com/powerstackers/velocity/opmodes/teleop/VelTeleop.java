@@ -103,24 +103,15 @@ public class VelTeleop extends OpMode {
         }
 
         // Toggle the shooter on every press of the A button
-        /*
-        if (buttonShooter && !flag_shootButtonJustPressed) { ~richie did this
+        if (buttonShooter && !flag_shootButtonJustPressed) {
             flag_shootButtonJustPressed = true;
             flag_shooterIsOn = !flag_shooterIsOn;
         } else if (!buttonShooter) {
             flag_shootButtonJustPressed = false;
         }
-
+        
         if (flag_shooterIsOn) {
             robot.rampShooter();
-        } else {
-            robot.setShooter(MotorSetting.STOP);
-        }
-        */
-
-        // Set the Shootor motor value.
-        if (buttonShooter) {
-            robot.setShooter(MotorSetting.FORWARD);
         } else {
             robot.setShooter(MotorSetting.STOP);
         }
