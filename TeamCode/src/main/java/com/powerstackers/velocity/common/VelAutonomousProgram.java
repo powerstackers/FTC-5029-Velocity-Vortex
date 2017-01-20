@@ -62,6 +62,7 @@ public class VelAutonomousProgram extends LinearOpMode {
             sleep(5000);
             robot.goTicks(robot.inchesToTicks(23),0.8);
             robot.setShooter(MotorSetting.FORWARD);
+            sleep(3000);
             robot.setBallPickup(MotorSetting.FORWARD);
             sleep(10000);
             robot.goTicks(robot.inchesToTicks(35.5),0.8);

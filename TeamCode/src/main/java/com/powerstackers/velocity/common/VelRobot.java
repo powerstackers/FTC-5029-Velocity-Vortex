@@ -102,6 +102,10 @@ public class VelRobot {
         servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         servoBeacon   = mode.hardwareMap.servo.get("servoBeacon");
 
+        sensorGyro = mode.hardwareMap.gyroSensor.get("sensorGyro");
+
+        sensorGyro.calibrate();
+
         stopMovement();
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
         mode.telemetry.addData("Status", "Initialized");
@@ -358,23 +362,24 @@ public class VelRobot {
     public int getEncoderShooter(){
         return motorShooter1.getCurrentPosition();
     }
-//    public int getARGB() {
-//        return sensorColor.argb();
-//    }
 
-//    public int getRed() {
-//        return sensorColor.red();
-//    }
-//
-//    public int getBlue() {
-//        return sensorColor.blue();
-//    }
-//
-//    public int getGreen() {
-//        return sensorColor.green();
-//    }
+    public int getARGB() {
+        return sensorColor.argb();
+    }
 
-//    public int getAlpha() {
-//        return sensorColor.alpha();
-//    }
+    public int getRed() {
+        return sensorColor.red();
+    }
+//
+    public int getBlue() {
+        return sensorColor.blue();
+    }
+//
+    public int getGreen() {
+        return sensorColor.green();
+    }
+
+    public int getAlpha() {
+        return sensorColor.alpha();
+    }
 }

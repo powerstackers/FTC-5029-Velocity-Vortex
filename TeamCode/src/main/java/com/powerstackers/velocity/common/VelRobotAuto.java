@@ -393,7 +393,7 @@ public class VelRobotAuto extends VelRobot {
         return motorDrive2.getCurrentPosition();
     }
 
-    private double getGyroHeading() {
+    public double getGyroHeading() {
         return  sensorGyro.getHeading();
     }
 

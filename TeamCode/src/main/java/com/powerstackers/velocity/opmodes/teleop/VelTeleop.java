@@ -151,10 +151,10 @@ public class VelTeleop extends OpMode {
         telemetry.addData("rotation", VelRobot.mecSpinFromJoystick(gamepad1));
         telemetry.addData("shooting Power: ", robot.getShooterPower());
         telemetry.addData("Encoder: ", robot.getEncoderShooter());
-//        telemetry.addData("color Alpha: ", robot.getAlpha());
-//        telemetry.addData("color Red: ", robot.getRed());
-//        telemetry.addData("color Green: ", robot.getGreen());
-//        telemetry.addData("color Blue: ", robot.getGreen());
+        telemetry.addData("color Alpha: ", robot.getAlpha());
+        telemetry.addData("color Red: ", robot.getRed());
+        telemetry.addData("color Green: ", robot.getGreen());
+        telemetry.addData("color Blue: ", robot.getGreen());
     }
 
     /**
