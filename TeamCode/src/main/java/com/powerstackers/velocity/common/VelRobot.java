@@ -154,30 +154,6 @@ public class VelRobot {
         }
     }
 
-    int counter = 0;
-    int startEncoder = 0;
-    int endEncoder = startEncoder;
-    int compare = startEncoder + 104;
-
-    /**
-     * rpm/power limiter
-     */
-    public double getDynamicPower() {
-
-        if(counter == 0) {
-            startEncoder = motorShooter1.getCurrentPosition();
-            endEncoder = startEncoder;
-            compare = startEncoder + 90;
-
-            while (endEncoder != compare) {
-                endEncoder = motorShooter1.getCurrentPosition();
-                return -0.38;
-            }
-        }
-            counter = 1;
-            return -0.50                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ;
-    }
-
     /**
      * Set the shooter motors.
      * @param setting MotorSetting enum telling what setting to use.
@@ -191,7 +167,6 @@ public class VelRobot {
                 break;
             case STOP:
                 motorShooter1.setPower(0.0);
-                counter = 0;
                 break;
             default:
                 motorShooter1.setPower(0.0);
