@@ -102,7 +102,7 @@ public class VelTeleop extends OpMode {
         }
 
         // Toggle the shooter on every press of the A button
-        if (buttonShooter && !flag_shootButtonJustPressed) {
+      /*  if (buttonShooter && !flag_shootButtonJustPressed) {
             flag_shootButtonJustPressed = true;
             flag_shooterIsOn = !flag_shooterIsOn;
         } else if (!buttonShooter) {
@@ -111,6 +111,12 @@ public class VelTeleop extends OpMode {
         
         if (flag_shooterIsOn) {
             robot.rampShooter();
+        } else {
+            robot.setShooter(MotorSetting.STOP);
+        }*/
+        // Set the Shootor motor value.
+        if (buttonShooter) {
+            robot.setShooter(MotorSetting.FORWARD);
         } else {
             robot.setShooter(MotorSetting.STOP);
         }
@@ -143,9 +149,9 @@ public class VelTeleop extends OpMode {
         telemetry.addData("shooting Power: ", robot.getShooterPower());
         telemetry.addData("Encoder: ", robot.getEncoderShooter());
         telemetry.addData("wheel 1 Encoder: ", robot.getDrive1Encoder());
-        telemetry.addData("wheel 2 Encoder: ", robot.getDrive2Encoder());
-        telemetry.addData("wheel 3 Encoder: ", robot.getDrive3Encoder());
-        telemetry.addData("wheel 4 Encoder: ", robot.getDrive4Encoder());
+//        telemetry.addData("wheel 2 Encoder: ", robot.getDrive2Encoder());
+//        telemetry.addData("wheel 3 Encoder: ", robot.getDrive3Encoder());
+//        telemetry.addData("wheel 4 Encoder: ", robot.getDrive4Encoder());
 //        telemetry.addData("color Alpha: ", robot.getAlpha());
 //        telemetry.addData("color Red: ", robot.getRed());
 //        telemetry.addData("color Green: ", robot.getGreen());

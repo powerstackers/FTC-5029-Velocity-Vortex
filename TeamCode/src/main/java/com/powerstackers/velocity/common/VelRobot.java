@@ -99,9 +99,9 @@ public class VelRobot {
         motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
 
         motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
-        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // TODO: does this work?
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
+//        motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
 
         servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         servoBeacon   = mode.hardwareMap.servo.get("servoBeacon");
@@ -162,7 +162,7 @@ public class VelRobot {
         switch (setting) {
             case FORWARD:
 //                motorShooter1.setPower(getDynamicPower());
-                motorShooter1.setPower(-0.36);
+                motorShooter1.setPower(-0.40);
 //                motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
                 break;
             case STOP:
@@ -291,7 +291,7 @@ public class VelRobot {
      * @return A direction of movement, in radians, where "forward" is pi/2
      */
     public static double mecDirectionFromJoystick(Gamepad pad) {
-        return Math.atan2(pad.left_stick_y, pad.left_stick_x);
+        return Math.atan2(-pad.left_stick_y, pad.left_stick_x);
     }
 
     /**
