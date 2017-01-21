@@ -348,7 +348,7 @@ public class VelRobot {
      */
     public static double mecSpinFromJoystick(Gamepad pad) {
         return (abs(pad.right_stick_x) > VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD)
-                ? -pad.right_stick_x : 0.0;
+                ? pad.right_stick_x : 0.0;
     }
 
     /**
