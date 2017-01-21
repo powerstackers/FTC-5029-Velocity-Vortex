@@ -88,11 +88,11 @@ public class VelRobot {
         motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
         motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
-        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorRLift  = mode.hardwareMap.dcMotor.get("motorRightLift");
         motorRLift.setDirection(DcMotorSimple.Direction.REVERSE);
         motorLLift  = mode.hardwareMap.dcMotor.get("motorLeftLift");
@@ -350,17 +350,17 @@ public class VelRobot {
         return motorDrive1.getCurrentPosition();
     }
 
-    public long getDrive2Encoder() {
-        return motorDrive2.getCurrentPosition();
-    }
-
-    public long getDrive3Encoder() {
-        return motorDrive3.getCurrentPosition();
-    }
-
-    public long getDrive4Encoder() {
-        return motorDrive4.getCurrentPosition();
-    }
+//    public long getDrive2Encoder() {
+//        return motorDrive2.getCurrentPosition();
+//    }
+//
+//    public long getDrive3Encoder() {
+//        return motorDrive3.getCurrentPosition();
+//    }
+//
+//    public long getDrive4Encoder() {
+//        return motorDrive4.getCurrentPosition();
+//    }
 
     public int getEncoderShooter(){
         return motorShooter1.getCurrentPosition();

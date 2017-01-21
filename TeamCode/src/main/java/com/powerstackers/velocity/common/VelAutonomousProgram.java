@@ -93,12 +93,23 @@ public class VelAutonomousProgram extends LinearOpMode {
 
             robot.calibrateGyro();
             sleep(5000);
-//            robot.goTicks(robot.inchesToTicks(23), -0.8);
+//            robot.goTicks(robot.inchesToTicks(23),0.8);
             robot.setShooter(MotorSetting.FORWARD);
-            sleep(3000);
+            sleep(1300);
             robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(10000);
-            robot.goTicks(robot.inchesToTicks(41.5), -0.8);
+            sleep(1500);
+            robot.setBallPickup(MotorSetting.STOP);
+            robot.setShooter(MotorSetting.STOP);
+
+            sleep(1500);
+
+            robot.setShooterSecondTime(-0.48);
+            sleep(1200);
+            robot.setBallPickup(MotorSetting.FORWARD);
+            sleep(5000);
+            robot.setShooter(MotorSetting.STOP);
+
+            robot.goTicks(robot.inchesToTicks(39),0.3);
 
         } else if (allianceColor == RED) {
 
