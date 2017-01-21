@@ -121,8 +121,8 @@ public class VelRobotAuto extends VelRobot {
     }
 
     public void setPowerLeft(double power){
-        motorDrive1.setPower(power);
-        motorDrive3.setPower(power);
+        motorDrive1.setPower(-power);
+        motorDrive3.setPower(-power);
     }
 
     public void setPowerRight(double power){
@@ -244,17 +244,16 @@ public class VelRobotAuto extends VelRobot {
      * @param  speed The speed at which to travel.
      */
     public void goTicks(long ticks, double speed) {
-        zeroEncoders();
 
 //        long startLeft = robot.getLeftEncoder();
-        long startRight = this.getRightEncoder();
+        long startRight = this.getDrive1Encoder();
 
         // Target encoder values for the left and right motors
         long targetRight = startRight + ticks;
 //        long targetLeft = startLeft + ticks;
 
         double leftCorrect	= 1.0;
-        double rightCorrect	= 0.50;
+        double rightCorrect	= 0.2;
 
         if (ticks < 0) {
             // Set the drive motors to the given speed
@@ -264,10 +263,11 @@ public class VelRobotAuto extends VelRobot {
 //            robot.setPowerRight(0.60);
 
             // Wait until both motors have reached the target
-            while ( this.getRightEncoder() > targetRight) {
-                mode.telemetry.addData("Data", this.getRightEncoder());
-                mode.telemetry.addData("Encoder target", targetRight);
-                mode.telemetry.addData("gyro", this.getGyroHeading());
+            while ( this.getDrive1Encoder() > targetRight) {
+                //TODO make telemetry work
+//                mode.telemetry.addData("Data", this.getRightEncoder());
+//                mode.telemetry.addData("Encoder target", targetRight);
+//                mode.telemetry.addData("gyro", this.getGyroHeading());
 
                 /* Gyro Compensation */
                 if (this.getGyroHeading() > 180) {
@@ -293,9 +293,9 @@ public class VelRobotAuto extends VelRobot {
 //            robot.setPowerRight(-0.60);
 
             // Wait until both motors have reached the target
-            while( this.getRightEncoder() < targetRight) {
-                mode.telemetry.addData("Data2", this.getRightEncoder());
-                mode.telemetry.addData("Encoder target", targetRight);
+            while( this.getDrive1Encoder() < targetRight) {
+//                mode.telemetry.addData("Data2", this.getRightEncoder());
+//                mode.telemetry.addData("Encoder target", targetRight);
             }
 
             // Turn off the drive motors here
@@ -307,6 +307,7 @@ public class VelRobotAuto extends VelRobot {
     /**
      * Reset the encoders on all motors.
      */
+    //TODO not neccasary
     private void zeroEncoders() {
         motorDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -385,13 +386,13 @@ public class VelRobotAuto extends VelRobot {
         return Range.clip(servoValue, 0.0, 1.0);
     }
 
-    public long getLeftEncoder() {
-        return motorDrive1.getCurrentPosition();
-    }
+//    public long getLeftEncoder() {
+//        return motorDrive1.getCurrentPosition();
+//    }
 
-    public long getRightEncoder() {
-        return motorDrive2.getCurrentPosition();
-    }
+//    public long getRightEncoder() {
+//        return motorDrive3.getCurrentPosition();
+//    }
 
     public double getGyroHeading() {
         return  sensorGyro.getHeading();

@@ -56,20 +56,49 @@ public class VelAutonomousProgram extends LinearOpMode {
 
         } else if (allianceColor == BLUE && startingPosition == StartingPosition.MIDDLE) {
 
+            robot.calibrateGyro();
+            sleep(5000);
+//            robot.goTicks(robot.inchesToTicks(23),0.8);
+            robot.setShooter(MotorSetting.FORWARD);
+            sleep(1300);
+            robot.setBallPickup(MotorSetting.FORWARD);
+            sleep(1500);
+            robot.setBallPickup(MotorSetting.STOP);
+            robot.setShooter(MotorSetting.STOP);
+
+            sleep(1500);
+
+            robot.setShooterSecondTime(-0.48);
+            sleep(1200);
+            robot.setBallPickup(MotorSetting.FORWARD);
+            sleep(5000);
+            robot.setShooter(MotorSetting.STOP);
+
+            robot.goTicks(robot.inchesToTicks(39),0.3);
+
         } else if (allianceColor == BLUE) {
 
             robot.calibrateGyro();
             sleep(5000);
-            robot.goTicks(robot.inchesToTicks(23),0.8);
+//            robot.goTicks(robot.inchesToTicks(23),0.8);
             robot.setShooter(MotorSetting.FORWARD);
             sleep(3000);
             robot.setBallPickup(MotorSetting.FORWARD);
             sleep(10000);
-            robot.goTicks(robot.inchesToTicks(35.5),0.8);
+//            robot.goTicks(robot.inchesToTicks(35.5),0.8);
 
         } else if (allianceColor == RED && startingPosition == StartingPosition.FAR_FROM_RAMP) {
 
         } else if (allianceColor == RED && startingPosition == StartingPosition.MIDDLE) {
+
+            robot.calibrateGyro();
+            sleep(5000);
+//            robot.goTicks(robot.inchesToTicks(23), -0.8);
+            robot.setShooter(MotorSetting.FORWARD);
+            sleep(3000);
+            robot.setBallPickup(MotorSetting.FORWARD);
+            sleep(10000);
+            robot.goTicks(robot.inchesToTicks(41.5), -0.8);
 
         } else if (allianceColor == RED) {
 
