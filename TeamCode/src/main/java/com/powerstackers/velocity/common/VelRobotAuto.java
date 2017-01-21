@@ -52,7 +52,13 @@ public class VelRobotAuto extends VelRobot {
     /**
      * Motor diameter in centimeters.
      */
-    private static final double wheelDiameter = 10.0;
+    private static final double wheelDiameterCM = 10.0;
+
+    /**
+     * Motor diameter in Inches
+     */
+    private static final double wheelDiameterIN = 4;
+
     /**
      * Gear ratio between the motor and the drive wheels. Used in calculating distance.
      */
@@ -102,13 +108,23 @@ public class VelRobotAuto extends VelRobot {
     private boolean detectWhiteL(){
         return sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green();
     }
+
     private boolean detectWhiteR(){
         return sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green();
     }
-    public void setPowerLeft(double power){
+
+    public void setPowerAll(double power) {
         motorDrive1.setPower(power);
+        motorDrive2.setPower(power);
         motorDrive3.setPower(power);
+        motorDrive4.setPower(power);
     }
+
+    public void setPowerLeft(double power){
+        motorDrive1.setPower(-power);
+        motorDrive3.setPower(-power);
+    }
+
     public void setPowerRight(double power){
         motorDrive2.setPower(power);
         motorDrive4.setPower(power);
@@ -147,6 +163,64 @@ public class VelRobotAuto extends VelRobot {
     }
 
     /**
+     * Turn the robot a certain number of degrees.
+     * Indicating a negative degree number will turn the robot clockwise. A positive number will
+     * turn the robot counterclockwise.
+     * @param  degrees  The distance in degrees to turn.
+     * @param  speed    The speed at which to turn.
+     */
+    public void turnDegreesRight(double degrees, double speed) throws InterruptedException {
+
+        double degreesSoFar = this.getGyroHeading();
+        double degreesToGo;
+        double degreesFixed;
+
+        degreesToGo = (degreesSoFar + degrees);
+
+        if (degreesToGo < 360) {                //right
+            this.setPowerLeft(speed);
+            this.setPowerRight(-1 * speed);
+            while ((degreesSoFar) < (degrees)) {
+                mode.telemetry.addData("gyrocompare", degreesSoFar=this.getGyroHeading());
+            }
+        } else if (degreesToGo > 360) {
+            degreesFixed = degreesToGo - 360;
+            this.setPowerLeft(speed);
+            this.setPowerRight(-1 * speed);
+            while ((degreesSoFar) < (degreesFixed)) {
+                mode.telemetry.addData("gyrocompare", degreesSoFar=this.getGyroHeading());
+            }
+        } else {
+            this.setPowerAll(0);
+        }
+    }
+
+    public void turnDegreesLeft(double degrees, double speed) throws InterruptedException {
+        double degreesSoFar = this.getGyroHeading();
+        double degreesToGo;
+        double degreesFixed;
+
+        degreesToGo = (degreesSoFar - degrees);
+
+        if (degreesToGo > 0 ) {                //left
+            this.setPowerLeft(-1 * speed);
+            this.setPowerRight(speed);
+            while ((degreesSoFar) > (degrees)) {
+                mode.telemetry.addData("gyrocompare", degreesSoFar=this.getGyroHeading());
+            }
+        } else if (degreesToGo < 0 ) {
+            degreesFixed = 360 - degreesToGo;
+            this.setPowerLeft(-1 * speed);
+            this.setPowerRight(speed);
+            while ((degreesSoFar) > (degreesFixed)) {
+                mode.telemetry.addData("gyrocompare", degreesSoFar=this.getGyroHeading());
+            }
+        } else {
+            this.setPowerAll(0);
+        }
+    }
+
+    /**
      * Move the robot across the playing field a certain distance.
      * Indicating a negative speed or distance will cause the robot to move in reverse.
      * @param  distance The distance that we want to travel, in centimeters.
@@ -164,8 +238,76 @@ public class VelRobotAuto extends VelRobot {
     }
 
     /**
+     * Move the robot across the playing field.
+     * Indicating a negative speed or distance will cause the robot to move in reverse.
+     * @param  ticks The distance that we want to travel.
+     * @param  speed The speed at which to travel.
+     */
+    public void goTicks(long ticks, double speed) {
+
+//        long startLeft = robot.getLeftEncoder();
+        long startRight = this.getDrive1Encoder();
+
+        // Target encoder values for the left and right motors
+        long targetRight = startRight + ticks;
+//        long targetLeft = startLeft + ticks;
+
+        double leftCorrect	= 1.0;
+        double rightCorrect	= 0.2;
+
+        if (ticks < 0) {
+            // Set the drive motors to the given speed
+//            robot.setPowerLeft(speed * leftCorrect);
+//            robot.setPowerRight(speed * rightCorrect);
+//            robot.setPowerLeft(0.85);
+//            robot.setPowerRight(0.60);
+
+            // Wait until both motors have reached the target
+            while ( this.getDrive1Encoder() > targetRight) {
+                //TODO make telemetry work
+//                mode.telemetry.addData("Data", this.getRightEncoder());
+//                mode.telemetry.addData("Encoder target", targetRight);
+//                mode.telemetry.addData("gyro", this.getGyroHeading());
+
+                /* Gyro Compensation */
+                if (this.getGyroHeading() > 180) {
+                    this.setPowerLeft(speed/2);
+                    this.setPowerRight(1);
+                } else if (this.getGyroHeading() < 180 && this.getGyroHeading() > 0) {
+                    this.setPowerLeft(1);
+                    this.setPowerRight(speed/2);
+                } else {
+                    this.setPowerLeft(speed * leftCorrect);
+                    this.setPowerRight(speed * rightCorrect);
+                }
+            }
+
+            // Stop the drive motors here
+            this.setPowerLeft(0);
+            this.setPowerRight(0);
+        } else if (ticks > 0){
+            // Set the drive motors to the speed (in reverse)
+            this.setPowerLeft(-speed * leftCorrect);
+            this.setPowerRight(-speed * rightCorrect);
+//            robot.setPowerLeft(-0.85);
+//            robot.setPowerRight(-0.60);
+
+            // Wait until both motors have reached the target
+            while( this.getDrive1Encoder() < targetRight) {
+//                mode.telemetry.addData("Data2", this.getRightEncoder());
+//                mode.telemetry.addData("Encoder target", targetRight);
+            }
+
+            // Turn off the drive motors here
+            this.setPowerLeft(0);
+            this.setPowerRight(0);
+        }
+    }
+
+    /**
      * Reset the encoders on all motors.
      */
+    //TODO not neccasary
     private void zeroEncoders() {
         motorDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -195,7 +337,7 @@ public class VelRobotAuto extends VelRobot {
      */
     public static double ticksToCm(int ticks) {
         // TODO This is wrong.
-        return (ticks/ticksPerRevolution)*driveGearMultiplier*(PI*wheelDiameter);
+        return (ticks/ticksPerRevolution)*driveGearMultiplier*(PI*wheelDiameterCM);
     }
 
     /**
@@ -208,9 +350,33 @@ public class VelRobotAuto extends VelRobot {
      */
     private static int cmToTicks(double cm) {
         // TODO This is wrong now.
-        return (int) ((1/driveGearMultiplier)*ticksPerRevolution*(cm/(PI*wheelDiameter)));
+        return (int) ((1/driveGearMultiplier)*ticksPerRevolution*(cm/(PI*wheelDiameterCM)));
     }
-    
+
+    /**
+     * Converts a distance in inches to a distance in encoder ticks.
+     * <p>We calculate this by taking the number of wheel rotations (inches/(PI*wheelDiameter))
+     * multiplied by the inverse of the gear ratio, to get the number of motor rotations. Multiply
+     * one more time by the number of motor encoder ticks per one motor revolution.
+     * @param  inches double containing the distance you want to travel.
+     * @return        that distance in encoder ticks.
+     */
+    public long inchesToTicks(double inches) {
+        return (long) ((1/driveGearMultiplier)*ticksPerRevolution*(inches/(PI*wheelDiameterIN)));
+    }
+
+    /**
+     * Converts a distance in encoder ticks to a distance in inches.
+     * <p>We calculate this by taking the number of ticks traveled, divided by the number of ticks
+     * per revolution, and then multiplied by the gear ratio multiplier to get the number of wheel
+     * rotations. Multiply one more time by the circumference of the wheels (PI*wheelDiameter).
+     * @param  ticks long representing the distance in ticks.
+     * @return       that distance in inches.
+     */
+    public double ticksToInches(long ticks) {
+        return (ticks/ticksPerRevolution)*driveGearMultiplier*(PI*wheelDiameterIN);
+    }
+
     /**
      * Trim a servo value between the minimum and maximum ranges.
      * @param servoValue Value to trim.
@@ -220,15 +386,15 @@ public class VelRobotAuto extends VelRobot {
         return Range.clip(servoValue, 0.0, 1.0);
     }
 
-    public long getLeftEncoder() {
-        return motorDrive1.getCurrentPosition();
-    }
+//    public long getLeftEncoder() {
+//        return motorDrive1.getCurrentPosition();
+//    }
 
-    public long getRightEncoder() {
-        return motorDrive2.getCurrentPosition();
-    }
+//    public long getRightEncoder() {
+//        return motorDrive3.getCurrentPosition();
+//    }
 
-    private double getGyroHeading() {
+    public double getGyroHeading() {
         return  sensorGyro.getHeading();
     }
 

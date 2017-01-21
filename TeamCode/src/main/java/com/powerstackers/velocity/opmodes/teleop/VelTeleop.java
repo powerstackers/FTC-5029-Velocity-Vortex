@@ -73,7 +73,6 @@ public class VelTeleop extends OpMode {
         telemetry.addData("shooterEncVal", robot.getShooterEncVal());
         telemetry.addData("Status", "Running: ");
 
-//        robot.setShooter(MotorSetting.FORWARD);
         //DbgLog.msg("RPM-- " + robot.getShooterRPM());
 
         // Read the joystick and determine what motor setting to use.
@@ -143,6 +142,10 @@ public class VelTeleop extends OpMode {
         telemetry.addData("rotation", VelRobot.mecSpinFromJoystick(gamepad1));
         telemetry.addData("shooting Power: ", robot.getShooterPower());
         telemetry.addData("Encoder: ", robot.getEncoderShooter());
+        telemetry.addData("wheel 1 Encoder: ", robot.getDrive1Encoder());
+        telemetry.addData("wheel 2 Encoder: ", robot.getDrive2Encoder());
+        telemetry.addData("wheel 3 Encoder: ", robot.getDrive3Encoder());
+        telemetry.addData("wheel 4 Encoder: ", robot.getDrive4Encoder());
 //        telemetry.addData("color Alpha: ", robot.getAlpha());
 //        telemetry.addData("color Red: ", robot.getRed());
 //        telemetry.addData("color Green: ", robot.getGreen());

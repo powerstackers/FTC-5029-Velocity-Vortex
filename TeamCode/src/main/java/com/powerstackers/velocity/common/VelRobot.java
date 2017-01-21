@@ -86,9 +86,13 @@ public class VelRobot {
      */
     public void initializeRobot() {
         motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+        motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorRLift  = mode.hardwareMap.dcMotor.get("motorRightLift");
         motorRLift.setDirection(DcMotorSimple.Direction.REVERSE);
         motorLLift  = mode.hardwareMap.dcMotor.get("motorLeftLift");
@@ -101,6 +105,10 @@ public class VelRobot {
 
         servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         servoBeacon   = mode.hardwareMap.servo.get("servoBeacon");
+
+        sensorGyro = mode.hardwareMap.gyroSensor.get("sensorGyro");
+
+        sensorGyro.calibrate();
 
         stopMovement();
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
@@ -167,7 +175,7 @@ public class VelRobot {
             }
         }
             counter = 1;
-            return -0.35                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ;
+            return -0.50                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ;
     }
 
     /**
@@ -177,7 +185,8 @@ public class VelRobot {
     public void setShooter(MotorSetting setting) {
         switch (setting) {
             case FORWARD:
-                motorShooter1.setPower(getDynamicPower());
+//                motorShooter1.setPower(getDynamicPower());
+                motorShooter1.setPower(-0.36);
 //                motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
                 break;
             case STOP:
@@ -188,6 +197,13 @@ public class VelRobot {
                 motorShooter1.setPower(0.0);
                 break;
         }
+    }
+
+    /**
+     * TEMP
+     */
+    public void setShooterSecondTime(double power) {
+        motorShooter1.setPower(power);
     }
 
     /**
@@ -355,13 +371,30 @@ public class VelRobot {
         return motorShooter1.getPower();
     }
 
+    public long getDrive1Encoder() {
+        return motorDrive1.getCurrentPosition();
+    }
+
+    public long getDrive2Encoder() {
+        return motorDrive2.getCurrentPosition();
+    }
+
+    public long getDrive3Encoder() {
+        return motorDrive3.getCurrentPosition();
+    }
+
+    public long getDrive4Encoder() {
+        return motorDrive4.getCurrentPosition();
+    }
+
     public int getEncoderShooter(){
         return motorShooter1.getCurrentPosition();
     }
+
 //    public int getARGB() {
 //        return sensorColor.argb();
 //    }
-
+//
 //    public int getRed() {
 //        return sensorColor.red();
 //    }
@@ -373,7 +406,7 @@ public class VelRobot {
 //    public int getGreen() {
 //        return sensorColor.green();
 //    }
-
+//
 //    public int getAlpha() {
 //        return sensorColor.alpha();
 //    }
