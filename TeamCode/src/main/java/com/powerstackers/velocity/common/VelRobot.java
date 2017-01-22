@@ -63,7 +63,7 @@ public class VelRobot {
     private DcMotor motorLLift;
 
     Servo servoBeacon = null;
-    private Servo servoBallGrab = null;
+    public Servo servoBallGrab = null;
 
     GyroSensor sensorGyro;
     ColorSensor sensorColor;
@@ -362,6 +362,10 @@ public class VelRobot {
 
     public int getEncoderShooter(){
         return motorShooter1.getCurrentPosition();
+    }
+
+    public double getBallGrabPosition() {
+         return this.servoBallGrab.getPosition();
     }
 
 //    public int getARGB() {

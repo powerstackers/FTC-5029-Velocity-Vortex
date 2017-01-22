@@ -141,6 +141,12 @@ public class VelTeleop extends OpMode {
             flag_grabberBeenReleased = true;
         }
 
+        if (gamepad2.dpad_up) {
+            robot.servoBallGrab.setPosition(robot.servoBallGrab.getPosition() + 0.2);
+        } else if (gamepad2.dpad_down) {
+            robot.servoBallGrab.setPosition(robot.servoBallGrab.getPosition() - 0.05 );
+        }
+
 //        telemetry here vvv
         telemetry.addData("left x", gamepad1.left_stick_x);
         telemetry.addData("left y", gamepad1.left_stick_y);
@@ -149,6 +155,7 @@ public class VelTeleop extends OpMode {
         telemetry.addData("shooting Power: ", robot.getShooterPower());
         telemetry.addData("Encoder: ", robot.getEncoderShooter());
         telemetry.addData("wheel 1 Encoder: ", robot.getDrive1Encoder());
+        telemetry.addData("servo", robot.getBallGrabPosition());
 //        telemetry.addData("wheel 2 Encoder: ", robot.getDrive2Encoder());
 //        telemetry.addData("wheel 3 Encoder: ", robot.getDrive3Encoder());
 //        telemetry.addData("wheel 4 Encoder: ", robot.getDrive4Encoder());
