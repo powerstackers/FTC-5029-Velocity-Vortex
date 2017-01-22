@@ -162,7 +162,7 @@ public class VelRobot {
         switch (setting) {
             case FORWARD:
 //                motorShooter1.setPower(getDynamicPower());
-                motorShooter1.setPower(-0.40);
+                motorShooter1.setPower(-0.37);
 //                motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
                 break;
             case STOP:
@@ -315,8 +315,6 @@ public class VelRobot {
     /**
      *  Get the spin speed value from the joystick. If the joystick is moved close enough to the
      *  center, the method will return 0 (meaning no spin).
-     *  It's important to note that pushing the stick to the left should mean a counter-clockwise
-     *  rotation; meaning, the stick needs to be reversed.
      *
      * @param pad Gamepad to take control values from.
      * @return Speed ranging from -1:1

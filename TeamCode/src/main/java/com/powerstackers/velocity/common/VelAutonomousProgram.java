@@ -59,8 +59,8 @@ public class VelAutonomousProgram extends LinearOpMode {
             robot.calibrateGyro();
             sleep(5000);
 //            robot.goTicks(robot.inchesToTicks(23),0.8);
-            robot.setShooter(MotorSetting.FORWARD);
-            sleep(1350);
+            robot.setShooterSecondTime(-0.40);
+            sleep(1400);
             robot.setBallPickup(MotorSetting.FORWARD);
             sleep(1500);
             robot.setBallPickup(MotorSetting.STOP);
@@ -68,10 +68,10 @@ public class VelAutonomousProgram extends LinearOpMode {
 
             sleep(1500);
 
-            robot.setShooterSecondTime(-0.48);
+            robot.setShooterSecondTime(-0.40);
             sleep(1200);
             robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(5000);
+            sleep(3000);
             robot.setShooter(MotorSetting.STOP);
 
             robot.goTicks(robot.inchesToTicks(39),0.3);
@@ -94,8 +94,8 @@ public class VelAutonomousProgram extends LinearOpMode {
             robot.calibrateGyro();
             sleep(5000);
 //            robot.goTicks(robot.inchesToTicks(23),0.8);
-            robot.setShooter(MotorSetting.FORWARD);
-            sleep(1350);
+            robot.setShooterSecondTime(-0.40);
+            sleep(1400);
             robot.setBallPickup(MotorSetting.FORWARD);
             sleep(1500);
             robot.setBallPickup(MotorSetting.STOP);
@@ -106,7 +106,7 @@ public class VelAutonomousProgram extends LinearOpMode {
             robot.setShooterSecondTime(-0.48);
             sleep(1200);
             robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(5000);
+            sleep(3000);
             robot.setShooter(MotorSetting.STOP);
 
             robot.goTicks(robot.inchesToTicks(39),0.3);
