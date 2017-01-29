@@ -25,7 +25,7 @@ import static java.lang.Math.PI;
 /**
  * Created by Derek Helm
  */
-
+@SuppressWarnings("unused")
 class VelRobotConstants {
     // Servo settings
     static final double BEACON_TAP_LEFT  = 0.8;
@@ -44,7 +44,7 @@ class VelRobotConstants {
 
     static final double MOTOR_SHOOTER_POWER = -0.10;
     static final double MOTOR_SHOOTER_MAX_RPM = 1600.0;
-    static final double MOTOR_SHOOTER_TARGET_RPM = 1350.0;
+    static final int MOTOR_SHOOTER_TARGET_RPM = 975;
     static final int MOTOR_SHOOTER_RPM_INCREMENT = 50;
 
     static final double MOTOR_LIFT_POWER = 1.0;

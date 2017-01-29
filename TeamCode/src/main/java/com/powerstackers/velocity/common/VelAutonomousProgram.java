@@ -33,9 +33,9 @@ import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.
  */
 public class VelAutonomousProgram extends LinearOpMode {
 
-    final AllianceColor allianceColor;
-    final StartingPosition startingPosition;
-    VelRobotAuto robot;
+    private final AllianceColor allianceColor;
+    private final StartingPosition startingPosition;
+    private VelRobotAuto robot;
 
     public VelAutonomousProgram(AllianceColor allianceColor,
                                 StartingPosition startingPosition) {
@@ -56,19 +56,26 @@ public class VelAutonomousProgram extends LinearOpMode {
 
         } else if (allianceColor == BLUE && startingPosition == StartingPosition.MIDDLE) {
 
+            // Robot must be stationary when calibrating
             robot.calibrateGyro();
             sleep(5000);
+
 //            robot.goTicks(robot.inchesToTicks(23),0.8);
-            robot.setShooterSecondTime(-0.40);
+            robot.setShooter(MotorSetting.FORWARD);
+
+            // Give the flywheel time to spin up
             sleep(1400);
+
+            // Feed the ball into the shooter
             robot.setBallPickup(MotorSetting.FORWARD);
             sleep(1500);
+            // TODO Do we have to stop and restart the flywheel?
             robot.setBallPickup(MotorSetting.STOP);
             robot.setShooter(MotorSetting.STOP);
 
             sleep(1500);
 
-            robot.setShooterSecondTime(-0.40);
+            robot.setShooter(MotorSetting.FORWARD);
             sleep(1200);
             robot.setBallPickup(MotorSetting.FORWARD);
             sleep(2000);
@@ -94,7 +101,7 @@ public class VelAutonomousProgram extends LinearOpMode {
             robot.calibrateGyro();
             sleep(5000);
 //            robot.goTicks(robot.inchesToTicks(23),0.8);
-            robot.setShooterSecondTime(-0.40);
+            robot.setShooter(MotorSetting.FORWARD);
             sleep(1400);
             robot.setBallPickup(MotorSetting.FORWARD);
             sleep(1500);
@@ -103,7 +110,7 @@ public class VelAutonomousProgram extends LinearOpMode {
 
             sleep(1500);
 
-            robot.setShooterSecondTime(-0.48);
+            robot.setShooter(MotorSetting.FORWARD);
             sleep(1200);
             robot.setBallPickup(MotorSetting.FORWARD);
             sleep(2000);

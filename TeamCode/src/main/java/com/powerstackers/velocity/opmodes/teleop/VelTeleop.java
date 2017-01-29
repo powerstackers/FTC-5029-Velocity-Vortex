@@ -21,9 +21,7 @@
 package com.powerstackers.velocity.opmodes.teleop;
 
 import com.powerstackers.velocity.common.VelRobot;
-import com.powerstackers.velocity.common.enums.PublicEnums.GrabberSetting;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
-import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -45,9 +43,8 @@ public class VelTeleop extends OpMode {
 
     @Override
     public void init() {
-        //init code is in main VelRobot class
         robot = new VelRobot(this);
-        robot.initializeRobot(); //is this a thing?
+        robot.initializeRobot();
     }
 
     /*
@@ -55,7 +52,7 @@ public class VelTeleop extends OpMode {
      */
     @Override
     public void init_loop() {
-        telemetry.addLine("Hi! I'm working!");
+        telemetry.addLine("Waiting for start...");
     }
 
     /*
@@ -73,20 +70,14 @@ public class VelTeleop extends OpMode {
         telemetry.addData("shooterEncVal", robot.getShooterEncVal());
         telemetry.addData("Status", "Running: ");
 
-        //DbgLog.msg("RPM-- " + robot.getShooterRPM());
-
-        // Read the joystick and determine what motor setting to use.
-
         //button maps here vvv
-        boolean buttonVexMotorForward   = gamepad1.dpad_up;
-        boolean buttonVexMotorBackward  = gamepad1.dpad_down;
         boolean buttonParticlePickupIn  = gamepad2.left_bumper;
         boolean buttonParticlePickupOut = gamepad2.left_trigger > 0.5;
         boolean buttonShooter           = gamepad2.a;
         boolean buttonLiftUp            = gamepad2.right_bumper;
         boolean buttonLiftDown          = gamepad2.right_trigger > 0.5;
-        boolean buttonGrabberRelease    = gamepad2.b;
-        boolean buttonBallSqueeze       = gamepad2.x;
+        boolean buttonCapBallTighter    = gamepad2.dpad_down;
+        boolean buttonCapBallLooser     = gamepad2.dpad_up;
 
         // Set the movement of the robot's wheels
         robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
@@ -101,20 +92,8 @@ public class VelTeleop extends OpMode {
             robot.setBallPickup(MotorSetting.STOP);
         }
 
-        // Toggle the shooter on every press of the A button
-      /*  if (buttonShooter && !flag_shootButtonJustPressed) {
-            flag_shootButtonJustPressed = true;
-            flag_shooterIsOn = !flag_shooterIsOn;
-        } else if (!buttonShooter) {
-            flag_shootButtonJustPressed = false;
-        }
-        
-        if (flag_shooterIsOn) {
-            robot.rampShooter();
-        } else {
-            robot.setShooter(MotorSetting.STOP);
-        }*/
         // Set the Shootor motor value.
+        // TODO Make shooter able to spin backwards for emergencies
         if (buttonShooter) {
             robot.setShooter(MotorSetting.FORWARD);
         } else {
@@ -130,39 +109,16 @@ public class VelTeleop extends OpMode {
             robot.setLift(MotorSetting.STOP);
         }
 
-        // Only move the ball grabber after it has been deployed
-        if (flag_grabberBeenReleased) {
-            robot.setBallGrab(buttonBallSqueeze ? GrabberSetting.TIGHT : GrabberSetting.LOOSE);
-        }
-
-        // Release the ball grabber
-        if (buttonGrabberRelease) {
-            robot.releaseBallGrab();
-            flag_grabberBeenReleased = true;
-        }
-
-        if (gamepad2.dpad_up) {
+        // Set cap ball grabber
+        if (buttonCapBallLooser) {
             robot.servoBallGrab.setPosition(robot.servoBallGrab.getPosition() + 0.2);
-        } else if (gamepad2.dpad_down) {
+        } else if (buttonCapBallTighter) {
             robot.servoBallGrab.setPosition(robot.servoBallGrab.getPosition() - 0.05);
         }
 
 //        telemetry here vvv
-        telemetry.addData("left x", gamepad1.left_stick_x);
-        telemetry.addData("left y", gamepad1.left_stick_y);
-        telemetry.addData("right x", gamepad1.right_stick_x);
-        telemetry.addData("rotation", VelRobot.mecSpinFromJoystick(gamepad1));
-        telemetry.addData("shooting Power: ", robot.getShooterPower());
-        telemetry.addData("Encoder: ", robot.getEncoderShooter());
-        telemetry.addData("wheel 1 Encoder: ", robot.getDrive1Encoder());
-        telemetry.addData("servo", robot.getBallGrabPosition());
-//        telemetry.addData("wheel 2 Encoder: ", robot.getDrive2Encoder());
-//        telemetry.addData("wheel 3 Encoder: ", robot.getDrive3Encoder());
-//        telemetry.addData("wheel 4 Encoder: ", robot.getDrive4Encoder());
-//        telemetry.addData("color Alpha: ", robot.getAlpha());
-//        telemetry.addData("color Red: ", robot.getRed());
-//        telemetry.addData("color Green: ", robot.getGreen());
-//        telemetry.addData("color Blue: ", robot.getGreen());
+        telemetry.addData("RPM", robot.getShooterRPM());
+        telemetry.addData("EncVal", robot.getShooterEncVal());
     }
 
     /**
@@ -170,8 +126,6 @@ public class VelTeleop extends OpMode {
      */
     @Override
     public void stop() {
-        //stop code here vvv
-        robot.stopMovement();
-
+        robot.stopAllMotors();
     }
 }

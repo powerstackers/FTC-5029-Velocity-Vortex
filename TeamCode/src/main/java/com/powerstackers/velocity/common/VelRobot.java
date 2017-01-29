@@ -20,7 +20,6 @@
 
 package com.powerstackers.velocity.common;
 
-import com.powerstackers.velocity.common.enums.PublicEnums.GrabberSetting;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -39,7 +38,7 @@ import static java.lang.Math.abs;
  *
  * @author Cate Thomas
  */
-
+@SuppressWarnings("unused")
 public class VelRobot {
 
     protected final OpMode mode;
@@ -99,9 +98,10 @@ public class VelRobot {
         motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
 
         motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
-//        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // TODO: does this work?
+        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // TODO: does this work?
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-//        motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
+        motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
+        motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
 
         servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         servoBeacon   = mode.hardwareMap.servo.get("servoBeacon");
@@ -161,9 +161,7 @@ public class VelRobot {
     public void setShooter(MotorSetting setting) {
         switch (setting) {
             case FORWARD:
-//                motorShooter1.setPower(getDynamicPower());
-                motorShooter1.setPower(-0.37);
-//                motorShooter1.setPower(VelRobotConstants.MOTOR_SHOOTER_POWER);
+                setShooterRpm(VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM);
                 break;
             case STOP:
                 motorShooter1.setPower(0.0);
@@ -175,22 +173,14 @@ public class VelRobot {
     }
 
     /**
-     * TEMP
-     */
-    public void setShooterSecondTime(double power) {
-        motorShooter1.setPower(power);
-    }
-
-    /**
      * Set the RPM of the shooter motor. Sets the speed as a percentage of the maximum RPM.
      * @param rpm RPM of motor that we want to set, can be positive or negative.
      */
     private void setShooterRpm(int rpm) {
         if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
-            motorShooter1.setPower(rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
+            motorShooter1.setPower( (double) rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
         } else {
-            motorShooter1.setMaxSpeed(rpm > 0? (int) VelRobotConstants.MOTOR_SHOOTER_MAX_RPM
-                    : (int) -VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
+            motorShooter1.setPower(rpm > 0? 1 : -1);
         }
     }
 
@@ -217,22 +207,6 @@ public class VelRobot {
                 motorRLift.setPower(0.0);
                 break;
         }
-    }
-
-    /**
-     * Release the ball grabber.
-     */
-    public void releaseBallGrab() {
-        servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_OPEN);
-    }
-
-    /**
-     * Set the cap ball grabber.
-     * @param setting GrabberSetting telling which position to set to.
-     */
-    public void setBallGrab(GrabberSetting setting) {
-        servoBallGrab.setPosition(setting == GrabberSetting.LOOSE?
-                VelRobotConstants.SERVO_BALL_GRAB_OPEN : VelRobotConstants.SERVO_BALL_GRAB_TIGHT);
     }
 
     /**
@@ -277,11 +251,26 @@ public class VelRobot {
     /**
      *  Completely stop the drive motors.
      */
-    public void stopMovement() {
+    void stopMovement() {
         motorDrive1.setPower(0.0);
         motorDrive2.setPower(0.0);
         motorDrive3.setPower(0.0);
         motorDrive4.setPower(0.0);
+    }
+
+    /**
+     * Completely stop all motors on the robot.
+     */
+    public void stopAllMotors() {
+        motorDrive1.setPower(0.0);
+        motorDrive2.setPower(0.0);
+        motorDrive3.setPower(0.0);
+        motorDrive4.setPower(0.0);
+
+        motorShooter1.setPower(0.0);
+        motorPickup.setPower(0.0);
+        motorLLift.setPower(0.0);
+        motorRLift.setPower(0.0);
     }
 
     /**
@@ -331,60 +320,13 @@ public class VelRobot {
         return motorShooter1.getCurrentPosition();
     }
 
-    /**
-     * Ramp up the shooter to avoid damage. Increases the RPM by a set increment every interval.
-     */
-    public void rampShooter() {
-        if (getShooterRPM() < VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM) {
-            setShooterRpm((int) getShooterRPM() + VelRobotConstants.MOTOR_SHOOTER_RPM_INCREMENT);
-        }
-    }
-
     public double getShooterPower(){
         return motorShooter1.getPower();
     }
 
-    public long getDrive1Encoder() {
+    long getDrive1Encoder() {
         return motorDrive1.getCurrentPosition();
     }
 
-//    public long getDrive2Encoder() {
-//        return motorDrive2.getCurrentPosition();
-//    }
-//
-//    public long getDrive3Encoder() {
-//        return motorDrive3.getCurrentPosition();
-//    }
-//
-//    public long getDrive4Encoder() {
-//        return motorDrive4.getCurrentPosition();
-//    }
-
-    public int getEncoderShooter(){
-        return motorShooter1.getCurrentPosition();
-    }
-
-    public double getBallGrabPosition() {
-         return this.servoBallGrab.getPosition();
-    }
-
-//    public int getARGB() {
-//        return sensorColor.argb();
-//    }
-//
-//    public int getRed() {
-//        return sensorColor.red();
-//    }
-//
-//    public int getBlue() {
-//        return sensorColor.blue();
-//    }
-//
-//    public int getGreen() {
-//        return sensorColor.green();
-//    }
-//
-//    public int getAlpha() {
-//        return sensorColor.alpha();
-//    }
+    // TODO Automatic ball feeder method
 }
