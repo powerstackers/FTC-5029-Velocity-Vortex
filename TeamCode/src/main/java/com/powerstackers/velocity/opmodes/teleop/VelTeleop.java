@@ -144,7 +144,7 @@ public class VelTeleop extends OpMode {
         if (gamepad2.dpad_up) {
             robot.servoBallGrab.setPosition(robot.servoBallGrab.getPosition() + 0.2);
         } else if (gamepad2.dpad_down) {
-            robot.servoBallGrab.setPosition(robot.servoBallGrab.getPosition() - 0.05 );
+            robot.servoBallGrab.setPosition(robot.servoBallGrab.getPosition() - 0.05);
         }
 
 //        telemetry here vvv
