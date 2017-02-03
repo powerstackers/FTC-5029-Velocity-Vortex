@@ -20,11 +20,6 @@
 
 package com.powerstackers.velocity.opmodes.teleop;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-import com.qualcomm.ftcrobotcontroller.R;
-
 import com.powerstackers.velocity.common.VelRobot;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -163,11 +158,11 @@ public class VelTeleop extends OpMode {
 
 //        telemetry here vvv
         telemetry.addData("RPM", robot.getShooterRPM());
-        telemetry.addData("EncVal", robot.getShooterEncVal());
-        telemetry.addData("Clear", robot.getAlpha());
-        telemetry.addData("Red  ", robot.getRed());
-        telemetry.addData("Green", robot.getGreen());
-        telemetry.addData("Blue ", robot.getBlue());
+//        telemetry.addData("EncVal", robot.getShooterEncVal());
+//        telemetry.addData("Clear", robot.getAlpha());
+//        telemetry.addData("Red  ", robot.getRed());
+//        telemetry.addData("Green", robot.getGreen());
+//        telemetry.addData("Blue ", robot.getBlue());
     }
 
     /**

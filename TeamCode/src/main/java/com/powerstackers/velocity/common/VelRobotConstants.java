@@ -42,18 +42,18 @@ class VelRobotConstants {
     /** Ball grabber in the grabbing position. */
     static final double SERVO_BALL_GRAB_TIGHT = 0.0;
 
-    static final double MOTOR_SHOOTER_POWER = -0.10;
-    static final double MOTOR_SHOOTER_MAX_RPM = 1600.0;
-    static final int MOTOR_SHOOTER_TARGET_RPM = 950;
-    static final int MOTOR_SHOOTER_RPM_INCREMENT = 50;
+    static final double MOTOR_SHOOTER_POWER         = -0.10;
+    static final double MOTOR_SHOOTER_MAX_RPM       = 1600.0;
+    static final int MOTOR_SHOOTER_TARGET_RPM       = 800;
+    static final int MOTOR_SHOOTER_RPM_INCREMENT    = 50;
 
-    static final double MOTOR_LIFT_POWER = 1.0;
-    static final double MOTOR_PICKUP_POWER = -1.0;
+    static final double MOTOR_LIFT_POWER    = 1.0;
+    static final double MOTOR_PICKUP_POWER  = -1.0;
 
-    static final double DIRECTION_NORTH = PI/2;
-    static final double DIRECTION_SOUTH = (3*PI)/2;
-    static final double DIRECTION_EAST = 0.0;
-    static final double DIRECTION_WEST = PI;
+    static final double DIRECTION_NORTH     = PI/2;
+    static final double DIRECTION_SOUTH     = (3*PI)/2;
+    static final double DIRECTION_EAST      = 0.0;
+    static final double DIRECTION_WEST      = PI;
     static final double DIRECTION_NORTHEAST = PI/4;
     static final double DIRECTION_SOUTHEAST = (7*PI)/4;
     static final double DIRECTION_NORTHWEST = (3*PI)/4;
