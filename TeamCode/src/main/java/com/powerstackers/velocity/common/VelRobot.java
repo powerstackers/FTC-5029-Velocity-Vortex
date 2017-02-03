@@ -30,6 +30,9 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.sql.Array;
+import java.util.Arrays;
+
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 
@@ -66,8 +69,8 @@ public class VelRobot {
 
     GyroSensor sensorGyro;
     ColorSensor sensorColor;
-    protected ColorSensor sensorColorGroundL;
-    protected ColorSensor sensorColorGroundR;
+    private ColorSensor sensorColorGroundL;
+    private ColorSensor sensorColorGroundR;
 
     private final ElapsedTime timer = new ElapsedTime();
 
@@ -109,6 +112,12 @@ public class VelRobot {
         sensorGyro = mode.hardwareMap.gyroSensor.get("sensorGyro");
 
         sensorGyro.calibrate();
+
+        sensorColor         = mode.hardwareMap.colorSensor.get("sensorColor");
+        sensorColorGroundL  = mode.hardwareMap.colorSensor.get("sensorColorGroundL");
+        sensorColorGroundR  = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
+
+        sensorColor.enableLed(true);
 
         stopMovement();
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
@@ -217,7 +226,7 @@ public class VelRobot {
      * @param speed The movement speed we want, ranging from -1:1
      * @param rotation The speed of rotation, ranging from -1:1
      */
-    public void setMovement(double angle, double speed, double rotation) {
+    public void setMovement(double angle, double speed, double rotation, double scale) {
 
         // None of this stuff should happen if the speed is 0.
         if (speed == 0.0 && rotation == 0.0) {
@@ -238,8 +247,16 @@ public class VelRobot {
                 largest = abs(multipliers[i]);
         }
 
+        // Only normalise multipliers if largest exceeds 1.0
+        if(largest > 1.0) {
+            for (int i = 0; i < 4; i++) {
+                multipliers[i] = multipliers[i] / largest;
+            }
+        }
+
+        // Scale if needed, 0.0 < scale < 1.0;
         for (int i = 0; i < 4; i++) {
-            multipliers[i] = multipliers[i] / largest;
+            multipliers[i] = multipliers[i] * scale;
         }
 
         motorDrive1.setPower(multipliers[0]);
@@ -327,6 +344,28 @@ public class VelRobot {
     long getDrive1Encoder() {
         return motorDrive1.getCurrentPosition();
     }
+
+    public int getARGB() {
+        return sensorColor.argb();
+    }
+
+    public int getRed() {
+        return sensorColor.red();
+    }
+
+    public int getBlue() {
+        return sensorColor.blue();
+    }
+
+    public int getGreen() {
+        return sensorColor.green();
+    }
+
+    public int getAlpha() {
+        return sensorColor.alpha();
+    }
+
+//    public OpMode getOpMode() {return this.mode;}
 
     // TODO Automatic ball feeder method
 }

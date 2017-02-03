@@ -20,6 +20,11 @@
 
 package com.powerstackers.velocity.opmodes.teleop;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
+import com.qualcomm.ftcrobotcontroller.R;
+
 import com.powerstackers.velocity.common.VelRobot;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -40,6 +45,12 @@ public class VelTeleop extends OpMode {
     private boolean flag_grabberBeenReleased = false;
     private boolean flag_shootButtonJustPressed = false;
     private boolean flag_shooterIsOn = false;
+
+    private boolean flag_speedToggleJustPressed = false;
+    private boolean flag_speedChanged = false;
+    private double scale = 0.0;
+
+//    final View relativeLayout = ((Activity) robot.getOpMode().hardwareMap.appContext).findViewById(R.id.RelativeLayout);
 
     @Override
     public void init() {
@@ -78,10 +89,27 @@ public class VelTeleop extends OpMode {
         boolean buttonLiftDown          = gamepad2.right_trigger > 0.5;
         boolean buttonCapBallTighter    = gamepad2.dpad_down;
         boolean buttonCapBallLooser     = gamepad2.dpad_up;
+        boolean buttonSpeedToggle       = gamepad1.a;
+
+        // Toggle speed for driver
+        if (buttonSpeedToggle && !flag_speedToggleJustPressed) {
+            flag_speedToggleJustPressed = true;
+            flag_speedChanged = !flag_speedChanged;
+        } else if (!buttonSpeedToggle) {
+            flag_speedToggleJustPressed = false;
+        }
+
+        if (flag_speedChanged) {
+            scale = 0.5;
+        } else {
+            scale = 1.0;
+        }
 
         // Set the movement of the robot's wheels
         robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
-                VelRobot.mecSpeedFromJoystick(gamepad1), VelRobot.mecSpinFromJoystick(gamepad1));
+                          VelRobot.mecSpeedFromJoystick(gamepad1),
+                          VelRobot.mecSpinFromJoystick(gamepad1),
+                          scale);
 
         // Set particle pickup motor
         if (buttonParticlePickupIn) {
@@ -116,9 +144,30 @@ public class VelTeleop extends OpMode {
             robot.servoBallGrab.setPosition(robot.servoBallGrab.getPosition() - 0.05);
         }
 
+        // Screen will turn green if within target RPM, else screen is red
+        // Not tested!
+        // Why is VelRobotConstants not public??
+//        if(robot.getShooterRPM() > (950 - 50) == robot.getShooterRPM() < (950 + 50)) {
+//            relativeLayout.post(new Runnable() {
+//                public void run() {
+//                    relativeLayout.setBackgroundColor(Color.GREEN);
+//                }
+//            });
+//        } else {
+//            relativeLayout.post(new Runnable() {
+//                public void run() {
+//                    relativeLayout.setBackgroundColor(Color.RED);
+//                }
+//            });
+//        }
+
 //        telemetry here vvv
         telemetry.addData("RPM", robot.getShooterRPM());
         telemetry.addData("EncVal", robot.getShooterEncVal());
+        telemetry.addData("Clear", robot.getAlpha());
+        telemetry.addData("Red  ", robot.getRed());
+        telemetry.addData("Green", robot.getGreen());
+        telemetry.addData("Blue ", robot.getBlue());
     }
 
     /**

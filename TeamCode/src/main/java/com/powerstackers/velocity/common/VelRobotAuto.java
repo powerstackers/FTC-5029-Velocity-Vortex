@@ -242,7 +242,7 @@ class VelRobotAuto extends VelRobot {
      */
     public void goDistanceInCm(double distance, double angle, double speed) {
         zeroEncoders();
-        setMovement(angle, speed, 0.0);
+        setMovement(angle, speed, 0.0, 1.0);
         // Track using the back left motor.
         // Why? It's the only one my fat fingers could get the plug into.
         //noinspection StatementWithEmptyBody
