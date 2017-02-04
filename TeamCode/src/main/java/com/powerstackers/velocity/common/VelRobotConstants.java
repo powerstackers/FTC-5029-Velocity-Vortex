@@ -26,11 +26,11 @@ import static java.lang.Math.PI;
  * Created by Derek Helm
  */
 @SuppressWarnings("unused")
-class VelRobotConstants {
+public class VelRobotConstants {
     // Servo settings
-    static final double BEACON_TAP_LEFT  = 0.8;
-    static final double BEACON_TAP_RIGHT = 0.2;
-    static final double BEACON_RESTING   = 0.5;
+    public static final double BEACON_TAP_LEFT  = 0.8;
+    public static final double BEACON_TAP_RIGHT = 0.2;
+    public static final double BEACON_RESTING   = 0.5;
 
     /** Joystick must be pushed past this going to register as being pushed. */
     static final double MINIMUM_JOYSTICK_THRESHOLD = 0.08F;

@@ -21,6 +21,7 @@
 package com.powerstackers.velocity.opmodes.teleop;
 
 import com.powerstackers.velocity.common.VelRobot;
+import com.powerstackers.velocity.common.VelRobotConstants;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -85,6 +86,8 @@ public class VelTeleop extends OpMode {
         boolean buttonCapBallTighter    = gamepad2.dpad_down;
         boolean buttonCapBallLooser     = gamepad2.dpad_up;
         boolean buttonSpeedToggle       = gamepad1.a;
+        boolean buttonBeaconL           = gamepad1.dpad_left;
+        boolean buttonBeaconR           = gamepad1.dpad_right;
 
         // Toggle speed for driver
         if (buttonSpeedToggle && !flag_speedToggleJustPressed) {
@@ -92,6 +95,14 @@ public class VelTeleop extends OpMode {
             flag_speedChanged = !flag_speedChanged;
         } else if (!buttonSpeedToggle) {
             flag_speedToggleJustPressed = false;
+        }
+
+        if (buttonBeaconL){
+            robot.setBeaconTap(VelRobotConstants.BEACON_TAP_LEFT);
+        } else if (buttonBeaconR) {
+            robot.setBeaconTap(VelRobotConstants.BEACON_TAP_RIGHT);
+        } else {
+            robot.setBeaconTap(VelRobotConstants.BEACON_RESTING);
         }
 
         if (flag_speedChanged) {
