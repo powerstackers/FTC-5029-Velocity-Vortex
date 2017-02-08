@@ -75,32 +75,32 @@ class VelRobotAuto extends VelRobot {
         super(mode);
     }
 
-    /**
-     * Tap the beacon on the correct side.
-     * @param allianceColor The color that we are currently playing as.
-     */
-    public void tapBeacon(PublicEnums.AllianceColor allianceColor) {
-        PublicEnums.AllianceColor dominantColor;
-        double positionBeaconServo;
-
-        // Detect the color shown on the beacon's left half, and record it.
-        if (sensorColor.red() > sensorColor.blue()) {
-            dominantColor = PublicEnums.AllianceColor.RED;
-        } else {
-            dominantColor = PublicEnums.AllianceColor.BLUE;
-        }
-
-        // Tap the correct side based on the dominant color.
-        if (dominantColor == allianceColor) {
-            positionBeaconServo = VelRobotConstants.BEACON_TAP_LEFT;
-        } else {
-            positionBeaconServo = VelRobotConstants.BEACON_TAP_RIGHT;
-        }
-
-        // Trim the servo value and set the servo position.
-        positionBeaconServo = trimServoValue(positionBeaconServo);
-        servoBeacon.setPosition(positionBeaconServo);
-    }
+//    /**
+//     * Tap the beacon on the correct side.
+//     * @param allianceColor The color that we are currently playing as.
+//     */
+//    public void tapBeacon(PublicEnums.AllianceColor allianceColor) {
+//        PublicEnums.AllianceColor dominantColor;
+//        double positionBeaconServo;
+//
+//        // Detect the color shown on the beacon's left half, and record it.
+//        if (sensorColor.red() > sensorColor.blue()) {
+//            dominantColor = PublicEnums.AllianceColor.RED;
+//        } else {
+//            dominantColor = PublicEnums.AllianceColor.BLUE;
+//        }
+//
+//        // Tap the correct side based on the dominant color.
+//        if (dominantColor == allianceColor) {
+//            positionBeaconServo = VelRobotConstants.BEACON_TAP_LEFT;
+//        } else {
+//            positionBeaconServo = VelRobotConstants.BEACON_TAP_RIGHT;
+//        }
+//
+//        // Trim the servo value and set the servo position.
+//        positionBeaconServo = trimServoValue(positionBeaconServo);
+//        servoBeacon.setPosition(positionBeaconServo);
+//    }
 
     /**
      * detect white bar on ground in front of beacon
@@ -390,14 +390,7 @@ class VelRobotAuto extends VelRobot {
         return (ticks/ticksPerRevolution)*driveGearMultiplier*(PI*wheelDiameterIN);
     }
 
-    /**
-     * Trim a servo value between the minimum and maximum ranges.
-     * @param servoValue Value to trim.
-     * @return A raw double with the trimmed value.
-     */
-    private static double trimServoValue(double servoValue) {
-        return Range.clip(servoValue, 0.0, 1.0);
-    }
+
 
 //    public long getLeftEncoder() {
 //        return motorDrive1.getCurrentPosition();

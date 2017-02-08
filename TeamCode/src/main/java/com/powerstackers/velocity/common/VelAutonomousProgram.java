@@ -97,7 +97,7 @@ public class VelAutonomousProgram extends LinearOpMode {
         } else if (allianceColor == RED && startingPosition == StartingPosition.FAR_FROM_RAMP) {
 
         } else if (allianceColor == RED && startingPosition == StartingPosition.MIDDLE) {
-
+            // TODO: make shooter shoot using new method
             robot.calibrateGyro();
             sleep(5000);
 //            robot.goTicks(robot.inchesToTicks(23),0.8);

@@ -21,6 +21,7 @@
 package com.powerstackers.velocity.opmodes.teleop;
 
 import com.powerstackers.velocity.common.VelRobot;
+import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -85,6 +86,7 @@ public class VelTeleop extends OpMode {
         boolean buttonCapBallTighter    = gamepad2.dpad_down;
         boolean buttonCapBallLooser     = gamepad2.dpad_up;
         boolean buttonSpeedToggle       = gamepad1.a;
+        boolean buttonTapBeacon         = gamepad1.y;
 
         // Toggle speed for driver
         if (buttonSpeedToggle && !flag_speedToggleJustPressed) {
@@ -105,6 +107,13 @@ public class VelTeleop extends OpMode {
                           VelRobot.mecSpeedFromJoystick(gamepad1),
                           VelRobot.mecSpinFromJoystick(gamepad1),
                           scale);
+
+        //set tap beacon
+        if(buttonTapBeacon) {
+            robot.tapBeacon(PublicEnums.AllianceColor.RED);
+        } else {
+
+        }
 
         // Set particle pickup motor
         if (buttonParticlePickupIn) {

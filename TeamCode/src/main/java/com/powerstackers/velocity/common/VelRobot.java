@@ -20,6 +20,7 @@
 
 package com.powerstackers.velocity.common;
 
+import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -29,6 +30,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import java.sql.Array;
 import java.util.Arrays;
@@ -328,6 +330,42 @@ public class VelRobot {
     public static double mecSpinFromJoystick(Gamepad pad) {
         return (abs(pad.right_stick_x) > VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD)
                 ? pad.right_stick_x : 0.0;
+    }
+
+    /**
+     * Tap the beacon on the correct side.
+     * @param allianceColor The color that we are currently playing as.
+     */
+    public void tapBeacon(PublicEnums.AllianceColor allianceColor) {
+        PublicEnums.AllianceColor dominantColor;
+        double positionBeaconServo;
+
+        // Detect the color shown on the beacon's left half, and record it.
+        if (sensorColor.red() > sensorColor.blue()) {
+            dominantColor = PublicEnums.AllianceColor.RED;
+        } else {
+            dominantColor = PublicEnums.AllianceColor.BLUE;
+        }
+
+        // Tap the correct side based on the dominant color.
+        if (dominantColor == allianceColor) {
+            positionBeaconServo = VelRobotConstants.BEACON_TAP_LEFT;
+        } else {
+            positionBeaconServo = VelRobotConstants.BEACON_TAP_RIGHT;
+        }
+
+        // Trim the servo value and set the servo position.
+        positionBeaconServo = trimServoValue(positionBeaconServo);
+        servoBeacon.setPosition(positionBeaconServo);
+    }
+
+    /**
+     * Trim a servo value between the minimum and maximum ranges.
+     * @param servoValue Value to trim.
+     * @return A raw double with the trimmed value.
+     */
+    private static double trimServoValue(double servoValue) {
+        return Range.clip(servoValue, 0.0, 1.0);
     }
 
     /**
