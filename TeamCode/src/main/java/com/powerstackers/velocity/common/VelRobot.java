@@ -122,6 +122,7 @@ public class VelRobot {
         sensorColor.enableLed(true);
 
         stopMovement();
+        servoBeacon.setPosition(VelRobotConstants.BEACON_RESTING);
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
         mode.telemetry.addData("Status", "Initialized");
     }
@@ -218,6 +219,10 @@ public class VelRobot {
                 motorRLift.setPower(0.0);
                 break;
         }
+    }
+
+    public void setBeaconTap(double position) {
+        servoBeacon.setPosition(position);
     }
 
     /**

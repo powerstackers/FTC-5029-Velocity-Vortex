@@ -96,6 +96,14 @@ public class VelTeleop extends OpMode {
             flag_speedToggleJustPressed = false;
         }
 
+        if (buttonBeaconL){
+            robot.setBeaconTap(VelRobotConstants.BEACON_TAP_LEFT);
+        } else if (buttonBeaconR) {
+            robot.setBeaconTap(VelRobotConstants.BEACON_TAP_RIGHT);
+        } else {
+            robot.setBeaconTap(VelRobotConstants.BEACON_RESTING);
+        }
+
         if (flag_speedChanged) {
             scale = 0.5;
         } else {
