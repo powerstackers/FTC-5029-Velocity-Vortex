@@ -72,8 +72,6 @@ public class VelTeleop extends OpMode {
 
     @Override
     public void loop() {
-
-        telemetry.addData("Shooter RPM", robot.getShooterRPM());
         telemetry.addData("shooterEncVal", robot.getShooterEncVal());
         telemetry.addData("Status", "Running: ");
 
@@ -109,10 +107,24 @@ public class VelTeleop extends OpMode {
                           scale);
 
         //set tap beacon
-        if(buttonTapBeacon) {
-            robot.tapBeacon(PublicEnums.AllianceColor.RED);
-        } else {
+//        if(buttonTapBeacon) {
+//            robot.tapBeacon(PublicEnums.AllianceColor.RED);
+//        } else {
+//
+//        }
 
+        //ColorSensor Controls
+        robot.sensorColor.enableLed(true);
+        if (robot.sensorColor.blue() > robot.sensorColor.red()) {
+//            servoBeaconPosition = 0.20;
+            robot.setBeaconTap(0.20);
+
+        } else if (robot.sensorColor.red() > robot.sensorColor.blue()) {
+//            servoBeaconPosition = 0.80;
+            robot.setBeaconTap(0.80);
+        } else {
+//            servoBeaconPosition = 0.50;
+            robot.setBeaconTap(0.50);
         }
 
         // Set particle pickup motor
@@ -166,7 +178,7 @@ public class VelTeleop extends OpMode {
 //        }
 
 //        telemetry here vvv
-        telemetry.addData("RPM", robot.getShooterRPM());
+        telemetry.addData("Shooter RPM", robot.getShooterRPM());
 //        telemetry.addData("EncVal", robot.getShooterEncVal());
 //        telemetry.addData("Clear", robot.getAlpha());
 //        telemetry.addData("Red  ", robot.getRed());

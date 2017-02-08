@@ -70,7 +70,7 @@ public class VelRobot {
     public Servo servoBallGrab = null;
 
     GyroSensor sensorGyro;
-    ColorSensor sensorColor;
+    public ColorSensor sensorColor;
     private ColorSensor sensorColorGroundL;
     private ColorSensor sensorColorGroundR;
 
@@ -116,10 +116,9 @@ public class VelRobot {
         sensorGyro.calibrate();
 
         sensorColor         = mode.hardwareMap.colorSensor.get("sensorColor");
+        sensorColor.enableLed(true);
         sensorColorGroundL  = mode.hardwareMap.colorSensor.get("sensorColorGroundL");
         sensorColorGroundR  = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
-
-        sensorColor.enableLed(true);
 
         stopMovement();
         servoBeacon.setPosition(VelRobotConstants.BEACON_RESTING);
@@ -337,32 +336,32 @@ public class VelRobot {
                 ? pad.right_stick_x : 0.0;
     }
 
-    /**
-     * Tap the beacon on the correct side.
-     * @param allianceColor The color that we are currently playing as.
-     */
-    public void tapBeacon(PublicEnums.AllianceColor allianceColor) {
-        PublicEnums.AllianceColor dominantColor;
-        double positionBeaconServo;
-
-        // Detect the color shown on the beacon's left half, and record it.
-        if (sensorColor.red() > sensorColor.blue()) {
-            dominantColor = PublicEnums.AllianceColor.RED;
-        } else {
-            dominantColor = PublicEnums.AllianceColor.BLUE;
-        }
-
-        // Tap the correct side based on the dominant color.
-        if (dominantColor == allianceColor) {
-            positionBeaconServo = VelRobotConstants.BEACON_TAP_LEFT;
-        } else {
-            positionBeaconServo = VelRobotConstants.BEACON_TAP_RIGHT;
-        }
-
-        // Trim the servo value and set the servo position.
-        positionBeaconServo = trimServoValue(positionBeaconServo);
-        servoBeacon.setPosition(positionBeaconServo);
-    }
+//    /**
+//     * Tap the beacon on the correct side.
+//     * @param allianceColor The color that we are currently playing as.
+//     */
+//    public void tapBeacon(PublicEnums.AllianceColor allianceColor) {
+//        PublicEnums.AllianceColor dominantColor;
+//        double positionBeaconServo;
+//
+//        // Detect the color shown on the beacon's left half, and record it.
+//        if (sensorColor.red() > sensorColor.blue()) {
+//            dominantColor = PublicEnums.AllianceColor.RED;
+//        } else {
+//            dominantColor = PublicEnums.AllianceColor.BLUE;
+//        }
+//
+//        // Tap the correct side based on the dominant color.
+//        if (dominantColor == allianceColor) {
+//            positionBeaconServo = VelRobotConstants.BEACON_TAP_LEFT;
+//        } else {
+//            positionBeaconServo = VelRobotConstants.BEACON_TAP_RIGHT;
+//        }
+//
+//        // Trim the servo value and set the servo position.
+//        positionBeaconServo = trimServoValue(positionBeaconServo);
+//        servoBeacon.setPosition(positionBeaconServo);
+//    }
 
     /**
      * Trim a servo value between the minimum and maximum ranges.
