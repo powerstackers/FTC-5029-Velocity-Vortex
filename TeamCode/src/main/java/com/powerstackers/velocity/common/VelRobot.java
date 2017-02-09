@@ -31,6 +31,7 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 
 import java.sql.Array;
 import java.util.Arrays;
@@ -103,7 +104,7 @@ public class VelRobot {
         motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
 
         motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
-        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // TODO: does this work?
+        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
         motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -118,6 +119,11 @@ public class VelRobot {
         sensorColor         = mode.hardwareMap.colorSensor.get("sensorColor");
         sensorColorGroundL  = mode.hardwareMap.colorSensor.get("sensorColorGroundL");
         sensorColorGroundR  = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
+
+        sensorColor.setI2cAddress(I2cAddr.create7bit(0x1e)); //8bit 0x3c
+        sensorColorGroundL.setI2cAddress(I2cAddr.create7bit(0x26)); //8bit 0x5c
+        sensorColorGroundR.setI2cAddress(I2cAddr.create7bit(0x2e)); //8bit 0x4c
+
         sensorColor.enableLed(true);
         sensorColorGroundL.enableLed(true);
         sensorColorGroundR.enableLed(true);
