@@ -121,8 +121,8 @@ public class VelRobot {
         sensorColorGroundR  = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
 
         sensorColor.setI2cAddress(I2cAddr.create7bit(0x1e)); //8bit 0x3c
-        sensorColorGroundL.setI2cAddress(I2cAddr.create7bit(0x26)); //8bit 0x5c
-        sensorColorGroundR.setI2cAddress(I2cAddr.create7bit(0x2e)); //8bit 0x4c
+        sensorColorGroundL.setI2cAddress(I2cAddr.create7bit(0x2e)); //8bit 0x5c
+        sensorColorGroundR.setI2cAddress(I2cAddr.create7bit(0x26)); //8bit 0x4c
 
         sensorColor.enableLed(true);
         sensorColorGroundL.enableLed(true);
