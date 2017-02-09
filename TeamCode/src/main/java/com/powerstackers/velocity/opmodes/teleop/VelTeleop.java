@@ -114,7 +114,7 @@ public class VelTeleop extends OpMode {
 //        }
 
         //ColorSensor Controls
-        robot.sensorColor.enableLed(true);
+        robot.sensorColor.enableLed(false);
         if (robot.sensorColor.blue() > robot.sensorColor.red()) {
 //            servoBeaconPosition = 0.20;
             robot.setBeaconTap(0.20);
@@ -180,10 +180,10 @@ public class VelTeleop extends OpMode {
 //        telemetry here vvv
         telemetry.addData("Shooter RPM", robot.getShooterRPM());
 //        telemetry.addData("EncVal", robot.getShooterEncVal());
-//        telemetry.addData("Clear", robot.getAlpha());
-//        telemetry.addData("Red  ", robot.getRed());
-//        telemetry.addData("Green", robot.getGreen());
-//        telemetry.addData("Blue ", robot.getBlue());
+        telemetry.addData("Clear", robot.getAlpha());
+        telemetry.addData("Red  ", robot.getRed());
+        telemetry.addData("Green", robot.getGreen());
+        telemetry.addData("Blue ", robot.getBlue());
     }
 
     /**

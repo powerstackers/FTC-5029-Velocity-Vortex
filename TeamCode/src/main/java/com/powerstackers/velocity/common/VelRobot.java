@@ -71,8 +71,8 @@ public class VelRobot {
 
     GyroSensor sensorGyro;
     public ColorSensor sensorColor;
-    private ColorSensor sensorColorGroundL;
-    private ColorSensor sensorColorGroundR;
+    public ColorSensor sensorColorGroundL;
+    public ColorSensor sensorColorGroundR;
 
     private final ElapsedTime timer = new ElapsedTime();
 
@@ -116,9 +116,11 @@ public class VelRobot {
         sensorGyro.calibrate();
 
         sensorColor         = mode.hardwareMap.colorSensor.get("sensorColor");
-        sensorColor.enableLed(true);
         sensorColorGroundL  = mode.hardwareMap.colorSensor.get("sensorColorGroundL");
         sensorColorGroundR  = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
+        sensorColor.enableLed(true);
+        sensorColorGroundL.enableLed(true);
+        sensorColorGroundR.enableLed(true);
 
         stopMovement();
         servoBeacon.setPosition(VelRobotConstants.BEACON_RESTING);
