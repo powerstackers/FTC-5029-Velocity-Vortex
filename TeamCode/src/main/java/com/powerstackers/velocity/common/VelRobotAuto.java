@@ -276,7 +276,7 @@ public class VelRobotAuto extends VelRobot {
 //            robot.setPowerRight(0.60);
 
             // Wait until both motors have reached the target
-            while ( this.getDrive1Encoder() > targetRight) {
+            while ( this.getDrive1Encoder() < targetRight) {
                 //TODO make telemetry work
 //                mode.telemetry.addData("Data", this.getRightEncoder());
 //                mode.telemetry.addData("Encoder target", targetRight);
@@ -306,7 +306,7 @@ public class VelRobotAuto extends VelRobot {
 //            robot.setPowerRight(-0.60);
 
             // Wait until both motors have reached the target
-            while( this.getDrive1Encoder() < targetRight) {
+            while( this.getDrive1Encoder() > targetRight) {
 //                mode.telemetry.addData("Data2", getDrive1Encoder());
 //                mode.telemetry.addData("Encoder target", targetRight);
             }
