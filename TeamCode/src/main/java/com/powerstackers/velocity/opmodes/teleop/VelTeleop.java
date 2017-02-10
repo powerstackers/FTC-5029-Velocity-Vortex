@@ -141,11 +141,11 @@ public class VelTeleop extends OpMode {
 
         // Set the Shootor motor value.
         // TODO Make shooter able to spin backwards for emergencies
-        if (buttonShooter) {
-            robot.setShooter(MotorSetting.FORWARD);
-        } else {
-            robot.setShooter(MotorSetting.STOP);
-        }
+//        if (buttonShooter) {
+//            robot.setShooter(MotorSetting.FORWARD);
+//        } else {
+//            robot.setShooter(MotorSetting.STOP);
+//        }
 
         // Set lift motor
         if (buttonLiftUp) {
@@ -183,10 +183,10 @@ public class VelTeleop extends OpMode {
 //        telemetry here vvv
         telemetry.addData("Shooter RPM", robot.getShooterRPM());
 //        telemetry.addData("EncVal", robot.getShooterEncVal());
-        telemetry.addData("Clear", robot.getAlpha());
-        telemetry.addData("Red  ", robot.getRed());
-        telemetry.addData("Green", robot.getGreen());
-        telemetry.addData("Blue ", robot.getBlue());
+//        telemetry.addData("Clear", robot.getAlpha());
+//        telemetry.addData("Red  ", robot.getRed());
+//        telemetry.addData("Green", robot.getGreen());
+//        telemetry.addData("Blue ", robot.getBlue());
         telemetry.addData("L-Clear", robot.sensorColorGroundL.alpha());
         telemetry.addData("L-Red  ", robot.sensorColorGroundL.red());
         telemetry.addData("L-Green", robot.sensorColorGroundL.green());

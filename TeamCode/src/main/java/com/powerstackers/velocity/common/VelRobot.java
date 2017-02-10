@@ -177,7 +177,7 @@ public class VelRobot {
      * Set the shooter motors.
      * @param setting MotorSetting enum telling what setting to use.
      */
-    public void setShooter(MotorSetting setting) {
+    public void setShooter(MotorSetting setting) throws InterruptedException {
         switch (setting) {
             case FORWARD:
                 setShooterRpm(VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM);
@@ -407,7 +407,7 @@ public class VelRobot {
 //        return motorDrive4.getCurrentPosition();
 //    }
 
-    public int getEncoderShooter(){
+    public int getEncoderShooter() throws InterruptedException {
         return motorShooter1.getCurrentPosition();
     }
 

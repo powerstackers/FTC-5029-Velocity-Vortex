@@ -60,7 +60,7 @@ public class VelAutonomousProgram extends LinearOpMode {
             robot.calibrateGyro();
             sleep(5000);
 
-//            robot.goTicks(robot.inchesToTicks(23),0.8);
+            robot.goTicks(robot.inchesToTicks(18),0.3);
             robot.setShooter(MotorSetting.FORWARD);
 
             // Give the flywheel time to spin up
@@ -81,7 +81,7 @@ public class VelAutonomousProgram extends LinearOpMode {
             sleep(2000);
             robot.setShooter(MotorSetting.STOP);
 
-            robot.goTicks(robot.inchesToTicks(39),0.3);
+//            robot.goTicks(robot.inchesToTicks(39),0.3);
 
         } else if (allianceColor == BLUE) {
 
@@ -97,10 +97,11 @@ public class VelAutonomousProgram extends LinearOpMode {
         } else if (allianceColor == RED && startingPosition == StartingPosition.FAR_FROM_RAMP) {
 
         } else if (allianceColor == RED && startingPosition == StartingPosition.MIDDLE) {
+            robot.zeroEncoders();
             // TODO: make shooter shoot using new method
             robot.calibrateGyro();
             sleep(5000);
-//            robot.goTicks(robot.inchesToTicks(23),0.8);
+            robot.goTicks(robot.inchesToTicks(10),0.3);
             robot.setShooter(MotorSetting.FORWARD);
             sleep(1400);
             robot.setBallPickup(MotorSetting.FORWARD);
@@ -116,7 +117,7 @@ public class VelAutonomousProgram extends LinearOpMode {
             sleep(2000);
             robot.setShooter(MotorSetting.STOP);
 
-            robot.goTicks(robot.inchesToTicks(39),0.3);
+//            robot.goTicks(robot.inchesToTicks(39),0.3);
 
         } else if (allianceColor == RED) {
 
