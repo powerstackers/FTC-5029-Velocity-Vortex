@@ -251,7 +251,7 @@ public class VelRobot {
     /**
      *  Completely stop the drive motors.
      */
-    void stopMovement() {
+    public void stopMovement() {
         motorDrive1.setPower(0.0);
         motorDrive2.setPower(0.0);
         motorDrive3.setPower(0.0);
@@ -324,9 +324,49 @@ public class VelRobot {
         return motorShooter1.getPower();
     }
 
-    long getDrive1Encoder() {
+    public long getDrive1Encoder() {
         return motorDrive1.getCurrentPosition();
     }
+
+    //    public long getDrive2Encoder() {
+//        return motorDrive2.getCurrentPosition();
+//    }
+//
+//    public long getDrive3Encoder() {
+//        return motorDrive3.getCurrentPosition();
+//    }
+//
+//    public long getDrive4Encoder() {
+//        return motorDrive4.getCurrentPosition();
+//    }
+
+    public int getEncoderShooter(){
+        return motorShooter1.getCurrentPosition();
+    }
+
+    public double getBallGrabPosition() {
+        return this.servoBallGrab.getPosition();
+    }
+
+//    public int getARGB() {
+//        return sensorColor.argb();
+//    }
+//
+//    public int getRed() {
+//        return sensorColor.red();
+//    }
+//
+//    public int getBlue() {
+//        return sensorColor.blue();
+//    }
+//
+//    public int getGreen() {
+//        return sensorColor.green();
+//    }
+//
+//    public int getAlpha() {
+//        return sensorColor.alpha();
+//    }
 
     // TODO Automatic ball feeder method
 }
