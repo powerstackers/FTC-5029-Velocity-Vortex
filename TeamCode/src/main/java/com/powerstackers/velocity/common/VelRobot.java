@@ -177,7 +177,7 @@ public class VelRobot {
      * Set the shooter motors.
      * @param setting MotorSetting enum telling what setting to use.
      */
-    public void setShooter(MotorSetting setting) throws InterruptedException {
+    public void setShooter(MotorSetting setting) {
         switch (setting) {
             case FORWARD:
                 setShooterRpm(VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM);

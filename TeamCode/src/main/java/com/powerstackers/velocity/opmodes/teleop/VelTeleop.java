@@ -141,11 +141,11 @@ public class VelTeleop extends OpMode {
 
         // Set the Shootor motor value.
         // TODO Make shooter able to spin backwards for emergencies
-//        if (buttonShooter) {
-//            robot.setShooter(MotorSetting.FORWARD);
-//        } else {
-//            robot.setShooter(MotorSetting.STOP);
-//        }
+        if (buttonShooter) {
+            robot.setShooter(MotorSetting.FORWARD);
+        } else {
+            robot.setShooter(MotorSetting.STOP);
+        }
 
         // Set lift motor
         if (buttonLiftUp) {
