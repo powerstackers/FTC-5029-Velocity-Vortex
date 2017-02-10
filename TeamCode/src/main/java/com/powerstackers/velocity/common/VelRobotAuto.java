@@ -118,7 +118,7 @@ class VelRobotAuto extends VelRobot {
      * Spins all motors at the same speed. CAUTION: THIS MAKES THE ROBOT SPIN.
      * @param power Speed to spin all motors.
      */
-    private void setPowerAll(double power) {
+    public void setPowerAll(double power) {
         motorDrive1.setPower(power);
         motorDrive2.setPower(power);
         motorDrive3.setPower(power);
@@ -129,7 +129,7 @@ class VelRobotAuto extends VelRobot {
      * Set the power of the left hand side drive motors.
      * @param power Percentage of max power to spin.
      */
-    private void setPowerLeft(double power){
+    public void setPowerLeft(double power){
         motorDrive1.setPower(-power);
         motorDrive3.setPower(-power);
     }
@@ -138,7 +138,7 @@ class VelRobotAuto extends VelRobot {
      * Set the power of the right hand side drive motors.
      * @param power Percentage of max speed to spin.
      */
-    private void setPowerRight(double power){
+    public void setPowerRight(double power){
         motorDrive2.setPower(power);
         motorDrive4.setPower(power);
     }
