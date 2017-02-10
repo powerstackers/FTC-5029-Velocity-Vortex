@@ -35,7 +35,7 @@ import static java.lang.Math.PI;
  * @author Derek Helm
  */
 @SuppressWarnings("unused")
-class VelRobotAuto extends VelRobot {
+public class VelRobotAuto extends VelRobot {
 
     /**
      * Reduction on motor gearbox.
@@ -65,13 +65,13 @@ class VelRobotAuto extends VelRobot {
     private static final double driveGearMultiplier = 1.5;
 //    double turnOvershootThreshold = 0.1;
 
-    private LinearOpMode mode;
+    LinearOpMode mode;
 
     /**
      * Construct a Robot object.
      * @param mode The OpMode in which the robot is being used.
      */
-    VelRobotAuto(LinearOpMode mode) {
+    public VelRobotAuto(LinearOpMode mode) {
         super(mode);
     }
 
@@ -162,7 +162,7 @@ class VelRobotAuto extends VelRobot {
 //            robot.setPowerRight(-1 * speed);
             mode.telemetry.addData("gyro2", getGyroHeading());
         } else {
-            setPowerAll(0);
+            this.setPowerAll(0);
         }
         mode.telemetry.addData("Gyro", degrees + "," + degreesSoFar);
         // For as long as the current degree measure doesn't equal the target. This will work in the clockwise and
@@ -307,8 +307,8 @@ class VelRobotAuto extends VelRobot {
 
             // Wait until both motors have reached the target
             while( this.getDrive1Encoder() < targetRight) {
-                mode.telemetry.addData("Data2", getDrive1Encoder());
-                mode.telemetry.addData("Encoder target", targetRight);
+//                mode.telemetry.addData("Data2", getDrive1Encoder());
+//                mode.telemetry.addData("Encoder target", targetRight);
             }
 
             // Turn off the drive motors here
@@ -400,11 +400,11 @@ class VelRobotAuto extends VelRobot {
 //        return motorDrive3.getCurrentPosition();
 //    }
 
-    private double getGyroHeading() {
+    public double getGyroHeading() {
         return  sensorGyro.getHeading();
     }
 
-    void calibrateGyro() {
+    public void calibrateGyro() {
         sensorGyro.calibrate();
     }
 

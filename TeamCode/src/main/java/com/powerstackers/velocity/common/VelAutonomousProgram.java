@@ -33,9 +33,9 @@ import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.
  */
 public class VelAutonomousProgram extends LinearOpMode {
 
-    private final AllianceColor allianceColor;
-    private final StartingPosition startingPosition;
-    private VelRobotAuto robot;
+    final AllianceColor allianceColor;
+    final StartingPosition startingPosition;
+    VelRobotAuto robot;
 
     public VelAutonomousProgram(AllianceColor allianceColor,
                                 StartingPosition startingPosition) {
