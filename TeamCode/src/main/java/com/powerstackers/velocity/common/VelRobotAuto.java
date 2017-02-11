@@ -21,6 +21,7 @@
 package com.powerstackers.velocity.common;
 
 import com.powerstackers.velocity.common.enums.PublicEnums;
+import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -256,7 +257,7 @@ public class VelRobotAuto extends VelRobot {
      * @param  ticks The distance that we want to travel.
      * @param  speed The speed at which to travel.
      */
-    void goTicks(long ticks, double speed) throws InterruptedException {
+    public void goTicks(long ticks, double speed) throws InterruptedException {
 
 //        long startLeft = robot.getLeftEncoder();
         long startRight = this.getDrive1Encoder();
@@ -276,12 +277,12 @@ public class VelRobotAuto extends VelRobot {
 //            robot.setPowerRight(0.60);
 
             // Wait until both motors have reached the target
-            while ( this.getDrive1Encoder() < targetRight) {
+            while ( this.getDrive1Encoder() > targetRight) {
                 //TODO make telemetry work
-//                mode.telemetry.addData("Data", this.getRightEncoder());
-//                mode.telemetry.addData("Encoder target", targetRight);
-//                mode.telemetry.addData("gyro", this.getGyroHeading());
-
+                mode.telemetry.addData("rightEncoder", this.getDrive1Encoder());
+                mode.telemetry.addData("Encoder target", targetRight);
+                mode.telemetry.addData("gyro", this.getGyroHeading());
+                DbgLog.msg("GOING TICKS!!! Current: " + getDrive1Encoder() + " | Target: " + targetRight);
                 /* Gyro Compensation */
                 if (this.getGyroHeading() > 180) {
                     this.setPowerLeft(speed/2);
@@ -296,8 +297,7 @@ public class VelRobotAuto extends VelRobot {
             }
 
             // Stop the drive motors here
-            this.setPowerLeft(0);
-            this.setPowerRight(0);
+            stopMovement();
         } else if (ticks > 0){
             // Set the drive motors to the speed (in reverse)
             this.setPowerLeft(-speed * leftCorrect);
@@ -306,7 +306,7 @@ public class VelRobotAuto extends VelRobot {
 //            robot.setPowerRight(-0.60);
 
             // Wait until both motors have reached the target
-            while( this.getDrive1Encoder() > targetRight) {
+            while( this.getDrive1Encoder() < targetRight) {
 //                mode.telemetry.addData("Data2", getDrive1Encoder());
 //                mode.telemetry.addData("Encoder target", targetRight);
             }
@@ -374,7 +374,7 @@ public class VelRobotAuto extends VelRobot {
      * @param  inches double containing the distance you want to travel.
      * @return        that distance in encoder ticks.
      */
-    long inchesToTicks(double inches) throws InterruptedException {
+    public long inchesToTicks(double inches) throws InterruptedException {
         return (long) ((1/driveGearMultiplier)*ticksPerRevolution*(inches/(PI*wheelDiameterIN)));
     }
 
