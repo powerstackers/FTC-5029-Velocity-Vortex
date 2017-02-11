@@ -93,6 +93,12 @@ public class VelAutonomousProgram extends LinearOpMode {
             robot.setBallPickup(MotorSetting.FORWARD);
             sleep(10000);
 //            robot.goTicks(robot.inchesToTicks(35.5),0.8);
+        } else if (allianceColor == BLUE && startingPosition == StartingPosition.BACKUP) {
+
+            robot.setPowerLeft(0.3 * 0.8);
+            robot.setPowerRight(0.3 * 1.0);
+            sleep(1500);
+            robot.stopAllMotors();
 
         } else if (allianceColor == RED && startingPosition == StartingPosition.FAR_FROM_RAMP) {
 
@@ -120,6 +126,13 @@ public class VelAutonomousProgram extends LinearOpMode {
 //            robot.goTicks(robot.inchesToTicks(39),0.3);
 
         } else if (allianceColor == RED) {
+
+        } else if (allianceColor == RED && startingPosition == StartingPosition.BACKUP) {
+
+            robot.setPowerLeft(0.3 * 0.8);
+            robot.setPowerRight(0.3 * 1.0);
+            sleep(1500);
+            robot.stopAllMotors();
 
         } else {
 
