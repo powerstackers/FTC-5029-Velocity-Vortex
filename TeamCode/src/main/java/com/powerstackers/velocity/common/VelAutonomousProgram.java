@@ -57,82 +57,87 @@ public class VelAutonomousProgram extends LinearOpMode {
         } else if (allianceColor == BLUE && startingPosition == StartingPosition.MIDDLE) {
 
             // Robot must be stationary when calibrating
-            robot.calibrateGyro();
-            sleep(5000);
-
-            robot.goTicks(robot.inchesToTicks(18),0.3);
-            robot.setShooter(MotorSetting.FORWARD);
-
-            // Give the flywheel time to spin up
-            sleep(1400);
-
-            // Feed the ball into the shooter
-            robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(1500);
-            // TODO Do we have to stop and restart the flywheel?
-            robot.setBallPickup(MotorSetting.STOP);
-            robot.setShooter(MotorSetting.STOP);
-
-            sleep(1500);
-
-            robot.setShooter(MotorSetting.FORWARD);
-            sleep(1200);
-            robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(2000);
-            robot.setShooter(MotorSetting.STOP);
+//            robot.calibrateGyro();
+//            sleep(5000);
+//
+//            robot.goTicks(robot.inchesToTicks(18),0.3);
+//            robot.setShooter(MotorSetting.FORWARD);
+//
+//            // Give the flywheel time to spin up
+//            sleep(1400);
+//
+//            // Feed the ball into the shooter
+//            robot.setBallPickup(MotorSetting.FORWARD);
+//            sleep(1500);
+//            // TODO Do we have to stop and restart the flywheel?
+//            robot.setBallPickup(MotorSetting.STOP);
+//            robot.setShooter(MotorSetting.STOP);
+//
+//            sleep(1500);
+//
+//            robot.setShooter(MotorSetting.FORWARD);
+//            sleep(1200);
+//            robot.setBallPickup(MotorSetting.FORWARD);
+//            sleep(2000);
+//            robot.setShooter(MotorSetting.STOP);
 
 //            robot.goTicks(robot.inchesToTicks(39),0.3);
 
-        } else if (allianceColor == BLUE) {
-
-            robot.calibrateGyro();
-            sleep(5000);
-//            robot.goTicks(robot.inchesToTicks(23),0.8);
-            robot.setShooter(MotorSetting.FORWARD);
-            sleep(3000);
-            robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(10000);
-//            robot.goTicks(robot.inchesToTicks(35.5),0.8);
-        } else if (allianceColor == BLUE && startingPosition == StartingPosition.BACKUP) {
-
-            robot.setPowerLeft(0.3 * 0.8);
-            robot.setPowerRight(0.3 * 1.0);
-            sleep(1500);
-            robot.stopAllMotors();
 
         } else if (allianceColor == RED && startingPosition == StartingPosition.FAR_FROM_RAMP) {
 
         } else if (allianceColor == RED && startingPosition == StartingPosition.MIDDLE) {
-            robot.zeroEncoders();
-            // TODO: make shooter shoot using new method
-            robot.calibrateGyro();
-            sleep(5000);
-            robot.goTicks(robot.inchesToTicks(10),0.3);
-            robot.setShooter(MotorSetting.FORWARD);
-            sleep(1400);
-            robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(1500);
-            robot.setBallPickup(MotorSetting.STOP);
-            robot.setShooter(MotorSetting.STOP);
-
-            sleep(1500);
-
-            robot.setShooter(MotorSetting.FORWARD);
-            sleep(1200);
-            robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(2000);
-            robot.setShooter(MotorSetting.STOP);
+//            robot.zeroEncoders();
+//            // TODO: make shooter shoot using new method
+//            robot.calibrateGyro();
+//            sleep(5000);
+//            robot.goTicks(robot.inchesToTicks(10),0.3);
+//            robot.setShooter(MotorSetting.FORWARD);
+//            sleep(1400);
+//            robot.setBallPickup(MotorSetting.FORWARD);
+//            sleep(1500);
+//            robot.setBallPickup(MotorSetting.STOP);
+//            robot.setShooter(MotorSetting.STOP);
+//
+//            sleep(1500);
+//
+//            robot.setShooter(MotorSetting.FORWARD);
+//            sleep(1200);
+//            robot.setBallPickup(MotorSetting.FORWARD);
+//            sleep(2000);
+//            robot.setShooter(MotorSetting.STOP);
 
 //            robot.goTicks(robot.inchesToTicks(39),0.3);
 
-        } else if (allianceColor == RED) {
-
         } else if (allianceColor == RED && startingPosition == StartingPosition.BACKUP) {
 
-            robot.setPowerLeft(0.3 * 0.8);
-            robot.setPowerRight(0.3 * 1.0);
+            robot.setPowerLeft(-0.3 * 0.8);
+            robot.setPowerRight(-0.3 * 1.0);
             sleep(1500);
             robot.stopAllMotors();
+
+        } else if (allianceColor == BLUE && startingPosition == StartingPosition.BACKUP) {
+
+            robot.setPowerLeft(-0.3 * 0.8);
+            robot.setPowerRight(-0.3 * 1.0);
+            sleep(1500);
+            robot.stopAllMotors();
+
+        } else if (allianceColor == RED) {
+
+        } else if (allianceColor == BLUE) {
+            robot.setPowerLeft(-0.3 * 0.8);
+            robot.setPowerRight(-0.3 * 1.0);
+            sleep(1500);
+            robot.stopAllMotors();
+//            robot.calibrateGyro();
+//            sleep(5000);
+////            robot.goTicks(robot.inchesToTicks(23),0.8);
+//            robot.setShooter(MotorSetting.FORWARD);
+//            sleep(3000);
+//            robot.setBallPickup(MotorSetting.FORWARD);
+//            sleep(10000);
+//            robot.goTicks(robot.inchesToTicks(35.5),0.8);
 
         } else {
 
