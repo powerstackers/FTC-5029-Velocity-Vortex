@@ -24,6 +24,7 @@ import com.powerstackers.velocity.common.VelAutonomousProgram;
 import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.StartingPosition;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * @author Jonathan Thomas
@@ -31,6 +32,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  */
 @SuppressWarnings("unused")
 @Autonomous(name = "Blue Auto Start Middle", group = "Powerstackers")
+@Disabled
 public class BlueAutonomous_StartMiddle extends VelAutonomousProgram {
     public BlueAutonomous_StartMiddle() {
         super(PublicEnums.AllianceColor.BLUE, StartingPosition.MIDDLE);
