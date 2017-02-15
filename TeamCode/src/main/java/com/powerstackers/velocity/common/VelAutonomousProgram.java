@@ -118,18 +118,19 @@ public class VelAutonomousProgram extends LinearOpMode {
 
         } else if (allianceColor == BLUE && startingPosition == StartingPosition.BACKUP) {
 
+            robot.setPowerLeft(-0.3 * 0.75);
+            robot.setPowerRight(-0.3 * 1.0);
+            sleep(1800);
+            robot.stopAllMotors();
+
+        } else if (allianceColor == RED) {
+
+        } else if (allianceColor == BLUE) {
 //            robot.setPowerLeft(-0.3 * 0.75);
 //            robot.setPowerRight(-0.3 * 1.0);
 //            sleep(1800);
 //            robot.stopAllMotors();
 
-        } else if (allianceColor == RED) {
-
-        } else if (allianceColor == BLUE) {
-            robot.setPowerLeft(-0.3 * 0.75);
-            robot.setPowerRight(-0.3 * 1.0);
-            sleep(1800);
-            robot.stopAllMotors();
 //            robot.calibrateGyro();
 //            sleep(5000);
 ////            robot.goTicks(robot.inchesToTicks(23),0.8);
