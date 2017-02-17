@@ -20,6 +20,7 @@
 
 package com.powerstackers.velocity.common;
 
+import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -29,6 +30,11 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.I2cAddr;
+
+import java.sql.Array;
+import java.util.Arrays;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
@@ -65,9 +71,9 @@ public class VelRobot {
     public Servo servoBallGrab = null;
 
     GyroSensor sensorGyro;
-    ColorSensor sensorColor;
-    protected ColorSensor sensorColorGroundL;
-    protected ColorSensor sensorColorGroundR;
+    public ColorSensor sensorColor;
+    public ColorSensor sensorColorGroundL;
+    public ColorSensor sensorColorGroundR;
 
     private final ElapsedTime timer = new ElapsedTime();
 
@@ -98,7 +104,7 @@ public class VelRobot {
         motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
 
         motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
-        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // TODO: does this work?
+        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
         motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -110,7 +116,20 @@ public class VelRobot {
 
         sensorGyro.calibrate();
 
+        sensorColor         = mode.hardwareMap.colorSensor.get("sensorColor");
+        sensorColorGroundL  = mode.hardwareMap.colorSensor.get("sensorColorGroundL");
+        sensorColorGroundR  = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
+
+        sensorColor.setI2cAddress(I2cAddr.create7bit(0x1e)); //8bit 0x3c
+        sensorColorGroundL.setI2cAddress(I2cAddr.create7bit(0x2e)); //8bit 0x5c
+        sensorColorGroundR.setI2cAddress(I2cAddr.create7bit(0x26)); //8bit 0x4c
+
+        sensorColor.enableLed(true);
+        sensorColorGroundL.enableLed(true);
+        sensorColorGroundR.enableLed(true);
+
         stopMovement();
+        servoBeacon.setPosition(VelRobotConstants.BEACON_RESTING);
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
         mode.telemetry.addData("Status", "Initialized");
     }
@@ -209,6 +228,10 @@ public class VelRobot {
         }
     }
 
+    public void setBeaconTap(double position) {
+        servoBeacon.setPosition(position);
+    }
+
     /**
      * Set the movement speeds of all four motors, based on a desired angle, speed, and rotation
      * speed.
@@ -217,7 +240,7 @@ public class VelRobot {
      * @param speed The movement speed we want, ranging from -1:1
      * @param rotation The speed of rotation, ranging from -1:1
      */
-    public void setMovement(double angle, double speed, double rotation) {
+    public void setMovement(double angle, double speed, double rotation, double scale) {
 
         // None of this stuff should happen if the speed is 0.
         if (speed == 0.0 && rotation == 0.0) {
@@ -232,14 +255,27 @@ public class VelRobot {
         multipliers[2] = (speed * -Math.cos(angle + (PI/4))) + (rotation * 0.5);
         multipliers[3] = (speed * -Math.sin(angle + (PI/4))) + (rotation * 0.5);
 
+        mode.telemetry.addData("mult 1:", multipliers[0]);
+        mode.telemetry.addData("mult 2:", multipliers[1]);
+        mode.telemetry.addData("mult 3:", multipliers[2]);
+        mode.telemetry.addData("mult 4:", multipliers[3]);
+
         double largest = abs(multipliers[0]);
         for (int i = 1; i < 4; i++) {
             if (abs(multipliers[i]) > largest)
                 largest = abs(multipliers[i]);
         }
 
+        // Only normalise multipliers if largest exceeds 1.0
+        if(largest > 1.0) {
+            for (int i = 0; i < 4; i++) {
+                multipliers[i] = multipliers[i] / largest;
+            }
+        }
+
+        // Scale if needed, 0.0 < scale < 1.0;
         for (int i = 0; i < 4; i++) {
-            multipliers[i] = multipliers[i] / largest;
+            multipliers[i] = multipliers[i] * scale;
         }
 
         motorDrive1.setPower(multipliers[0]);
@@ -313,6 +349,42 @@ public class VelRobot {
                 ? pad.right_stick_x : 0.0;
     }
 
+//    /**
+//     * Tap the beacon on the correct side.
+//     * @param allianceColor The color that we are currently playing as.
+//     */
+//    public void tapBeacon(PublicEnums.AllianceColor allianceColor) {
+//        PublicEnums.AllianceColor dominantColor;
+//        double positionBeaconServo;
+//
+//        // Detect the color shown on the beacon's left half, and record it.
+//        if (sensorColor.red() > sensorColor.blue()) {
+//            dominantColor = PublicEnums.AllianceColor.RED;
+//        } else {
+//            dominantColor = PublicEnums.AllianceColor.BLUE;
+//        }
+//
+//        // Tap the correct side based on the dominant color.
+//        if (dominantColor == allianceColor) {
+//            positionBeaconServo = VelRobotConstants.BEACON_TAP_LEFT;
+//        } else {
+//            positionBeaconServo = VelRobotConstants.BEACON_TAP_RIGHT;
+//        }
+//
+//        // Trim the servo value and set the servo position.
+//        positionBeaconServo = trimServoValue(positionBeaconServo);
+//        servoBeacon.setPosition(positionBeaconServo);
+//    }
+
+    /**
+     * Trim a servo value between the minimum and maximum ranges.
+     * @param servoValue Value to trim.
+     * @return A raw double with the trimmed value.
+     */
+    private static double trimServoValue(double servoValue) {
+        return Range.clip(servoValue, 0.0, 1.0);
+    }
+
     /**
      * @return Int representation of the motor position.
      */
@@ -328,19 +400,19 @@ public class VelRobot {
         return motorDrive1.getCurrentPosition();
     }
 
-    //    public long getDrive2Encoder() {
-//        return motorDrive2.getCurrentPosition();
-//    }
-//
-//    public long getDrive3Encoder() {
-//        return motorDrive3.getCurrentPosition();
-//    }
-//
-//    public long getDrive4Encoder() {
-//        return motorDrive4.getCurrentPosition();
-//    }
+        public long getDrive2Encoder() {
+        return motorDrive2.getCurrentPosition();
+    }
 
-    public int getEncoderShooter(){
+    public long getDrive3Encoder() {
+        return motorDrive3.getCurrentPosition();
+    }
+
+    public long getDrive4Encoder() {
+        return motorDrive4.getCurrentPosition();
+    }
+
+    public int getEncoderShooter() throws InterruptedException {
         return motorShooter1.getCurrentPosition();
     }
 

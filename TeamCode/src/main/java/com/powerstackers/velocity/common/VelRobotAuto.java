@@ -62,7 +62,7 @@ public class VelRobotAuto extends VelRobot {
     /**
      * Gear ratio between the motor and the drive wheels. Used in calculating distance.
      */
-    private static final double driveGearMultiplier = 1.5;
+    private static final double driveGearMultiplier = 2;
 //    double turnOvershootThreshold = 0.1;
 
     LinearOpMode mode;
@@ -75,32 +75,32 @@ public class VelRobotAuto extends VelRobot {
         super(mode);
     }
 
-    /**
-     * Tap the beacon on the correct side.
-     * @param allianceColor The color that we are currently playing as.
-     */
-    public void tapBeacon(PublicEnums.AllianceColor allianceColor) {
-        PublicEnums.AllianceColor dominantColor;
-        double positionBeaconServo;
-
-        // Detect the color shown on the beacon's left half, and record it.
-        if (sensorColor.red() > sensorColor.blue()) {
-            dominantColor = PublicEnums.AllianceColor.RED;
-        } else {
-            dominantColor = PublicEnums.AllianceColor.BLUE;
-        }
-
-        // Tap the correct side based on the dominant color.
-        if (dominantColor == allianceColor) {
-            positionBeaconServo = VelRobotConstants.BEACON_TAP_LEFT;
-        } else {
-            positionBeaconServo = VelRobotConstants.BEACON_TAP_RIGHT;
-        }
-
-        // Trim the servo value and set the servo position.
-        positionBeaconServo = trimServoValue(positionBeaconServo);
-        servoBeacon.setPosition(positionBeaconServo);
-    }
+//    /**
+//     * Tap the beacon on the correct side.
+//     * @param allianceColor The color that we are currently playing as.
+//     */
+//    public void tapBeacon(PublicEnums.AllianceColor allianceColor) {
+//        PublicEnums.AllianceColor dominantColor;
+//        double positionBeaconServo;
+//
+//        // Detect the color shown on the beacon's left half, and record it.
+//        if (sensorColor.red() > sensorColor.blue()) {
+//            dominantColor = PublicEnums.AllianceColor.RED;
+//        } else {
+//            dominantColor = PublicEnums.AllianceColor.BLUE;
+//        }
+//
+//        // Tap the correct side based on the dominant color.
+//        if (dominantColor == allianceColor) {
+//            positionBeaconServo = VelRobotConstants.BEACON_TAP_LEFT;
+//        } else {
+//            positionBeaconServo = VelRobotConstants.BEACON_TAP_RIGHT;
+//        }
+//
+//        // Trim the servo value and set the servo position.
+//        positionBeaconServo = trimServoValue(positionBeaconServo);
+//        servoBeacon.setPosition(positionBeaconServo);
+//    }
 
     /**
      * detect white bar on ground in front of beacon
@@ -242,7 +242,7 @@ public class VelRobotAuto extends VelRobot {
      */
     public void goDistanceInCm(double distance, double angle, double speed) {
         zeroEncoders();
-        setMovement(angle, speed, 0.0);
+        setMovement(angle, speed, 0.0, 1.0);
         // Track using the back left motor.
         // Why? It's the only one my fat fingers could get the plug into.
         //noinspection StatementWithEmptyBody
@@ -256,7 +256,7 @@ public class VelRobotAuto extends VelRobot {
      * @param  ticks The distance that we want to travel.
      * @param  speed The speed at which to travel.
      */
-    void goTicks(long ticks, double speed) {
+    void goTicks(long ticks, double speed) throws InterruptedException {
 
 //        long startLeft = robot.getLeftEncoder();
         long startRight = this.getDrive1Encoder();
@@ -265,7 +265,7 @@ public class VelRobotAuto extends VelRobot {
         long targetRight = startRight + ticks;
 //        long targetLeft = startLeft + ticks;
 
-        double leftCorrect	= 1.0;
+        double leftCorrect	= 0.8;
         double rightCorrect	= 1.0;
 
         if (ticks < 0) {
@@ -321,22 +321,22 @@ public class VelRobotAuto extends VelRobot {
      * Reset the encoders on all motors.
      */
     //TODO not neccasary
-    private void zeroEncoders() {
+    public void zeroEncoders() {
         motorDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorDrive3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorDrive4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        motorDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        motorDrive3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        motorDrive4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        try {
-            mode.idle();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            mode.idle();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 
@@ -374,7 +374,7 @@ public class VelRobotAuto extends VelRobot {
      * @param  inches double containing the distance you want to travel.
      * @return        that distance in encoder ticks.
      */
-    long inchesToTicks(double inches) {
+    long inchesToTicks(double inches) throws InterruptedException {
         return (long) ((1/driveGearMultiplier)*ticksPerRevolution*(inches/(PI*wheelDiameterIN)));
     }
 
@@ -390,14 +390,7 @@ public class VelRobotAuto extends VelRobot {
         return (ticks/ticksPerRevolution)*driveGearMultiplier*(PI*wheelDiameterIN);
     }
 
-    /**
-     * Trim a servo value between the minimum and maximum ranges.
-     * @param servoValue Value to trim.
-     * @return A raw double with the trimmed value.
-     */
-    private static double trimServoValue(double servoValue) {
-        return Range.clip(servoValue, 0.0, 1.0);
-    }
+
 
 //    public long getLeftEncoder() {
 //        return motorDrive1.getCurrentPosition();

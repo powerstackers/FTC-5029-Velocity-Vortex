@@ -40,4 +40,17 @@ public class PublicEnums {
     public enum GrabberSetting {
         TIGHT, LOOSE
     }
+
+    /** Autonomous mode determined by the 6 starting positions. */
+    public enum AutonomousMode {
+        BLUE_FAR_FROM_RAMP, BLUE_MIDDLE, BLUE_CLOSE_TO_RAMP,
+        RED_FAR_FROM_RAMP, RED_MIDDLE, RED_CLOSE_TO_RAMP
+    }
+    // TODO Implement this ^^^ instead of if-elseif-elseif-elseif-elseif-else in VelAutonomousProgram
+
+    /** Sequential steps in autonomous */
+    public enum AutonomousStates {
+        STATE_FORWARD,STATE_DETECT,STATE_SHOOT,STATE_FEED //...
+    }
+    // TODO This can be implemented later in autonomous
 }
