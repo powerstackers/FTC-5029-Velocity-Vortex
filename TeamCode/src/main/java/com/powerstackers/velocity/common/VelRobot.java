@@ -251,9 +251,9 @@ public class VelRobot {
         // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
         double multipliers[] = new double[4];
         multipliers[0] = (speed * Math.sin(angle + (PI/4)))  + (rotation * 0.5);
-        multipliers[1] = (speed * -Math.cos(angle + (PI/4)))  + (rotation * 0.5);
+        multipliers[1] = (speed * Math.cos(angle + (PI/4)))  + (rotation * 0.5);
         multipliers[2] = (speed * -Math.cos(angle + (PI/4))) + (rotation * 0.5);
-        multipliers[3] = (speed * Math.sin(angle + (PI/4))) + (rotation * 0.5);
+        multipliers[3] = (speed * -Math.sin(angle + (PI/4))) + (rotation * 0.5);
 
         mode.telemetry.addData("mult 1:", multipliers[0]);
         mode.telemetry.addData("mult 2:", multipliers[1]);
