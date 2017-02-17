@@ -21,6 +21,7 @@
 package com.powerstackers.velocity.common;
 
 import com.powerstackers.velocity.common.enums.PublicEnums;
+import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -120,9 +121,9 @@ public class VelRobotAuto extends VelRobot {
      */
     public void setPowerAll(double power) {
         motorDrive1.setPower(power);
-        motorDrive2.setPower(power);
+        motorDrive2.setPower(-power);
         motorDrive3.setPower(power);
-        motorDrive4.setPower(power);
+        motorDrive4.setPower(-power);
     }
 
     /**
@@ -256,65 +257,14 @@ public class VelRobotAuto extends VelRobot {
      * @param  ticks The distance that we want to travel.
      * @param  speed The speed at which to travel.
      */
-    void goTicks(long ticks, double speed) throws InterruptedException {
+    public void goTicks(long ticks, double speed) throws InterruptedException {
+        long startingPosition = getDrive1Encoder();
+        long targetPosition = startingPosition + ticks;
 
-//        long startLeft = robot.getLeftEncoder();
-        long startRight = this.getDrive1Encoder();
-
-        // Target encoder values for the left and right motors
-        long targetRight = startRight + ticks;
-//        long targetLeft = startLeft + ticks;
-
-        double leftCorrect	= 0.8;
-        double rightCorrect	= 1.0;
-
-        if (ticks < 0) {
-            // Set the drive motors to the given speed
-//            robot.setPowerLeft(speed * leftCorrect);
-//            robot.setPowerRight(speed * rightCorrect);
-//            robot.setPowerLeft(0.85);
-//            robot.setPowerRight(0.60);
-
-            // Wait until both motors have reached the target
-            while ( this.getDrive1Encoder() > targetRight) {
-                //TODO make telemetry work
-//                mode.telemetry.addData("Data", this.getRightEncoder());
-//                mode.telemetry.addData("Encoder target", targetRight);
-//                mode.telemetry.addData("gyro", this.getGyroHeading());
-
-                /* Gyro Compensation */
-                if (this.getGyroHeading() > 180) {
-                    this.setPowerLeft(speed/2);
-                    this.setPowerRight(1);
-                } else if (this.getGyroHeading() < 180 && this.getGyroHeading() > 0) {
-                    this.setPowerLeft(1);
-                    this.setPowerRight(speed/2);
-                } else {
-                    this.setPowerLeft(speed * leftCorrect);
-                    this.setPowerRight(speed * rightCorrect);
-                }
-            }
-
-            // Stop the drive motors here
-            this.setPowerLeft(0);
-            this.setPowerRight(0);
-        } else if (ticks > 0){
-            // Set the drive motors to the speed (in reverse)
-            this.setPowerLeft(-speed * leftCorrect);
-            this.setPowerRight(-speed * rightCorrect);
-//            robot.setPowerLeft(-0.85);
-//            robot.setPowerRight(-0.60);
-
-            // Wait until both motors have reached the target
-            while( this.getDrive1Encoder() < targetRight) {
-//                mode.telemetry.addData("Data2", getDrive1Encoder());
-//                mode.telemetry.addData("Encoder target", targetRight);
-            }
-
-            // Turn off the drive motors here
-            this.setPowerLeft(0);
-            this.setPowerRight(0);
+        while (getDrive1Encoder() < targetPosition) {
+            setPowerAll(0.5);
         }
+        stopMovement();
     }
 
     /**
@@ -374,7 +324,7 @@ public class VelRobotAuto extends VelRobot {
      * @param  inches double containing the distance you want to travel.
      * @return        that distance in encoder ticks.
      */
-    long inchesToTicks(double inches) throws InterruptedException {
+    public long inchesToTicks(double inches) throws InterruptedException {
         return (long) ((1/driveGearMultiplier)*ticksPerRevolution*(inches/(PI*wheelDiameterIN)));
     }
 
