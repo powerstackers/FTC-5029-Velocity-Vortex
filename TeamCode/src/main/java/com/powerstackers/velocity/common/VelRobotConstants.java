@@ -33,7 +33,7 @@ public class VelRobotConstants {
     public static final double BEACON_RESTING   = 0.5;
 
     /** Joystick must be pushed past this going to register as being pushed. */
-    static final double MINIMUM_JOYSTICK_THRESHOLD = 0.08F;
+    public static final double MINIMUM_JOYSTICK_THRESHOLD = 0.15f;
 
     /** Ball grab release servo in the upright and locked position. */
     static final double SERVO_BALL_GRAB_STOWED = 0.0;

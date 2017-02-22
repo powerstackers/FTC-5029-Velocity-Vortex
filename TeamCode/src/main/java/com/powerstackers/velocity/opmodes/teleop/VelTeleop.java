@@ -27,6 +27,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import static com.powerstackers.velocity.common.VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD;
+
 /**
  * @author Derek Helm
  */
@@ -99,12 +101,16 @@ public class VelTeleop extends OpMode {
         } else {
             scale = 1.0;
         }
-
+        if (gamepad1.left_stick_x > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_y > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_x < -MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_y < -MINIMUM_JOYSTICK_THRESHOLD || gamepad1.right_stick_x > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.right_stick_x < -MINIMUM_JOYSTICK_THRESHOLD){
+            robot.MekMove(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        } else{
+            robot.stopMovement();
+        }
         // Set the movement of the robot's wheels
-        robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
-                          VelRobot.mecSpeedFromJoystick(gamepad1),
-                          VelRobot.mecSpinFromJoystick(gamepad1),
-                          scale);
+//        robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
+//                          VelRobot.mecSpeedFromJoystick(gamepad1),
+//                          VelRobot.mecSpinFromJoystick(gamepad1),
+//                          scale);
 
         //set tap beacon
 //        if(buttonTapBeacon) {

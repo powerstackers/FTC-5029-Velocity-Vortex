@@ -93,10 +93,12 @@ public class VelRobot {
         motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
         motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+        motorDrive2.setDirection(DcMotorSimple.Direction.REVERSE);
 //        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
 //        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+        motorDrive4.setDirection(DcMotorSimple.Direction.REVERSE);
 //        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorRLift  = mode.hardwareMap.dcMotor.get("motorRightLift");
         motorRLift.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -307,6 +309,17 @@ public class VelRobot {
         motorPickup.setPower(0.0);
         motorLLift.setPower(0.0);
         motorRLift.setPower(0.0);
+    }
+
+    public void MekMove(double x, double y, double turn) {
+        double ypower = -y/3;
+        double xpower = x/3;
+        double rturn = -turn/3;
+
+        motorDrive1.setPower(ypower + xpower - rturn);
+        motorDrive2.setPower(ypower + xpower + rturn);
+        motorDrive3.setPower(ypower - xpower - rturn);
+        motorDrive4.setPower(ypower - xpower + rturn);
     }
 
     /**

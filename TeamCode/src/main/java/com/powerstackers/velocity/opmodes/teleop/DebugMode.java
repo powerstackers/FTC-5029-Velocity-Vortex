@@ -181,6 +181,7 @@ public class DebugMode extends OpMode {
 //        }
 
 //        telemetry here vvv
+        telemetry.addData("left y ", gamepad1.left_stick_y);
         telemetry.addData("Shooter RPM", robot.getShooterRPM());
         telemetry.addData("Front Left", robot.getDrive1Encoder());
         telemetry.addData("Front Right", robot.getDrive2Encoder());
