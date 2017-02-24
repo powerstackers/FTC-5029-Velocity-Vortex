@@ -181,17 +181,17 @@ public class DebugMode extends OpMode {
 //        }
 
 //        telemetry here vvv
-        telemetry.addData("Gamepad 1 left Y ", gamepad1.left_stick_y);
-        telemetry.addData("Gamepad 1 left x ", gamepad1.left_stick_x);
+        telemetry.addData("Gamepad 1 left Y ",  gamepad1.left_stick_y);
+        telemetry.addData("Gamepad 1 left x ",  gamepad1.left_stick_x);
         telemetry.addData("Gamepad 1 right Y ", gamepad1.right_stick_y);
         telemetry.addData("Gamepad 1 right x ", gamepad1.right_stick_x);
 
         telemetry.addData("Shooter RPM", robot.getShooterRPM());
 
-        telemetry.addData("Front Left", robot.getDrive1Encoder());
-        telemetry.addData("Front Right", robot.getDrive2Encoder());
-        telemetry.addData("Back Left", robot.getDrive3Encoder());
-        telemetry.addData("Back Right", robot.getDrive4Encoder());
+        telemetry.addData("Front Left",     robot.getDrive1Encoder());
+        telemetry.addData("Front Right",    robot.getDrive2Encoder());
+        telemetry.addData("Back Left",      robot.getDrive3Encoder());
+        telemetry.addData("Back Right",     robot.getDrive4Encoder());
 
         telemetry.addData("Lift Servo Pos: ", robot.getBallGrabPosition());
 
