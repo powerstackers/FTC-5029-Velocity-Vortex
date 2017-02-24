@@ -87,30 +87,11 @@ public class VelTeleop_Backup extends OpMode {
         boolean buttonSpeedToggle       = gamepad1.a;
         boolean buttonTapBeacon         = gamepad1.y;
 
-        // Toggle speed for driver
-//        if (buttonSpeedToggle && !flag_speedToggleJustPressed) {
-//            flag_speedToggleJustPressed = true;
-//            flag_speedChanged = !flag_speedChanged;
-//        } else if (!buttonSpeedToggle) {
-//            flag_speedToggleJustPressed = false;
-//        }
-
-//        if (flag_speedChanged) {
-//            scale = 0.5;
-//        } else {
-//            scale = 1.0;
-//        }
-
         if (gamepad1.left_stick_x > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_y > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_x < -MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_y < -MINIMUM_JOYSTICK_THRESHOLD || gamepad1.right_stick_x > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.right_stick_x < -MINIMUM_JOYSTICK_THRESHOLD){
             robot.MekMove(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
         } else{
             robot.stopMovement();
         }
-        // Set the movement of the robot's wheels
-//        robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
-//                          VelRobot.mecSpeedFromJoystick(gamepad1),
-//                          VelRobot.mecSpinFromJoystick(gamepad1),
-//                          scale);
 
         //set tap beacon
 //        if(buttonTapBeacon) {
@@ -188,19 +169,6 @@ public class VelTeleop_Backup extends OpMode {
 
 //        telemetry here vvv
         telemetry.addData("Shooter RPM", robot.getShooterRPM());
-//        telemetry.addData("EncVal", robot.getShooterEncVal());
-//        telemetry.addData("Clear", robot.getAlpha());
-//        telemetry.addData("Red  ", robot.getRed());
-//        telemetry.addData("Green", robot.getGreen());
-//        telemetry.addData("Blue ", robot.getBlue());
-//        telemetry.addData("L-Clear", robot.sensorColorGroundL.alpha());
-//        telemetry.addData("L-Red  ", robot.sensorColorGroundL.red());
-//        telemetry.addData("L-Green", robot.sensorColorGroundL.green());
-//        telemetry.addData("L-Blue ", robot.sensorColorGroundL.blue());
-//        telemetry.addData("R-Clear", robot.sensorColorGroundR.alpha());
-//        telemetry.addData("R-Red  ", robot.sensorColorGroundR.red());
-//        telemetry.addData("R-Green", robot.sensorColorGroundR.green());
-//        telemetry.addData("R-Blue ", robot.sensorColorGroundR.blue());
     }
 
     /**
