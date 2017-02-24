@@ -422,7 +422,7 @@ public class VelRobot {
         return motorDrive1.getCurrentPosition();
     }
 
-        public long getDrive2Encoder() {
+    public long getDrive2Encoder() {
         return motorDrive2.getCurrentPosition();
     }
 
@@ -440,6 +440,10 @@ public class VelRobot {
 
     public double getBallGrabPosition() {
         return this.servoBallGrab.getPosition();
+    }
+
+    public double getGyroHeading() {
+        return  sensorGyro.getHeading();
     }
 
 //    public int getARGB() {

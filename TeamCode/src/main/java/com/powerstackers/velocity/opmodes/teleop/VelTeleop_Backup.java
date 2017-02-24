@@ -21,19 +21,20 @@
 package com.powerstackers.velocity.opmodes.teleop;
 
 import com.powerstackers.velocity.common.VelRobot;
-import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import static com.powerstackers.velocity.common.VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD;
 
 /**
  * @author Derek Helm
  */
 
 @SuppressWarnings("unused")
-@TeleOp(name="DebugMode", group ="Powerstackers")
-public class DebugMode extends OpMode {
+@TeleOp(name="VEL-Teleop (BackUp)", group ="Powerstackers")
+public class VelTeleop_Backup extends OpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
     private VelRobot robot;
@@ -86,25 +87,11 @@ public class DebugMode extends OpMode {
         boolean buttonSpeedToggle       = gamepad1.a;
         boolean buttonTapBeacon         = gamepad1.y;
 
-        // Toggle speed for driver
-        if (buttonSpeedToggle && !flag_speedToggleJustPressed) {
-            flag_speedToggleJustPressed = true;
-            flag_speedChanged = !flag_speedChanged;
-        } else if (!buttonSpeedToggle) {
-            flag_speedToggleJustPressed = false;
+        if (gamepad1.left_stick_x > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_y > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_x < -MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_y < -MINIMUM_JOYSTICK_THRESHOLD || gamepad1.right_stick_x > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.right_stick_x < -MINIMUM_JOYSTICK_THRESHOLD){
+            robot.MekMove(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        } else{
+            robot.stopMovement();
         }
-
-        if (flag_speedChanged) {
-            scale = 0.5;
-        } else {
-            scale = 1.0;
-        }
-
-        // Set the movement of the robot's wheels
-        robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
-                VelRobot.mecSpeedFromJoystick(gamepad1),
-                VelRobot.mecSpinFromJoystick(gamepad1),
-                scale);
 
         //set tap beacon
 //        if(buttonTapBeacon) {
@@ -181,34 +168,7 @@ public class DebugMode extends OpMode {
 //        }
 
 //        telemetry here vvv
-        telemetry.addData("Gamepad 1 left Y ",  gamepad1.left_stick_y);
-        telemetry.addData("Gamepad 1 left x ",  gamepad1.left_stick_x);
-        telemetry.addData("Gamepad 1 right Y ", gamepad1.right_stick_y);
-        telemetry.addData("Gamepad 1 right x ", gamepad1.right_stick_x);
-
         telemetry.addData("Shooter RPM", robot.getShooterRPM());
-
-        telemetry.addData("Front Left",     robot.getDrive1Encoder());
-        telemetry.addData("Front Right",    robot.getDrive2Encoder());
-        telemetry.addData("Back Left",      robot.getDrive3Encoder());
-        telemetry.addData("Back Right",     robot.getDrive4Encoder());
-
-        telemetry.addData("Lift Servo Pos: ", robot.getBallGrabPosition());
-
-        telemetry.addData("Gyro Heading: ", robot.getGyroHeading());
-//        telemetry.addData("EncVal", robot.getShooterEncVal());
-//        telemetry.addData("Clear", robot.getAlpha());
-//        telemetry.addData("Red  ", robot.getRed());
-//        telemetry.addData("Green", robot.getGreen());
-//        telemetry.addData("Blue ", robot.getBlue());
-        telemetry.addData("L-Clear", robot.sensorColorGroundL.alpha());
-        telemetry.addData("L-Red  ", robot.sensorColorGroundL.red());
-        telemetry.addData("L-Green", robot.sensorColorGroundL.green());
-        telemetry.addData("L-Blue ", robot.sensorColorGroundL.blue());
-        telemetry.addData("R-Clear", robot.sensorColorGroundR.alpha());
-        telemetry.addData("R-Red  ", robot.sensorColorGroundR.red());
-        telemetry.addData("R-Green", robot.sensorColorGroundR.green());
-        telemetry.addData("R-Blue ", robot.sensorColorGroundR.blue());
     }
 
     /**
