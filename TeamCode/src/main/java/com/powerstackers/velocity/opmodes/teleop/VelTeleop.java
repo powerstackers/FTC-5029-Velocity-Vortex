@@ -21,7 +21,6 @@
 package com.powerstackers.velocity.opmodes.teleop;
 
 import com.powerstackers.velocity.common.VelRobot;
-import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -89,18 +88,19 @@ public class VelTeleop extends OpMode {
         boolean buttonTapBeacon         = gamepad1.y;
 
         // Toggle speed for driver
-        if (buttonSpeedToggle && !flag_speedToggleJustPressed) {
-            flag_speedToggleJustPressed = true;
-            flag_speedChanged = !flag_speedChanged;
-        } else if (!buttonSpeedToggle) {
-            flag_speedToggleJustPressed = false;
-        }
+//        if (buttonSpeedToggle && !flag_speedToggleJustPressed) {
+//            flag_speedToggleJustPressed = true;
+//            flag_speedChanged = !flag_speedChanged;
+//        } else if (!buttonSpeedToggle) {
+//            flag_speedToggleJustPressed = false;
+//        }
 
-        if (flag_speedChanged) {
-            scale = 0.5;
-        } else {
-            scale = 1.0;
-        }
+//        if (flag_speedChanged) {
+//            scale = 0.5;
+//        } else {
+//            scale = 1.0;
+//        }
+
         if (gamepad1.left_stick_x > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_y > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_x < -MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_y < -MINIMUM_JOYSTICK_THRESHOLD || gamepad1.right_stick_x > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.right_stick_x < -MINIMUM_JOYSTICK_THRESHOLD){
             robot.MekMove(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
         } else{
