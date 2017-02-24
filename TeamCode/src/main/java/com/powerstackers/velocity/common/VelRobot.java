@@ -38,6 +38,9 @@ import java.util.Arrays;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
 /**
  * Basic configurations for our robot. This class contains methods to make the robot do stuff.
@@ -243,6 +246,17 @@ public class VelRobot {
      * @param rotation The speed of rotation, ranging from -1:1
      */
     public void setMovement(double angle, double speed, double rotation, double scale) {
+        // Shift angle by 45 degrees, since our drive train is x-shaped and not cross-shaped
+        angle += PI/4;
+
+        // Cut rotation in half because we don't want to spin THAT fast
+        rotation *= 0.5;
+
+        // Normalize magnitudes so that "straight forward" has a magnitude of 1
+        speed *= sqrt(2);
+
+        double sinDir = sin(angle);
+        double cosDir = cos(angle);
 
         // None of this stuff should happen if the speed is 0.
         if (speed == 0.0 && rotation == 0.0) {
@@ -252,15 +266,10 @@ public class VelRobot {
 
         // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
         double multipliers[] = new double[4];
-        multipliers[0] = (speed * Math.sin(angle + (PI/4)))  + (rotation * 0.5);
-        multipliers[1] = (speed * Math.cos(angle + (PI/4)))  + (rotation * 0.5);
-        multipliers[2] = (speed * -Math.cos(angle + (PI/4))) + (rotation * 0.5);
-        multipliers[3] = (speed * -Math.sin(angle + (PI/4))) + (rotation * 0.5);
-
-        mode.telemetry.addData("mult 1:", multipliers[0]);
-        mode.telemetry.addData("mult 2:", multipliers[1]);
-        mode.telemetry.addData("mult 3:", multipliers[2]);
-        mode.telemetry.addData("mult 4:", multipliers[3]);
+        multipliers[0] = (speed * sinDir) + rotation;
+        multipliers[1] = (speed * cosDir) + rotation;
+        multipliers[2] = (speed * -cosDir) + rotation;
+        multipliers[3] = (speed * -sinDir) + rotation;
 
         double largest = abs(multipliers[0]);
         for (int i = 1; i < 4; i++) {
@@ -268,7 +277,7 @@ public class VelRobot {
                 largest = abs(multipliers[i]);
         }
 
-        // Only normalise multipliers if largest exceeds 1.0
+        // Only normalize multipliers if largest exceeds 1.0
         if(largest > 1.0) {
             for (int i = 0; i < 4; i++) {
                 multipliers[i] = multipliers[i] / largest;
@@ -345,7 +354,7 @@ public class VelRobot {
             && abs(pad.left_stick_y) < VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD){
             return 0.0;
         } else {
-            return Math.sqrt((pad.left_stick_y * pad.left_stick_y)
+            return sqrt((pad.left_stick_y * pad.left_stick_y)
                 + (pad.left_stick_x * pad.left_stick_x));
         }
     }
