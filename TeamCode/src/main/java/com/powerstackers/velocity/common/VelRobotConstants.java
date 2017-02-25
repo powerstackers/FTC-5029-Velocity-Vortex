@@ -46,6 +46,8 @@ public class VelRobotConstants {
     static final double MOTOR_SHOOTER_MAX_RPM       = 1600.0;
     static final int MOTOR_SHOOTER_TARGET_RPM       = 800;
     static final int MOTOR_SHOOTER_RPM_INCREMENT    = 50;
+    public static int SCHMITT_UPPER = 850;
+    public static int SCHMITT_LOWER = 750;
 
     static final double MOTOR_LIFT_POWER    = 1.0;
     static final double MOTOR_PICKUP_POWER  = -1.0;

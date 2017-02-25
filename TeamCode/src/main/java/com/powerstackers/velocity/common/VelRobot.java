@@ -105,9 +105,7 @@ public class VelRobot {
         motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
 
         motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
-        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
         motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
 
         servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
@@ -197,10 +195,19 @@ public class VelRobot {
      * @param rpm RPM of motor that we want to set, can be positive or negative.
      */
     private void setShooterRpm(int rpm) {
-        if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
-            motorShooter1.setPower( (double) rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
-        } else {
-            motorShooter1.setPower(rpm > 0? 1 : -1);
+        double shootRpm = getShooterRPM();
+
+        // Uses somehting called a Schmitt trigger. Has an upper and lower threshold. Should stop us
+        // from bouncing around.
+        // If RPM is below the lower threshold, add speed. If it is above the upper threshold,
+        // subtract speed. If it is between the thresholds, do nothing. Remember, don't go outside
+        // the limits of our motor values.
+        if (shootRpm < rpm - VelRobotConstants.SCHMITT_LOWER
+                && motorShooter1.getPower() != 1.0) {
+            motorShooter1.setPower(motorShooter1.getPower() + 0.5);
+        } else if (shootRpm > rpm + VelRobotConstants.SCHMITT_UPPER
+                && motorShooter1.getPower() != 0.0) {
+            motorShooter1.setPower(motorShooter1.getPower() - 0.5);
         }
     }
 
