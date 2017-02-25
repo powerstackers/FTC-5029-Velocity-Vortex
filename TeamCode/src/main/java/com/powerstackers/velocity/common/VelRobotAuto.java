@@ -282,14 +282,14 @@ public class VelRobotAuto extends VelRobot {
 //                mode.telemetry.addData("Encoder target", targetRight);
 //                mode.telemetry.addData("gyro", this.getGyroHeading());
 
-                /* Gyro Compensation */
-                if (this.getGyroHeading() > 180) {
+                /* Gyro Compensation TODO Revisit this. It's wrong. */
+                /*if (this.getGyroHeading() > 180) {
                     this.setPowerLeft(speed/2);
                     this.setPowerRight(1);
                 } else if (this.getGyroHeading() < 180 && this.getGyroHeading() > 0) {
                     this.setPowerLeft(1);
                     this.setPowerRight(speed/2);
-                } else {
+                } else*/ {
                     this.setPowerLeft(speed * leftCorrect);
                     this.setPowerRight(speed * rightCorrect);
                 }
