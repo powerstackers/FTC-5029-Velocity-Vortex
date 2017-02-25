@@ -96,13 +96,9 @@ public class VelRobot {
         motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
         motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-        motorDrive2.setDirection(DcMotorSimple.Direction.REVERSE);
-//        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-//        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
-        motorDrive4.setDirection(DcMotorSimple.Direction.REVERSE);
-//        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         motorRLift  = mode.hardwareMap.dcMotor.get("motorRightLift");
         motorRLift.setDirection(DcMotorSimple.Direction.REVERSE);
         motorLLift  = mode.hardwareMap.dcMotor.get("motorLeftLift");
@@ -285,14 +281,15 @@ public class VelRobot {
         }
 
         // Scale if needed, 0.0 < scale < 1.0;
-        for (int i = 0; i < 4; i++) {
-            multipliers[i] = multipliers[i] * scale;
-        }
+//        for (int i = 0; i < 4; i++) {
+//            multipliers[i] = multipliers[i] * scale;
+//        }
 
+        // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
         motorDrive1.setPower(multipliers[0]);
-        motorDrive2.setPower(multipliers[1]);
+        motorDrive4.setPower(multipliers[1]);
         motorDrive3.setPower(multipliers[2]);
-        motorDrive4.setPower(multipliers[3]);
+        motorDrive2.setPower(multipliers[3]);
     }
 
     /**
@@ -318,17 +315,6 @@ public class VelRobot {
         motorPickup.setPower(0.0);
         motorLLift.setPower(0.0);
         motorRLift.setPower(0.0);
-    }
-
-    public void MekMove(double x, double y, double turn) {
-        double ypower = -y/3;
-        double xpower = x/3;
-        double rturn = -turn/3;
-
-        motorDrive1.setPower(ypower + xpower - rturn);
-        motorDrive2.setPower(ypower + xpower + rturn);
-        motorDrive3.setPower(ypower - xpower - rturn);
-        motorDrive4.setPower(ypower - xpower + rturn);
     }
 
     /**

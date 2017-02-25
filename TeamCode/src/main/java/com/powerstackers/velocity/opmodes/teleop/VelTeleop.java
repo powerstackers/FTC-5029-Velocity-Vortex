@@ -45,7 +45,7 @@ public class VelTeleop extends OpMode {
 
     private boolean flag_speedToggleJustPressed = false;
     private boolean flag_speedChanged = false;
-    private double scale = 0.0;
+    private double scale = 1.0;
 
 //    final View relativeLayout = ((Activity) robot.getOpMode().hardwareMap.appContext).findViewById(R.id.RelativeLayout);
 
@@ -101,16 +101,11 @@ public class VelTeleop extends OpMode {
 //            scale = 1.0;
 //        }
 
-        if (gamepad1.left_stick_x > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_y > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_x < -MINIMUM_JOYSTICK_THRESHOLD || gamepad1.left_stick_y < -MINIMUM_JOYSTICK_THRESHOLD || gamepad1.right_stick_x > MINIMUM_JOYSTICK_THRESHOLD || gamepad1.right_stick_x < -MINIMUM_JOYSTICK_THRESHOLD){
-            robot.MekMove(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
-        } else{
-            robot.stopMovement();
-        }
         // Set the movement of the robot's wheels
-//        robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
-//                          VelRobot.mecSpeedFromJoystick(gamepad1),
-//                          VelRobot.mecSpinFromJoystick(gamepad1),
-//                          scale);
+        robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
+                          VelRobot.mecSpeedFromJoystick(gamepad1),
+                          VelRobot.mecSpinFromJoystick(gamepad1),
+                          scale);
 
         //set tap beacon
 //        if(buttonTapBeacon) {
