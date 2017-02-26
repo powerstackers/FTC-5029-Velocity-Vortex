@@ -204,10 +204,10 @@ public class VelRobot {
         // the limits of our motor values.
         if (shootRpm < rpm - VelRobotConstants.SCHMITT_LOWER
                 && motorShooter1.getPower() != 1.0) {
-            motorShooter1.setPower(motorShooter1.getPower() + 0.5);
+            motorShooter1.setPower(motorShooter1.getPower() + 0.05);
         } else if (shootRpm > rpm + VelRobotConstants.SCHMITT_UPPER
                 && motorShooter1.getPower() != 0.0) {
-            motorShooter1.setPower(motorShooter1.getPower() - 0.5);
+            motorShooter1.setPower(motorShooter1.getPower() - 0.05);
         }
     }
 
