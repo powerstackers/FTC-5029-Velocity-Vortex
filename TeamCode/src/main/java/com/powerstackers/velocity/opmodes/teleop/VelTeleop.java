@@ -21,6 +21,7 @@
 package com.powerstackers.velocity.opmodes.teleop;
 
 import com.powerstackers.velocity.common.VelRobot;
+import com.powerstackers.velocity.common.VelRobotConstants;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -33,7 +34,7 @@ import static com.powerstackers.velocity.common.VelRobotConstants.MINIMUM_JOYSTI
  */
 
 @SuppressWarnings("unused")
-@TeleOp(name="VEL-Teleop", group ="Powerstackers")
+@TeleOp(name = "VEL-Teleop", group = "Powerstackers")
 public class VelTeleop extends OpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
@@ -45,7 +46,7 @@ public class VelTeleop extends OpMode {
 
     private boolean flag_speedToggleJustPressed = false;
     private boolean flag_speedChanged = false;
-    private double scale = 1.0;
+    private double scale = VelRobotConstants.DRIVE_SPEED_NORMAL; // Normal Speed Needs to be tested
 
 //    final View relativeLayout = ((Activity) robot.getOpMode().hardwareMap.appContext).findViewById(R.id.RelativeLayout);
 
@@ -77,35 +78,44 @@ public class VelTeleop extends OpMode {
         telemetry.addData("Status", "Running: ");
 
         //button maps here vvv
-        boolean buttonParticlePickupIn  = gamepad2.left_bumper;
+        boolean buttonParticlePickupIn = gamepad2.left_bumper;
         boolean buttonParticlePickupOut = gamepad2.left_trigger > 0.5;
-        boolean buttonShooter           = gamepad2.a;
-        boolean buttonLiftUp            = gamepad2.right_bumper;
-        boolean buttonLiftDown          = gamepad2.right_trigger > 0.5;
-        boolean buttonCapBallTighter    = gamepad2.dpad_down;
-        boolean buttonCapBallLooser     = gamepad2.dpad_up;
-        boolean buttonSpeedToggle       = gamepad1.a;
-        boolean buttonTapBeacon         = gamepad1.y;
+        boolean buttonShooter = gamepad2.a;
+        boolean buttonLiftUp = gamepad2.right_bumper;
+        boolean buttonLiftDown = gamepad2.right_trigger > 0.5;
+        boolean buttonCapBallTighter = gamepad2.dpad_down;
+        boolean buttonCapBallLooser = gamepad2.dpad_up;
+        boolean buttonSpeedFastToggle = gamepad1.right_bumper;
+        boolean buttonSpeedSlowHold = gamepad1.left_bumper;
+        boolean buttonTapBeacon = gamepad1.y;
 
         // Toggle speed for driver
-//        if (buttonSpeedToggle && !flag_speedToggleJustPressed) {
-//            flag_speedToggleJustPressed = true;
-//            flag_speedChanged = !flag_speedChanged;
-//        } else if (!buttonSpeedToggle) {
-//            flag_speedToggleJustPressed = false;
-//        }
+        if (buttonSpeedFastToggle && !flag_speedToggleJustPressed) {
+            flag_speedToggleJustPressed = true;
+            flag_speedChanged = !flag_speedChanged;
+        } else if (!buttonSpeedFastToggle) {
+            flag_speedToggleJustPressed = false;
+        }
 
-//        if (flag_speedChanged) {
-//            scale = 0.5;
-//        } else {
-//            scale = 1.0;
-//        }
+        if (flag_speedChanged) {
+            scale = VelRobotConstants.DRIVE_SPEED_FAST;
+        } else {
+            scale = VelRobotConstants.DRIVE_SPEED_NORMAL;
+        }
 
         // Set the movement of the robot's wheels
-        robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
-                          VelRobot.mecSpeedFromJoystick(gamepad1),
-                          VelRobot.mecSpinFromJoystick(gamepad1),
-                          scale);
+        if (buttonSpeedSlowHold) {
+            scale = VelRobotConstants.DRIVE_SPEED_NORMAL;
+            robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
+                    VelRobot.mecSpeedFromJoystick(gamepad1),
+                    VelRobot.mecSpinFromJoystick(gamepad1),
+                    scale);
+        } else {
+            robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
+                    VelRobot.mecSpeedFromJoystick(gamepad1),
+                    VelRobot.mecSpinFromJoystick(gamepad1),
+                    scale);
+        }
 
         //set tap beacon
 //        if(buttonTapBeacon) {
@@ -151,7 +161,7 @@ public class VelTeleop extends OpMode {
         // Set lift motor
         if (buttonLiftUp) {
             robot.setLift(MotorSetting.FORWARD);
-        } else if (buttonLiftDown){
+        } else if (buttonLiftDown) {
             robot.setLift(MotorSetting.REVERSE);
         } else {
             robot.setLift(MotorSetting.STOP);
