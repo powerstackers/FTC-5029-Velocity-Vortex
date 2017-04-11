@@ -171,7 +171,52 @@ public class VelRobot {
                 break;
         }
     }
+    public void directionChange(PublicEnums.Direction direction) {
+        robotDirection = direction;
 
+        switch (direction) {
+            case N:
+                motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                mode.telemetry.addData("Robot Direction:", "N");
+                break;
+            case E:
+                motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive2 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive3 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                mode.telemetry.addData("Robot Direction:", "E");
+
+                break;
+            case S:
+                motorDrive1 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive2 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive3 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive4 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                mode.telemetry.addData("Robot Direction:", "S");
+
+                break;
+            case W:
+                motorDrive1 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive4 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                mode.telemetry.addData("Robot Direction:", "W");
+
+                break;
+            default:
+                motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                mode.telemetry.addData("Robot Direction:", "N");
+                break;
+
+        }
+        mode.telemetry.update();
+    }
     /**
      * Set the shooter motors.
      * @param setting MotorSetting enum telling what setting to use.
