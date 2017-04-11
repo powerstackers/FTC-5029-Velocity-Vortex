@@ -131,6 +131,7 @@ public class VelRobot {
         sensorColorGroundR.enableLed(true);
 
         stopMovement();
+        motorShooter1.setMaxSpeed((int)(VelRobotConstants.MOTOR_SHOOTER_MAX_RPM*0.74));
         servoBeacon.setPosition(VelRobotConstants.BEACON_RESTING);
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
         mode.telemetry.addData("Status", "Initialized");
@@ -263,15 +264,11 @@ public class VelRobot {
      * @param rpm RPM of motor that we want to set, can be positive or negative.
      */
     private void setShooterRpm(int rpm) {
-
-        motorShooter1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorShooter1.setMaxSpeed((rpm*3)/60);
-        motorShooter1.setPower(0.8);
-        while (getShooterRPM() < rpm) {
-
+        if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
+            motorShooter1.setPower( (double) rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
+        } else {
+            motorShooter1.setPower(rpm > 0? 1.0 : -1.0);
         }
-
     }
     /**
      * Set the lift motor.
