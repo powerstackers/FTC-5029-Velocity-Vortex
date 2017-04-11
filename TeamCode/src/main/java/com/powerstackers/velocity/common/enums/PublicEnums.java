@@ -35,6 +35,9 @@ public class PublicEnums {
     public enum AllianceColor {
         RED, BLUE
     }
+    public enum Direction {
+        N, S, E, W
+    }
 
     /** The setting of the grabber, either tight (grabbing the ball) or loose (not grabbing it). */
     public enum GrabberSetting {
