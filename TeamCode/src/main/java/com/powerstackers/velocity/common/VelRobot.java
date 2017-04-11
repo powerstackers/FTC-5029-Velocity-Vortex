@@ -77,6 +77,7 @@ public class VelRobot {
     public ColorSensor sensorColor;
     public ColorSensor sensorColorGroundL;
     public ColorSensor sensorColorGroundR;
+    public PublicEnums.Direction robotDirection = PublicEnums.Direction.N;
 
     private final ElapsedTime timer = new ElapsedTime();
 
@@ -96,9 +97,11 @@ public class VelRobot {
         motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
         motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
-
+        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorRLift  = mode.hardwareMap.dcMotor.get("motorRightLift");
         motorRLift.setDirection(DcMotorSimple.Direction.REVERSE);
         motorLLift  = mode.hardwareMap.dcMotor.get("motorLeftLift");
@@ -239,23 +242,37 @@ public class VelRobot {
      * Set the RPM of the shooter motor. Sets the speed as a percentage of the maximum RPM.
      * @param rpm RPM of motor that we want to set, can be positive or negative.
      */
+//    private void setShooterRpm(int rpm) {
+//        double shootRpm = getShooterRPM();
+//
+//        // Uses somehting called a Schmitt trigger. Has an upper and lower threshold. Should stop us
+//        // from bouncing around.
+//        // If RPM is below the lower threshold, add speed. If it is above the upper threshold,
+//        // subtract speed. If it is between the thresholds, do nothing. Remember, don't go outside
+//        // the limits of our motor values.
+//        if (shootRpm < rpm - VelRobotConstants.SCHMITT_LOWER
+//                && motorShooter1.getPower() != 1.0) {
+//            motorShooter1.setPower(motorShooter1.getPower() + 0.05);
+//        } else if (shootRpm > rpm + VelRobotConstants.SCHMITT_UPPER
+//                && motorShooter1.getPower() != 0.0) {
+//            motorShooter1.setPower(motorShooter1.getPower() - 0.05);
+//        }
+//    }
+    /**
+     * Set the RPM of the shooter motor. Sets the speed as a percentage of the maximum RPM.
+     * @param rpm RPM of motor that we want to set, can be positive or negative.
+     */
     private void setShooterRpm(int rpm) {
-        double shootRpm = getShooterRPM();
 
-        // Uses somehting called a Schmitt trigger. Has an upper and lower threshold. Should stop us
-        // from bouncing around.
-        // If RPM is below the lower threshold, add speed. If it is above the upper threshold,
-        // subtract speed. If it is between the thresholds, do nothing. Remember, don't go outside
-        // the limits of our motor values.
-        if (shootRpm < rpm - VelRobotConstants.SCHMITT_LOWER
-                && motorShooter1.getPower() != 1.0) {
-            motorShooter1.setPower(motorShooter1.getPower() + 0.05);
-        } else if (shootRpm > rpm + VelRobotConstants.SCHMITT_UPPER
-                && motorShooter1.getPower() != 0.0) {
-            motorShooter1.setPower(motorShooter1.getPower() - 0.05);
+        motorShooter1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorShooter1.setMaxSpeed((rpm*3)/60);
+        motorShooter1.setPower(0.8);
+        while (getShooterRPM() < rpm) {
+
         }
-    }
 
+    }
     /**
      * Set the lift motor.
      * @param setting MotorSetting telling which setting to use.
@@ -338,10 +355,10 @@ public class VelRobot {
 //        }
 
         // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
-        motorDrive1.setPower(multipliers[0]);
-        motorDrive4.setPower(multipliers[1]);
-        motorDrive3.setPower(multipliers[2]);
-        motorDrive2.setPower(multipliers[3]);
+        motorDrive1.setPower(multipliers[0]/scale);
+        motorDrive4.setPower(multipliers[1]/scale);
+        motorDrive3.setPower(multipliers[2]/scale);
+        motorDrive2.setPower(multipliers[3]/scale);
     }
 
     /**
