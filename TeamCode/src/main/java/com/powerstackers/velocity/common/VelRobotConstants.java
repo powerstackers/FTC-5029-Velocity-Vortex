@@ -45,7 +45,7 @@ public class VelRobotConstants {
     public static final double MOTOR_SHOOTER_POWER         = -0.10;
     public static final double MOTOR_SHOOTER_MAX_RPM       = 1600.0;
     public static final int MOTOR_SHOOTER_TARGET_RPM       = 750;
-    public static final int MOTOR_SHOOTER_RPM_INCREMENT    = 50;
+    //public static final int MOTOR_SHOOTER_RPM_INCREMENT    = 50;
     public static final double DRIVE_SPEED_NORMAL   = 0.8;// Needs to be tested for correct value
     public static final double DRIVE_SPEED_FAST     = 1;
     public static final double DRIVE_SPEED_SLOW     = 0.4; // Needs to be tested for correct value
