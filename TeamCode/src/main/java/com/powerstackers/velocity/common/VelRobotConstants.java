@@ -36,28 +36,31 @@ public class VelRobotConstants {
     public static final double MINIMUM_JOYSTICK_THRESHOLD = 0.15f;
 
     /** Ball grab release servo in the upright and locked position. */
-    static final double SERVO_BALL_GRAB_STOWED = 0.0;
+    public static final double SERVO_BALL_GRAB_STOWED = 0.0;
     /** Ball grab release servo in the open position, letting the ball grabber drop. */
-    static final double SERVO_BALL_GRAB_OPEN = 0.0;
+    public static final double SERVO_BALL_GRAB_OPEN = 0.0;
     /** Ball grabber in the grabbing position. */
-    static final double SERVO_BALL_GRAB_TIGHT = 0.0;
+    public static final double SERVO_BALL_GRAB_TIGHT = 0.0;
 
-    static final double MOTOR_SHOOTER_POWER         = -0.10;
-    static final double MOTOR_SHOOTER_MAX_RPM       = 1600.0;
-    static final int MOTOR_SHOOTER_TARGET_RPM       = 750;
-    static final int MOTOR_SHOOTER_RPM_INCREMENT    = 50;
-    public static int SCHMITT_UPPER = 20;
-    public static int SCHMITT_LOWER = 20;
+    public static final double MOTOR_SHOOTER_POWER         = -0.10;
+    public static final double MOTOR_SHOOTER_MAX_RPM       = 1600.0;
+    public static final int MOTOR_SHOOTER_TARGET_RPM       = 750;
+    public static final int MOTOR_SHOOTER_RPM_INCREMENT    = 50;
+    public static final double DRIVE_SPEED_NORMAL   = 0.8;// Needs to be tested for correct value
+    public static final double DRIVE_SPEED_FAST     = 1;
+    public static final double DRIVE_SPEED_SLOW     = 0.4; // Needs to be tested for correct value
+//    public static int SCHMITT_UPPER = 20;
+//    public static int SCHMITT_LOWER = 20;
 
-    static final double MOTOR_LIFT_POWER    = 1.0;
-    static final double MOTOR_PICKUP_POWER  = -1.0;
+    public static final double MOTOR_LIFT_POWER    = 1.0;
+    public static final double MOTOR_PICKUP_POWER  = -1.0;
 
-    static final double DIRECTION_NORTH     = PI/2;
-    static final double DIRECTION_SOUTH     = (3*PI)/2;
-    static final double DIRECTION_EAST      = 0.0;
-    static final double DIRECTION_WEST      = PI;
-    static final double DIRECTION_NORTHEAST = PI/4;
-    static final double DIRECTION_SOUTHEAST = (7*PI)/4;
-    static final double DIRECTION_NORTHWEST = (3*PI)/4;
-    static final double DIRECTION_SOUTHWEST = (5*PI)/4;
+    public static final double DIRECTION_NORTH     = PI/2;
+    public static final double DIRECTION_SOUTH     = (3*PI)/2;
+    public static final double DIRECTION_EAST      = 0.0;
+    public static final double DIRECTION_WEST      = PI;
+    public static final double DIRECTION_NORTHEAST = PI/4;
+    public static final double DIRECTION_SOUTHEAST = (7*PI)/4;
+    public static final double DIRECTION_NORTHWEST = (3*PI)/4;
+    public static final double DIRECTION_SOUTHWEST = (5*PI)/4;
 }
