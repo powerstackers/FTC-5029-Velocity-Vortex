@@ -129,9 +129,9 @@ public class VelRobot {
         sensorColor.enableLed(true);
         sensorColorGroundL.enableLed(true);
         sensorColorGroundR.enableLed(true);
-
-        stopMovement();
         motorShooter1.setMaxSpeed((int)(VelRobotConstants.MOTOR_SHOOTER_MAX_RPM*0.74));
+        stopMovement();
+
         servoBeacon.setPosition(VelRobotConstants.BEACON_RESTING);
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
         mode.telemetry.addData("Status", "Initialized");
