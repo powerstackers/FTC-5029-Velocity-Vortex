@@ -105,7 +105,7 @@ public class VelTeleop extends OpMode {
 
         // Set the movement of the robot's wheels
         if (buttonSpeedSlowHold) {
-            scale = VelRobotConstants.DRIVE_SPEED_NORMAL;
+            scale = VelRobotConstants.DRIVE_SPEED_SLOW;
             robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
                     VelRobot.mecSpeedFromJoystick(gamepad1),
                     VelRobot.mecSpinFromJoystick(gamepad1),
