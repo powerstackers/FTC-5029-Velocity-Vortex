@@ -110,6 +110,7 @@ public class VelRobot {
         motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         servoBeacon   = mode.hardwareMap.servo.get("servoBeacon");
