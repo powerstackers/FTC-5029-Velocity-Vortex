@@ -22,6 +22,7 @@ package com.powerstackers.velocity.opmodes.teleop;
 
 import com.powerstackers.velocity.common.VelRobot;
 import com.powerstackers.velocity.common.VelRobotConstants;
+import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -116,6 +117,18 @@ public class VelTeleop extends OpMode {
                     VelRobot.mecSpinFromJoystick(gamepad1),
                     scale);
         }
+        if (gamepad1.dpad_up) {
+            robot.directionChange(PublicEnums.Direction.E);
+        }
+        if (gamepad1.dpad_left) {
+            robot.directionChange(PublicEnums.Direction.S);
+        }
+        if (gamepad1.dpad_down) {
+            robot.directionChange(PublicEnums.Direction.W);
+        }
+        if (gamepad1.dpad_right) {
+            robot.directionChange(PublicEnums.Direction.N);
+        }
 
         //set tap beacon
 //        if(buttonTapBeacon) {
@@ -192,7 +205,8 @@ public class VelTeleop extends OpMode {
 //        }
 
 //        telemetry here vvv
-        telemetry.addData("Shooter RPM", robot.getShooterRPM());
+        if (robot.isShooterRunning()){
+        telemetry.addData("Shooter RPM", robot.getShooterRPM());}
 //        telemetry.addData("EncVal", robot.getShooterEncVal());
 //        telemetry.addData("Clear", robot.getAlpha());
 //        telemetry.addData("Red  ", robot.getRed());
