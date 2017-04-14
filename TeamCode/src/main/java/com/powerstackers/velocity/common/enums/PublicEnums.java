@@ -30,6 +30,9 @@ public class PublicEnums {
     public enum MotorSetting {
         REVERSE, STOP, FORWARD
     }
+    public enum BeaconNumber {
+        ONE, TWO
+    }
 
     /** The color alliance that we have been placed on. */
     public enum AllianceColor {
@@ -37,6 +40,9 @@ public class PublicEnums {
     }
     public enum Direction {
         N, S, E, W
+    }
+    public enum GyroCorrection {
+        YES, NO
     }
 
     /** The setting of the grabber, either tight (grabbing the ball) or loose (not grabbing it). */

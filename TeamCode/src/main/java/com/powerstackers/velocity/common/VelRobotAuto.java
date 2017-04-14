@@ -21,17 +21,22 @@
 package com.powerstackers.velocity.common;
 
 import com.powerstackers.velocity.common.enums.PublicEnums;
+import com.powerstackers.velocity.common.enums.StartingPosition;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
 /**
  * Basic configurations for our robot in autonomous mode. All the functionality of a teleop bot,
  * and more!
- * 
+ *
  * @author Derek Helm
  */
 @SuppressWarnings("unused")
@@ -69,6 +74,7 @@ public class VelRobotAuto extends VelRobot {
 
     /**
      * Construct a Robot object.
+     *
      * @param mode The OpMode in which the robot is being used.
      */
     public VelRobotAuto(LinearOpMode mode) {
@@ -99,23 +105,182 @@ public class VelRobotAuto extends VelRobot {
 //
 //        // Trim the servo value and set the servo position.
 //        positionBeaconServo = trimServoValue(positionBeaconServo);
-//        servoBeacon.setPosition(positionBeaconServo);
+//        servoBeaconRight.setPosition(positionBeaconServo);
 //    }
 
     /**
      * detect white bar on ground in front of beacon
      */
-    // TODO NO. WRONG.
-    private boolean detectWhiteL(){
-        return sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green();
+    public void driveToLine(double angle, double speed, PublicEnums.GyroCorrection gyroCorrection, PublicEnums.BeaconNumber beaconNumber) {
+
+        // Shift angle by 45 degrees, since our drive train is x-shaped and not cross-shaped
+        angle += PI / 4;
+
+        // Cut rotation in half because we don't want to spin THAT fast
+
+        // Normalize magnitudes so that "straight forward" has a magnitude of 1
+        speed *= sqrt(2);
+
+        double sinDir = sin(angle);
+        double cosDir = cos(angle);
+
+        // None of this stuff should happen if the speed is 0.
+
+        // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
+        double multipliers[] = new double[4];
+        multipliers[0] = (speed * sinDir);
+        multipliers[1] = (speed * cosDir);
+        multipliers[2] = (speed * -cosDir);
+        multipliers[3] = (speed * -sinDir);
+
+        double largest = abs(multipliers[0]);
+        for (int i = 1; i < 4; i++) {
+            if (abs(multipliers[i]) > largest)
+                largest = abs(multipliers[i]);
+        }
+
+        // Only normalize multipliers if largest exceeds 1.0
+        if (largest > 1.0) {
+            for (int i = 0; i < 4; i++) {
+                multipliers[i] = multipliers[i] / largest;
+            }
+        }
+
+        // Scale if needed, 0.0 < scale < 1.0;
+//        for (int i = 0; i < 4; i++) {
+//            multipliers[i] = multipliers[i] * scale;
+//        }
+        int x = 0;
+        while (isThereMat() && mode.opModeIsActive() && x == 0) {
+            if (gyroCorrection == PublicEnums.GyroCorrection.YES) {
+                int currentHead = startDirection;
+                // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
+
+//if (beaconNumber == PublicEnums.BeaconNumber.ONE &&(rightBeaconUS.getUltrasonicLevel() <= 10 || leftBeaconUS.getUltrasonicLevel() <= 10)){
+//        x++;
+//}
+                if (getGyroHeading() < currentHead) {
+                    motorDrive1.setPower(multipliers[0]);
+                    motorDrive3.setPower(multipliers[2]);
+                    motorDrive4.setPower(multipliers[1] / 1.5);
+                    motorDrive2.setPower(multipliers[3] / 1.5);
+                } else if (getGyroHeading() > currentHead) {
+                    motorDrive1.setPower(multipliers[0] / 1.5);
+                    motorDrive3.setPower(multipliers[2] / 1.5);
+                    motorDrive4.setPower(multipliers[1]);
+                    motorDrive2.setPower(multipliers[3]);
+                } else {
+                    motorDrive1.setPower(multipliers[0]);
+                    motorDrive3.setPower(multipliers[2]);
+                    motorDrive4.setPower(multipliers[1]);
+                    motorDrive2.setPower(multipliers[3]);
+                }
+
+            } else {
+
+                motorDrive1.setPower(multipliers[0]);
+                motorDrive3.setPower(multipliers[2]);
+                motorDrive4.setPower(multipliers[1]);
+                motorDrive2.setPower(multipliers[3]);
+            }
+        }
+        if (x ==1) {
+            driveToLine(VelRobotConstants.DIRECTION_WEST, 0.8, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO);
+        }
+        stopMovement();
     }
-    // TODO NO. WRONG.
-    private boolean detectWhiteR(){
-        return sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green();
+//
+//    public void driveWithUS(double angle, double speed, double target) {
+//
+//        // Shift angle by 45 degrees, since our drive train is x-shaped and not cross-shaped
+//        angle += PI / 4;
+//
+//        // Cut rotation in half because we don't want to spin THAT fast
+//
+//        // Normalize magnitudes so that "straight forward" has a magnitude of 1
+//        speed *= sqrt(2);
+//
+//        double sinDir = sin(angle);
+//        double cosDir = cos(angle);
+//
+//        // None of this stuff should happen if the speed is 0.
+//
+//        // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
+//        double multipliers[] = new double[4];
+//        multipliers[0] = (speed * sinDir);
+//        multipliers[1] = (speed * cosDir);
+//        multipliers[2] = (speed * -cosDir);
+//        multipliers[3] = (speed * -sinDir);
+//
+//        double largest = abs(multipliers[0]);
+//        for (int i = 1; i < 4; i++) {
+//            if (abs(multipliers[i]) > largest)
+//                largest = abs(multipliers[i]);
+//        }
+//
+//        // Only normalize multipliers if largest exceeds 1.0
+//        if (largest > 1.0) {
+//            for (int i = 0; i < 4; i++) {
+//                multipliers[i] = multipliers[i] / largest;
+//            }
+//        }
+//
+//        // Scale if needed, 0.0 < scale < 1.0;
+////        for (int i = 0; i < 4; i++) {
+////            multipliers[i] = multipliers[i] * scale;
+////        }
+//        int currentHead = startDirection;
+//        // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
+//        double correctionScaleRight;
+//        double correctionScaleLeft;
+//// any errors with misalignment will get fixed when the robot squares on the wall
+//        while (leftBeaconUS.getUltrasonicLevel() > target && rightBeaconUS.getUltrasonicLevel() > target && mode.opModeIsActive()) {
+//            if (leftBeaconUS.getUltrasonicLevel() < rightBeaconUS.getUltrasonicLevel()) {
+//                correctionScaleLeft = 1.5;
+//                correctionScaleRight = 1;
+//            } else if (leftBeaconUS.getUltrasonicLevel() > rightBeaconUS.getUltrasonicLevel()) {
+//                correctionScaleLeft = 1.5;
+//                correctionScaleRight = 1;
+//            } else {
+//                correctionScaleLeft = 1;
+//                correctionScaleRight = 1;
+//            }
+//            motorDrive1.setPower(multipliers[0] / correctionScaleLeft);
+//            motorDrive3.setPower(multipliers[2] / correctionScaleLeft);
+//            motorDrive4.setPower(multipliers[1] / correctionScaleRight);
+//            motorDrive2.setPower(multipliers[3] / correctionScaleRight);
+//            mode.telemetry.addData("Robot Heading", sensorGyro.getHeading());
+//            mode.telemetry.update();
+//        }
+//
+//        stopMovement();
+//    }
+
+    public double getGroundLight() {
+        return groundODS.getLightDetected();
     }
+
+    public boolean isThereMat() {
+
+        if (getGroundLight() - .3 <= matColorVal) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+//    // TODO NO. WRONG.
+//    private boolean detectWhiteL() {
+//        return sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green();
+//    }
+//
+//    // TODO NO. WRONG.
+//    private boolean detectWhiteR() {
+//        return sensorColor.red() == sensorColor.blue() && sensorColor.red() == sensorColor.green();
+//    }
 
     /**
      * Spins all motors at the same speed. CAUTION: THIS MAKES THE ROBOT SPIN.
+     *
      * @param power Speed to spin all motors.
      */
     public void setPowerAll(double power) {
@@ -125,28 +290,68 @@ public class VelRobotAuto extends VelRobot {
         motorDrive4.setPower(power);
     }
 
+    public void beaconTap(PublicEnums.AllianceColor allianceColor) throws InterruptedException {
+        sensorColor.enableLed(false);
+        int x = 0;
+        if (allianceColor == PublicEnums.AllianceColor.RED) {
+            while (mode.opModeIsActive() && x < 1) {
+                if (sensorColor.red() > sensorColor.blue()) {
+                    servoBeaconLeft.setPosition(VelRobotConstants.BEACON_LEFT_FORWARD);
+                    Thread.sleep(1000);
+                    x++;
+
+                } else if (sensorColor.blue() > sensorColor.red()) {
+                    servoBeaconRight.setPosition(VelRobotConstants.BEACON_RIGHT_FORWARD);
+                    Thread.sleep(1000);
+                    x++;
+                } else {
+                    beaconServoReset();
+                }
+            }
+        } else if (allianceColor == PublicEnums.AllianceColor.BLUE) {
+            while (mode.opModeIsActive() && x < 1) {
+                if (sensorColor.red() < sensorColor.blue()) {
+                    servoBeaconLeft.setPosition(VelRobotConstants.BEACON_LEFT_FORWARD);
+                    Thread.sleep(1000);
+                    x++;
+
+                } else if (sensorColor.blue() < sensorColor.red()) {
+                    servoBeaconRight.setPosition(VelRobotConstants.BEACON_RIGHT_FORWARD);
+                    Thread.sleep(1000);
+                    x++;
+                } else {
+                    beaconServoReset();
+                }
+            }
+        }
+        beaconServoReset();
+    }
+
     /**
      * Set the power of the left hand side drive motors.
+     *
      * @param power Percentage of max power to spin.
      */
-    public void setPowerLeft(double power){
+    public void setPowerLeft(double power) {
         motorDrive1.setPower(-power);
         motorDrive3.setPower(-power);
     }
 
     /**
      * Set the power of the right hand side drive motors.
+     *
      * @param power Percentage of max speed to spin.
      */
-    public void setPowerRight(double power){
+    public void setPowerRight(double power) {
         motorDrive2.setPower(power);
         motorDrive4.setPower(power);
     }
 
     /**
      * Turn the robot a certain number of degrees from center.
+     *
      * @param degrees Number of DEGREES to turn. Positive is counterclockwise, negative is clockwise.
-     * @param speed Speed at which to turn.
+     * @param speed   Speed at which to turn.
      * @throws InterruptedException Make sure that we don't get trapped in this method when interrupted.
      */
     void turnDegrees(double degrees, double speed) throws InterruptedException {
@@ -168,7 +373,7 @@ public class VelRobotAuto extends VelRobot {
         // For as long as the current degree measure doesn't equal the target. This will work in the clockwise and
         // counterclockwise directions, since we are comparing the absolute values
         while ((degreesSoFar) < (degrees)) {
-            mode.telemetry.addData("gyrocompare", degreesSoFar=getGyroHeading());
+            mode.telemetry.addData("gyrocompare", degreesSoFar = getGyroHeading());
         }
 
         // Stop all drive motors
@@ -179,8 +384,9 @@ public class VelRobotAuto extends VelRobot {
      * Turn the robot a certain number of degrees.
      * Indicating a negative degree number will turn the robot clockwise. A positive number will
      * turn the robot counterclockwise.
-     * @param  degrees  The distance in degrees to turn.
-     * @param  speed    The speed at which to turn.
+     *
+     * @param degrees The distance in degrees to turn.
+     * @param speed   The speed at which to turn.
      */
     public void turnDegreesRight(double degrees, double speed) throws InterruptedException {
 
@@ -194,14 +400,14 @@ public class VelRobotAuto extends VelRobot {
             this.setPowerLeft(speed);
             this.setPowerRight(-1 * speed);
             while ((degreesSoFar) < (degrees)) {
-                mode.telemetry.addData("gyrocompare", degreesSoFar=this.getGyroHeading());
+                mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
             }
         } else if (degreesToGo > 360) {
             degreesFixed = degreesToGo - 360;
             this.setPowerLeft(speed);
             this.setPowerRight(-1 * speed);
             while ((degreesSoFar) < (degreesFixed)) {
-                mode.telemetry.addData("gyrocompare", degreesSoFar=this.getGyroHeading());
+                mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
             }
         } else {
             this.setPowerAll(0);
@@ -215,18 +421,18 @@ public class VelRobotAuto extends VelRobot {
 
         degreesToGo = (degreesSoFar - degrees);
 
-        if (degreesToGo > 0 ) {                //left
+        if (degreesToGo > 0) {                //left
             this.setPowerLeft(-1 * speed);
             this.setPowerRight(speed);
             while ((degreesSoFar) > (degrees)) {
-                mode.telemetry.addData("gyrocompare", degreesSoFar=this.getGyroHeading());
+                mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
             }
-        } else if (degreesToGo < 0 ) {
+        } else if (degreesToGo < 0) {
             degreesFixed = 360 - degreesToGo;
             this.setPowerLeft(-1 * speed);
             this.setPowerRight(speed);
             while ((degreesSoFar) > (degreesFixed)) {
-                mode.telemetry.addData("gyrocompare", degreesSoFar=this.getGyroHeading());
+                mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
             }
         } else {
             this.setPowerAll(0);
@@ -236,9 +442,10 @@ public class VelRobotAuto extends VelRobot {
     /**
      * Move the robot across the playing field a certain distance.
      * Indicating a negative speed or distance will cause the robot to move in reverse.
-     * @param  distance The distance that we want to travel, in centimeters.
-     * @param angle The angle to move at, in radians.
-     * @param  speed The speed at which to travel.
+     *
+     * @param distance The distance that we want to travel, in centimeters.
+     * @param angle    The angle to move at, in radians.
+     * @param speed    The speed at which to travel.
      */
     public void goDistanceInCm(double distance, double angle, double speed) {
         zeroEncoders();
@@ -246,15 +453,17 @@ public class VelRobotAuto extends VelRobot {
         // Track using the back left motor.
         // Why? It's the only one my fat fingers could get the plug into.
         //noinspection StatementWithEmptyBody
-        while(motorDrive3.getCurrentPosition() < cmToTicks(distance)) {}
+        while (motorDrive3.getCurrentPosition() < cmToTicks(distance)) {
+        }
         stopMovement();
     }
 
     /**
      * Move the robot across the playing field.
      * Indicating a negative speed or distance will cause the robot to move in reverse.
-     * @param  ticks The distance that we want to travel.
-     * @param  speed The speed at which to travel.
+     *
+     * @param ticks The distance that we want to travel.
+     * @param speed The speed at which to travel.
      */
     void goTicks(long ticks, double speed) throws InterruptedException {
 
@@ -265,8 +474,8 @@ public class VelRobotAuto extends VelRobot {
         long targetRight = startRight + ticks;
 //        long targetLeft = startLeft + ticks;
 
-        double leftCorrect	= 0.8;
-        double rightCorrect	= 1.0;
+        double leftCorrect = 0.8;
+        double rightCorrect = 1.0;
 
         if (ticks < 0) {
             // Set the drive motors to the given speed
@@ -276,7 +485,7 @@ public class VelRobotAuto extends VelRobot {
 //            robot.setPowerRight(0.60);
 
             // Wait until both motors have reached the target
-            while ( this.getDrive1Encoder() > targetRight) {
+            while (this.getDrive1Encoder() > targetRight) {
                 //TODO make telemetry work
 //                mode.telemetry.addData("Data", this.getRightEncoder());
 //                mode.telemetry.addData("Encoder target", targetRight);
@@ -289,7 +498,8 @@ public class VelRobotAuto extends VelRobot {
                 } else if (this.getGyroHeading() < 180 && this.getGyroHeading() > 0) {
                     this.setPowerLeft(1);
                     this.setPowerRight(speed/2);
-                } else*/ {
+                } else*/
+                {
                     this.setPowerLeft(speed * leftCorrect);
                     this.setPowerRight(speed * rightCorrect);
                 }
@@ -298,7 +508,7 @@ public class VelRobotAuto extends VelRobot {
             // Stop the drive motors here
             this.setPowerLeft(0);
             this.setPowerRight(0);
-        } else if (ticks > 0){
+        } else if (ticks > 0) {
             // Set the drive motors to the speed (in reverse)
             this.setPowerLeft(-speed * leftCorrect);
             this.setPowerRight(-speed * rightCorrect);
@@ -306,7 +516,7 @@ public class VelRobotAuto extends VelRobot {
 //            robot.setPowerRight(-0.60);
 
             // Wait until both motors have reached the target
-            while( this.getDrive1Encoder() < targetRight) {
+            while (this.getDrive1Encoder() < targetRight) {
 //                mode.telemetry.addData("Data2", getDrive1Encoder());
 //                mode.telemetry.addData("Encoder target", targetRight);
             }
@@ -323,9 +533,9 @@ public class VelRobotAuto extends VelRobot {
     //TODO not neccasary
     public void zeroEncoders() {
         motorDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        motorDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        motorDrive3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        motorDrive4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorDrive3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorDrive4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 //        try {
 //            mode.idle();
@@ -334,9 +544,9 @@ public class VelRobotAuto extends VelRobot {
 //        }
 
         motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 
@@ -345,12 +555,13 @@ public class VelRobotAuto extends VelRobot {
      * <p>We calculate this by taking the number of ticks traveled, divided by the number of ticks
      * per revolution, and then multiplied by the gear ratio multiplier to get the number of wheel
      * rotations. Multiply one more time by the circumference of the wheels (PI*wheelDiameter).
-     * @param  ticks long representing the distance in ticks.
-     * @return       that distance in inches.
+     *
+     * @param ticks long representing the distance in ticks.
+     * @return that distance in inches.
      */
     public static double ticksToCm(int ticks) {
         // TODO This is wrong.
-        return (ticks/ticksPerRevolution)*driveGearMultiplier*(PI*wheelDiameterCM);
+        return (ticks / ticksPerRevolution) * driveGearMultiplier * (PI * wheelDiameterCM);
     }
 
     /**
@@ -358,12 +569,13 @@ public class VelRobotAuto extends VelRobot {
      * <p>We calculate this by taking the number of wheel rotations (inches/(PI*wheelDiameter))
      * multiplied by the inverse of the gear ratio, to get the number of motor rotations. Multiply
      * one more time by the number of motor encoder ticks per one motor revolution.
-     * @param  cm   double containing the distance you want to travel.
-     * @return      that distance in encoder ticks.
+     *
+     * @param cm double containing the distance you want to travel.
+     * @return that distance in encoder ticks.
      */
     private static int cmToTicks(double cm) {
         // TODO This is wrong now.
-        return (int) ((1/driveGearMultiplier)*ticksPerRevolution*(cm/(PI*wheelDiameterCM)));
+        return (int) ((1 / driveGearMultiplier) * ticksPerRevolution * (cm / (PI * wheelDiameterCM)));
     }
 
     /**
@@ -371,11 +583,12 @@ public class VelRobotAuto extends VelRobot {
      * <p>We calculate this by taking the number of wheel rotations (inches/(PI*wheelDiameter))
      * multiplied by the inverse of the gear ratio, to get the number of motor rotations. Multiply
      * one more time by the number of motor encoder ticks per one motor revolution.
-     * @param  inches double containing the distance you want to travel.
-     * @return        that distance in encoder ticks.
+     *
+     * @param inches double containing the distance you want to travel.
+     * @return that distance in encoder ticks.
      */
     long inchesToTicks(double inches) throws InterruptedException {
-        return (long) ((1/driveGearMultiplier)*ticksPerRevolution*(inches/(PI*wheelDiameterIN)));
+        return (long) ((1 / driveGearMultiplier) * ticksPerRevolution * (inches / (PI * wheelDiameterIN)));
     }
 
     /**
@@ -383,13 +596,19 @@ public class VelRobotAuto extends VelRobot {
      * <p>We calculate this by taking the number of ticks traveled, divided by the number of ticks
      * per revolution, and then multiplied by the gear ratio multiplier to get the number of wheel
      * rotations. Multiply one more time by the circumference of the wheels (PI*wheelDiameter).
-     * @param  ticks long representing the distance in ticks.
-     * @return       that distance in inches.
+     *
+     * @param ticks long representing the distance in ticks.
+     * @return that distance in inches.
      */
     public double ticksToInches(long ticks) {
-        return (ticks/ticksPerRevolution)*driveGearMultiplier*(PI*wheelDiameterIN);
+        return (ticks / ticksPerRevolution) * driveGearMultiplier * (PI * wheelDiameterIN);
     }
 
+    public void driveToShootPosition(StartingPosition startingPosition) {
+        if (startingPosition == StartingPosition.FAR_FROM_RAMP) {
+
+        }
+    }
 
 
 //    public long getLeftEncoder() {
@@ -401,14 +620,14 @@ public class VelRobotAuto extends VelRobot {
 //    }
 
     public double getGyroHeading() {
-        return  sensorGyro.getHeading();
+        return sensorGyro.getHeading();
     }
 
     public void calibrateGyro() {
         sensorGyro.calibrate();
     }
 
-    public  boolean isGyrocalibrate() {
+    public boolean isGyrocalibrate() {
         return sensorGyro.isCalibrating();
     }
 

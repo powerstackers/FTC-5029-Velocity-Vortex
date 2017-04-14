@@ -118,16 +118,16 @@ public class VelTeleop extends OpMode {
                     scale);
         }
         if (gamepad1.dpad_up) {
-            robot.directionChange(PublicEnums.Direction.E);
+            robot.directionChange(PublicEnums.Direction.N);
         }
         if (gamepad1.dpad_left) {
-            robot.directionChange(PublicEnums.Direction.S);
-        }
-        if (gamepad1.dpad_down) {
             robot.directionChange(PublicEnums.Direction.W);
         }
+        if (gamepad1.dpad_down) {
+            robot.directionChange(PublicEnums.Direction.S);
+        }
         if (gamepad1.dpad_right) {
-            robot.directionChange(PublicEnums.Direction.N);
+            robot.directionChange(PublicEnums.Direction.E);
         }
 
         //set tap beacon
@@ -139,8 +139,8 @@ public class VelTeleop extends OpMode {
 
         //ColorSensor Controls
         robot.sensorColor.enableLed(false);
-        robot.sensorColorGroundL.enableLed(true);
-        robot.sensorColorGroundR.enableLed(true);
+//        robot.sensorColorGroundL.enableLed(true);
+//        robot.sensorColorGroundR.enableLed(true);
 
         if (robot.sensorColor.blue() > robot.sensorColor.red()) {
 //            servoBeaconPosition = 0.20;

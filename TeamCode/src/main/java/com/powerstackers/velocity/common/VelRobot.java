@@ -28,13 +28,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.I2cAddr;
-
-import java.sql.Array;
-import java.util.Arrays;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
@@ -70,11 +69,17 @@ public class VelRobot {
     private DcMotor motorRLift;
     private DcMotor motorLLift;
 
-    Servo servoBeacon = null;
+    Servo servoBeaconRight = null;
+    Servo servoBeaconLeft = null;
     public Servo servoBallGrab = null;
+    public double matColorVal = 0;
+    public int startDirection = 0;
 
     GyroSensor sensorGyro;
     public ColorSensor sensorColor;
+//    public UltrasonicSensor rightBeaconUS = null;
+//    public UltrasonicSensor leftBeaconUS = null;
+    public OpticalDistanceSensor groundODS = null;
     public ColorSensor sensorColorGroundL;
     public ColorSensor sensorColorGroundR;
     public PublicEnums.Direction robotDirection = PublicEnums.Direction.N;
@@ -113,8 +118,8 @@ public class VelRobot {
         motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
-        servoBeacon   = mode.hardwareMap.servo.get("servoBeacon");
-
+        servoBeaconRight = mode.hardwareMap.servo.get("servoBeaconRight");
+        servoBeaconLeft = mode.hardwareMap.servo.get("servoBeaconLeft");
         sensorGyro = mode.hardwareMap.gyroSensor.get("sensorGyro");
 
         sensorGyro.calibrate();
@@ -126,14 +131,17 @@ public class VelRobot {
         sensorColor.setI2cAddress(I2cAddr.create7bit(0x1e)); //8bit 0x3c
         sensorColorGroundL.setI2cAddress(I2cAddr.create7bit(0x2e)); //8bit 0x5c
         sensorColorGroundR.setI2cAddress(I2cAddr.create7bit(0x26)); //8bit 0x4c
-
+        groundODS = mode.hardwareMap.opticalDistanceSensor.get("ODS");
+//        rightBeaconUS = mode.hardwareMap.ultrasonicSensor.get("RUS");
+//        leftBeaconUS = mode.hardwareMap.ultrasonicSensor.get("LUS");
         sensorColor.enableLed(true);
         sensorColorGroundL.enableLed(true);
         sensorColorGroundR.enableLed(true);
         motorShooter1.setMaxSpeed((int)(VelRobotConstants.MOTOR_SHOOTER_MAX_RPM*0.74));
         stopMovement();
+        matColorVal = groundODS.getLightDetected();
 
-        servoBeacon.setPosition(VelRobotConstants.BEACON_RESTING);
+        beaconServoReset();
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
         mode.telemetry.addData("Status", "Initialized");
     }
@@ -142,6 +150,19 @@ public class VelRobot {
      * Get the revolutions per minute of the shooter motor. Eats up 100ms!
      * @return Double representing the rpm.
      */
+
+    public boolean isShooterRunning (){
+        if (motorShooter1.getPower() >0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    public void beaconServoReset(){
+        servoBeaconRight.setPosition(VelRobotConstants.BEACON_RIGHT_BACK);
+        servoBeaconLeft.setPosition(VelRobotConstants.BEACON_LEFT_BACK);
+    }
     public double getShooterRPM() {
 
         int endEncoder;
@@ -265,6 +286,7 @@ public class VelRobot {
      * @param rpm RPM of motor that we want to set, can be positive or negative.
      */
     private void setShooterRpm(int rpm) {
+
         if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
             motorShooter1.setPower( (double) rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
         } else {
@@ -297,7 +319,7 @@ public class VelRobot {
     }
 
     public void setBeaconTap(double position) {
-        servoBeacon.setPosition(position);
+        servoBeaconRight.setPosition(position);
     }
 
     /**
@@ -448,7 +470,7 @@ public class VelRobot {
 //
 //        // Trim the servo value and set the servo position.
 //        positionBeaconServo = trimServoValue(positionBeaconServo);
-//        servoBeacon.setPosition(positionBeaconServo);
+//        servoBeaconRight.setPosition(positionBeaconServo);
 //    }
 
     /**

@@ -20,9 +20,10 @@
 
 package com.powerstackers.velocity.common;
 
+import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
-import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.powerstackers.velocity.common.enums.StartingPosition;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.BLUE;
@@ -31,17 +32,11 @@ import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.
 /**
  * @author Derek Helm
  */
-public class VelAutonomousProgramWorld extends LinearOpMode {
+@Autonomous(name = "AutoTest", group = "Powerstackers")
 
-    final AllianceColor allianceColor;
-    final StartingPosition startingPosition;
+public class VelAutonomousProgramTesting extends LinearOpMode {
     VelRobotAuto robot;
 
-    public VelAutonomousProgramWorld(AllianceColor allianceColor,
-                                     StartingPosition startingPosition) {
-        this.allianceColor = allianceColor;
-        this.startingPosition = startingPosition;
-    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,25 +46,6 @@ public class VelAutonomousProgramWorld extends LinearOpMode {
         robot.initializeRobot();
         // Wait for the start of the match!Thread.interrupted()
         this.waitForStart();
-
-        if (allianceColor == RED) {
-            switch (startingPosition) {
-                case FAR_FROM_RAMP:
-                    break;
-                case MIDDLE:
-                    break;
-                case CLOSE_TO_RAMP:
-                    break;
-            }
-        } else if (allianceColor == BLUE) {
-            switch (startingPosition) {
-                case FAR_FROM_RAMP:
-                    break;
-                case MIDDLE:
-                    break;
-                case CLOSE_TO_RAMP:
-                    break;
-            }
-        }
+        robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.8, PublicEnums.GyroCorrection.YES, PublicEnums.BeaconNumber.TWO);
     }
 }
