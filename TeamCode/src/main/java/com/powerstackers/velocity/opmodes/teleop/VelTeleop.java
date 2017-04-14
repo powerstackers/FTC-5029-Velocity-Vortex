@@ -205,8 +205,7 @@ public class VelTeleop extends OpMode {
 //        }
 
 //        telemetry here vvv
-        if (robot.isShooterRunning()){
-        telemetry.addData("Shooter RPM", robot.getShooterRPM());}
+//        if (robot.isShooterRunning()){g
 //        telemetry.addData("EncVal", robot.getShooterEncVal());
 //        telemetry.addData("Clear", robot.getAlpha());
 //        telemetry.addData("Red  ", robot.getRed());
