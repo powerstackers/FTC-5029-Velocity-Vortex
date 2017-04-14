@@ -375,10 +375,10 @@ public class VelRobot {
 //        }
 
         // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
-        motorDrive1.setPower(multipliers[0]/scale);
-        motorDrive4.setPower(multipliers[1]/scale);
-        motorDrive3.setPower(multipliers[2]/scale);
-        motorDrive2.setPower(multipliers[3]/scale);
+        motorDrive1.setPower(multipliers[0]*scale);
+        motorDrive4.setPower(multipliers[1]*scale);
+        motorDrive3.setPower(multipliers[2]*scale);
+        motorDrive2.setPower(multipliers[3]*scale);
     }
 
     /**
