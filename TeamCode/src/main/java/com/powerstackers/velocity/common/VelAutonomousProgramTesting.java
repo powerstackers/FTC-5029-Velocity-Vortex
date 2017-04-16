@@ -46,6 +46,10 @@ public class VelAutonomousProgramTesting extends LinearOpMode {
         robot.initializeRobot();
         // Wait for the start of the match!Thread.interrupted()
         this.waitForStart();
-        robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.8, PublicEnums.GyroCorrection.YES, PublicEnums.BeaconNumber.TWO);
+        robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.8, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO);
+//        telemetry.addData("Is there opmode: ", opModeIsActive());
+//        telemetry.update();
+//        Thread.sleep(3424);
+
     }
 }

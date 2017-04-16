@@ -203,40 +203,62 @@ public class VelRobot {
         switch (direction) {
             case N:
                 motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive1.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive2.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive3.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive4.setDirection(DcMotorSimple.Direction.FORWARD);
                 mode.telemetry.addData("Robot Direction:", "N");
                 break;
             case E:
                 motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive1.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive2 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive2.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive3 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive3.setDirection(DcMotorSimple.Direction.REVERSE);
                 motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive4.setDirection(DcMotorSimple.Direction.FORWARD);
+
                 mode.telemetry.addData("Robot Direction:", "E");
 
                 break;
             case S:
                 motorDrive1 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive1.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive2 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive2.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive3 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive3.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive4 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive4.setDirection(DcMotorSimple.Direction.FORWARD);
                 mode.telemetry.addData("Robot Direction:", "S");
 
                 break;
             case W:
                 motorDrive1 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive1.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive2.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive3.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive4 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive4.setDirection(DcMotorSimple.Direction.REVERSE);
+
                 mode.telemetry.addData("Robot Direction:", "W");
 
                 break;
             default:
                 motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive1.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive2.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive3.setDirection(DcMotorSimple.Direction.FORWARD);
                 motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive4.setDirection(DcMotorSimple.Direction.FORWARD);
                 mode.telemetry.addData("Robot Direction:", "N");
                 break;
 
@@ -380,7 +402,168 @@ public class VelRobot {
         motorDrive3.setPower(multipliers[2]*scale);
         motorDrive2.setPower(multipliers[3]*scale);
     }
+    public void driveToLine(double angle, double speed, PublicEnums.GyroCorrection gyroCorrection, PublicEnums.BeaconNumber beaconNumber) {
 
+        // Shift angle by 45 degrees, since our drive train is x-shaped and not cross-shaped
+        angle += PI / 4;
+
+        // Cut rotation in half because we don't want to spin THAT fast
+
+        // Normalize magnitudes so that "straight forward" has a magnitude of 1
+        speed *= sqrt(2);
+
+        double sinDir = sin(angle);
+        double cosDir = cos(angle);
+
+        // None of this stuff should happen if the speed is 0.
+
+        // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
+        double multipliers[] = new double[4];
+        multipliers[0] = (speed * sinDir);
+        multipliers[1] = (speed * cosDir);
+        multipliers[2] = (speed * -cosDir);
+        multipliers[3] = (speed * -sinDir);
+
+        double largest = abs(multipliers[0]);
+        for (int i = 1; i < 4; i++) {
+            if (abs(multipliers[i]) > largest)
+                largest = abs(multipliers[i]);
+        }
+
+        // Only normalize multipliers if largest exceeds 1.0
+        if (largest > 1.0) {
+            for (int i = 0; i < 4; i++) {
+                multipliers[i] = multipliers[i] / largest;
+            }
+        }
+
+        // Scale if needed, 0.0 < scale < 1.0;
+//        for (int i = 0; i < 4; i++) {
+//            multipliers[i] = multipliers[i] * scale;
+//        }
+//        int x = 0;
+//        while (isThereMat() && mode.opModeIsActive() && x == 0) {
+//            if (gyroCorrection == PublicEnums.GyroCorrection.YES) {
+//                int currentHead = startDirection;
+//                // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
+//
+////if (beaconNumber == PublicEnums.BeaconNumber.ONE &&(rightBeaconUS.getUltrasonicLevel() <= 10 || leftBeaconUS.getUltrasonicLevel() <= 10)){
+////        x++;
+////}
+//                if (getGyroHeading() < currentHead) {
+//                    motorDrive1.setPower(multipliers[0]);
+//                    motorDrive3.setPower(multipliers[2]);
+//                    motorDrive4.setPower(multipliers[1] / 1.5);
+//                    motorDrive2.setPower(multipliers[3] / 1.5);
+//                } else if (getGyroHeading() > currentHead) {
+//                    motorDrive1.setPower(multipliers[0] / 1.5);
+//                    motorDrive3.setPower(multipliers[2] / 1.5);
+//                    motorDrive4.setPower(multipliers[1]);
+//                    motorDrive2.setPower(multipliers[3]);
+//                } else {
+//                    motorDrive1.setPower(multipliers[0]);
+//                    motorDrive3.setPower(multipliers[2]);
+//                    motorDrive4.setPower(multipliers[1]);
+//                    motorDrive2.setPower(multipliers[3]);
+//                }
+//
+//            } else {
+//
+//                motorDrive1.setPower(multipliers[0]);
+//                motorDrive3.setPower(multipliers[2]);
+//                motorDrive4.setPower(multipliers[1]);
+//                motorDrive2.setPower(multipliers[3]);
+//            }
+//        }
+//        if (x ==1) {
+//            driveToLine(VelRobotConstants.DIRECTION_WEST, 0.8, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO);
+//        }
+        double startGyroVal = sensorGyro.getHeading();
+        setMovement(angle, speed, 0, 1);
+        while (isThereMat()) {
+
+        }
+        stopMovement();
+    }
+//
+//    public void driveWithUS(double angle, double speed, double target) {
+//
+//        // Shift angle by 45 degrees, since our drive train is x-shaped and not cross-shaped
+//        angle += PI / 4;
+//
+//        // Cut rotation in half because we don't want to spin THAT fast
+//
+//        // Normalize magnitudes so that "straight forward" has a magnitude of 1
+//        speed *= sqrt(2);
+//
+//        double sinDir = sin(angle);
+//        double cosDir = cos(angle);
+//
+//        // None of this stuff should happen if the speed is 0.
+//
+//        // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
+//        double multipliers[] = new double[4];
+//        multipliers[0] = (speed * sinDir);
+//        multipliers[1] = (speed * cosDir);
+//        multipliers[2] = (speed * -cosDir);
+//        multipliers[3] = (speed * -sinDir);
+//
+//        double largest = abs(multipliers[0]);
+//        for (int i = 1; i < 4; i++) {
+//            if (abs(multipliers[i]) > largest)
+//                largest = abs(multipliers[i]);
+//        }
+//
+//        // Only normalize multipliers if largest exceeds 1.0
+//        if (largest > 1.0) {
+//            for (int i = 0; i < 4; i++) {
+//                multipliers[i] = multipliers[i] / largest;
+//            }
+//        }
+//
+//        // Scale if needed, 0.0 < scale < 1.0;
+////        for (int i = 0; i < 4; i++) {
+////            multipliers[i] = multipliers[i] * scale;
+////        }
+//        int currentHead = startDirection;
+//        // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
+//        double correctionScaleRight;
+//        double correctionScaleLeft;
+//// any errors with misalignment will get fixed when the robot squares on the wall
+//        while (leftBeaconUS.getUltrasonicLevel() > target && rightBeaconUS.getUltrasonicLevel() > target && mode.opModeIsActive()) {
+//            if (leftBeaconUS.getUltrasonicLevel() < rightBeaconUS.getUltrasonicLevel()) {
+//                correctionScaleLeft = 1.5;
+//                correctionScaleRight = 1;
+//            } else if (leftBeaconUS.getUltrasonicLevel() > rightBeaconUS.getUltrasonicLevel()) {
+//                correctionScaleLeft = 1.5;
+//                correctionScaleRight = 1;
+//            } else {
+//                correctionScaleLeft = 1;
+//                correctionScaleRight = 1;
+//            }
+//            motorDrive1.setPower(multipliers[0] / correctionScaleLeft);
+//            motorDrive3.setPower(multipliers[2] / correctionScaleLeft);
+//            motorDrive4.setPower(multipliers[1] / correctionScaleRight);
+//            motorDrive2.setPower(multipliers[3] / correctionScaleRight);
+//            mode.telemetry.addData("Robot Heading", sensorGyro.getHeading());
+//            mode.telemetry.update();
+//        }
+//
+//        stopMovement();
+//    }
+
+    public double getGroundLight() {
+        return groundODS.getLightDetected();
+    }
+
+    public boolean isThereMat() {
+
+        if (getGroundLight() - .3 <= matColorVal) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     /**
      *  Completely stop the drive motors.
      */
