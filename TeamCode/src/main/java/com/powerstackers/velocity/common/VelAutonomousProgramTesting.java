@@ -40,16 +40,27 @@ public class VelAutonomousProgramTesting extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        //telemetry.addData("Robot: ", "robot starting init");
+        telemetry.update();
+        robot = new VelRobotAuto(this);
 
         // Initialize any sensors and servos
-        robot = new VelRobotAuto(this);
         robot.initializeRobot();
+        //telemetry.addData("Robot: ", "robot init");
+        //telemetry.update();
         // Wait for the start of the match!Thread.interrupted()
         this.waitForStart();
-        robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.8, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO);
-//        telemetry.addData("Is there opmode: ", opModeIsActive());
+//        telemetry.addData("Is there mat: ", robot.isThereMat());
 //        telemetry.update();
-//        Thread.sleep(3424);
+            robot.encoderDriveCm(VelRobotConstants.DIRECTION_NORTH, 0.8, 30);
+        //robot.driveWithUS(VelRobotConstants.DIRECTION_SOUTH, 0.5, 10);
+//        robot.turnDegreesRight(VelRobotConstants.DIRECTION_EAST, 0.4);
+        //robot.turnDegreesLeft(90, 0.4);
+//
+//        robot.driveToLine(VelRobotConstants.DIRECTION_SOUTHEAST, 0.8, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.ONE, 1);
+//        robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.5, 5);
+//        robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.4, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.ONE, 1);
+//        robot.beaconTap(RED);
 
     }
 }

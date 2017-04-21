@@ -31,28 +31,28 @@ public class VelRobotConstants {
 //    public static final double BEACON_TAP_LEFT  = 0.8;
 //    public static final double BEACON_TAP_RIGHT = 0.2;
 //    public static final double BEACON_RESTING   = 0.5;
-    public static final double DISTANCE_FROM_WALL_WHEN_ROLLING = 0; // TODO find distance
+   // public static final double DISTANCE_FROM_WALL_WHEN_ROLLING = 0; // TODO find distance
     public static final double BEACON_RIGHT_BACK = 1;
     public static final double BEACON_LEFT_BACK = 0;
-    public static final double BEACON_RIGHT_FORWARD = 0.5;
-    public static final double BEACON_LEFT_FORWARD = .5;
+    public static final double BEACON_RIGHT_FORWARD = 0;
+    public static final double BEACON_LEFT_FORWARD = 1;
     /** Joystick must be pushed past this going to register as being pushed. */
     public static final double MINIMUM_JOYSTICK_THRESHOLD = 0.15f;
 
     /** Ball grab release servo in the upright and locked position. */
-    public static final double SERVO_BALL_GRAB_STOWED = 0.0;
+    public static final double SERVO_BALL_GRAB_STOWED = 0.5;
     /** Ball grab release servo in the open position, letting the ball grabber drop. */
     public static final double SERVO_BALL_GRAB_OPEN = 0.0;
     /** Ball grabber in the grabbing position. */
     public static final double SERVO_BALL_GRAB_TIGHT = 0.0;
 
     public static final double MOTOR_SHOOTER_POWER         = -0.10;
-    public static final double MOTOR_SHOOTER_MAX_RPM       = 1600.0;
+    public static final double MOTOR_SHOOTER_MAX_RPM       = 1784;
     public static final int MOTOR_SHOOTER_TARGET_RPM       = 750;
     //public static final int MOTOR_SHOOTER_RPM_INCREMENT    = 50;
-    public static final double DRIVE_SPEED_NORMAL   = 0.6;// TODO Needs to be tested for correct value
+    public static final double DRIVE_SPEED_NORMAL   = 0.8;// TODO Needs to be tested for correct value
     public static final double DRIVE_SPEED_FAST     = 1;
-    public static final double DRIVE_SPEED_SLOW     = 0.2; // TODO Needs to be tested for correct value
+    public static final double DRIVE_SPEED_SLOW     = 0.3; // TODO Needs to be tested for correct value
 //    public static int SCHMITT_UPPER = 20;
 //    public static int SCHMITT_LOWER = 20;
 
@@ -67,4 +67,6 @@ public class VelRobotConstants {
     public static final double DIRECTION_SOUTHEAST = (7*PI)/4;
     public static final double DIRECTION_NORTHWEST = (3*PI)/4;
     public static final double DIRECTION_SOUTHWEST = (5*PI)/4;
+    public static final double SHOOT_SERVO_CLOSED = 0;
+    public static final double SHOOT_SERVO_OPEN = 0.2;
 }

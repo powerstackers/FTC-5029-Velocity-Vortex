@@ -32,14 +32,17 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.ThreadPool;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
+import static java.lang.Thread.sleep;
 
 /**
  * Basic configurations for our robot in autonomous mode. All the functionality of a teleop bot,
@@ -69,230 +72,268 @@ import static java.lang.Math.sqrt;
  */
 
 
-    /**
-     * Basic configurations for our robot. This class contains methods to make the robot do stuff.
-     *
-     * @author Cate Thomas
+/**
+ * Basic configurations for our robot. This class contains methods to make the robot do stuff.
+ *
+ * @author Cate Thomas
+ */
+@SuppressWarnings("unused")
+public class VelRobotAuto {
+
+    protected final LinearOpMode mode;
+    /*
+    Looking at the robot from above:
+        ------F------
+        |1\\     //2|
+        |           |
+        |           |
+        |3//     \\4|
+        -------------
      */
-    @SuppressWarnings("unused")
-    public class VelRobotAuto {
+    DcMotor motorDrive1;
+    DcMotor motorDrive2;
+    DcMotor motorDrive3;
+    DcMotor motorDrive4;
 
-        protected final LinearOpMode mode;
-        /*
-        Looking at the robot from above:
-            ------F------
-            |1\\     //2|
-            |           |
-            |           |
-            |3//     \\4|
-            -------------
-         */
-        DcMotor motorDrive1;
-        DcMotor motorDrive2;
-        DcMotor motorDrive3;
-        DcMotor motorDrive4;
+    private DcMotor motorPickup = null;
+    private DcMotor motorShooter1;
+    private DcMotor motorRLift;
+    private DcMotor motorLLift;
 
-        private DcMotor motorPickup = null;
-        private DcMotor motorShooter1;
-        private DcMotor motorRLift;
-        private DcMotor motorLLift;
+    Servo servoBeaconRight = null;
+    Servo servoBeaconLeft = null;
+    public Servo servoBallGrab = null;
+    public double matColorVal = 0;
+    public int startDirection = 0;
 
-        Servo servoBeaconRight = null;
-        Servo servoBeaconLeft = null;
-        public Servo servoBallGrab = null;
-        public double matColorVal = 0;
-        public int startDirection = 0;
+    GyroSensor sensorGyro;
+    public ColorSensor sensorColor;
+    public UltrasonicSensor rightBeaconUS = null;
+    public UltrasonicSensor leftBeaconUS = null;
+    public OpticalDistanceSensor groundODS = null;
+    public ColorSensor sensorColorGroundL;
+    public ColorSensor sensorColorGroundR;
+    public PublicEnums.Direction robotDirection = PublicEnums.Direction.N;
 
-        GyroSensor sensorGyro;
-        public ColorSensor sensorColor;
-        //    public UltrasonicSensor rightBeaconUS = null;
-//    public UltrasonicSensor leftBeaconUS = null;
-        public OpticalDistanceSensor groundODS = null;
-        public ColorSensor sensorColorGroundL;
-        public ColorSensor sensorColorGroundR;
-        public PublicEnums.Direction robotDirection = PublicEnums.Direction.N;
+    private final ElapsedTime timer = new ElapsedTime();
 
-        private final ElapsedTime timer = new ElapsedTime();
+    /**
+     * Construct a Robot object.
+     *
+     * @param mode The OpMode in which the robot is being used.
+     */
+    public VelRobotAuto(LinearOpMode mode) {
+        this.mode = mode;
+    }
 
-        /**
-         * Construct a Robot object.
-         *
-         * @param mode The OpMode in which the robot is being used.
-         */
-        public VelRobotAuto(LinearOpMode mode) {
-            this.mode = mode;
+    /**
+     * Initialize the robot's servos and sensors.
+     */
+    public void initializeRobot() throws InterruptedException {
+        mode.telemetry.addData("Status: ", "Initialization Started");
+        mode.telemetry.update();
+        mode.telemetry.addData("Status: ", "Initalizing");
+        mode.telemetry.update();
+        motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+        motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+        //motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+        //motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+//        motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorRLift = mode.hardwareMap.dcMotor.get("motorRightLift");
+        motorRLift.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorLLift = mode.hardwareMap.dcMotor.get("motorLeftLift");
+        motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
+
+        motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
+        motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
+        servoBeaconRight = mode.hardwareMap.servo.get("servoBeaconRight");
+        servoBeaconLeft = mode.hardwareMap.servo.get("servoBeaconLeft");
+        sensorGyro = mode.hardwareMap.gyroSensor.get("sensorGyro");
+
+//        mode.telemetry.addData("Gyro: ", "Gyro Calibration Started");
+//        mode.telemetry.update();
+//        sensorGyro.calibrate();
+//        int gyroCalbCount = 0;
+//        while (sensorGyro.isCalibrating()) {
+//            mode.telemetry.addData("Gyro: ", "Gyro is Calibrating");
+//            mode.telemetry.addData("Gyro Calb Count: ", gyroCalbCount);
+//            gyroCalbCount++;
+//            mode.telemetry.update();
+//            Thread.sleep(10);
+//        }
+//        mode.telemetry.addData("Gyro: ", "Gyro Calibration Finished");
+//        mode.telemetry.update();
+        mode.telemetry.addData(">", "Gyro Calibrating. Do Not move!");
+        mode.telemetry.update();
+        sensorGyro.calibrate();
+
+        // make sure the gyro is calibrated.
+        while (!mode.isStopRequested() && sensorGyro.isCalibrating()) {
+            sleep(50);
+            mode.idle();
         }
 
-        /**
-         * Initialize the robot's servos and sensors.
-         */
-        public void initializeRobot() {
-            motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
-            motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-            motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-            motorDrive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
-            motorDrive4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorRLift  = mode.hardwareMap.dcMotor.get("motorRightLift");
-            motorRLift.setDirection(DcMotorSimple.Direction.REVERSE);
-            motorLLift  = mode.hardwareMap.dcMotor.get("motorLeftLift");
-            motorPickup = mode.hardwareMap.dcMotor.get("motorBallPickup");
 
-            motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
-            motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
-            motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        mode.telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+        mode.telemetry.update();
 
-            servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
-            servoBeaconRight = mode.hardwareMap.servo.get("servoBeaconRight");
-            servoBeaconLeft = mode.hardwareMap.servo.get("servoBeaconLeft");
-            sensorGyro = mode.hardwareMap.gyroSensor.get("sensorGyro");
+        sensorColor = mode.hardwareMap.colorSensor.get("sensorColor");
+        sensorColorGroundL = mode.hardwareMap.colorSensor.get("sensorColorGroundL");
+        sensorColorGroundR = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
 
-            sensorGyro.calibrate();
+        sensorColor.setI2cAddress(I2cAddr.create7bit(0x1e)); //8bit 0x3c
+        sensorColorGroundL.setI2cAddress(I2cAddr.create7bit(0x2e)); //8bit 0x5c
+        sensorColorGroundR.setI2cAddress(I2cAddr.create7bit(0x26)); //8bit 0x4c
+        groundODS = mode.hardwareMap.opticalDistanceSensor.get("ODS");
+        rightBeaconUS = mode.hardwareMap.ultrasonicSensor.get("RUS");
+        leftBeaconUS = mode.hardwareMap.ultrasonicSensor.get("LUS");
+        sensorColor.enableLed(false);
+        sensorColorGroundL.enableLed(true);
+        sensorColorGroundR.enableLed(true);
+        motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
+        stopMovement();
+        matColorVal = groundODS.getLightDetected();
 
-            sensorColor         = mode.hardwareMap.colorSensor.get("sensorColor");
-            sensorColorGroundL  = mode.hardwareMap.colorSensor.get("sensorColorGroundL");
-            sensorColorGroundR  = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
+        beaconServoReset();
+        servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
+        mode.telemetry.addData("Status: ", "Initialized");
+        mode.telemetry.update();
+    }
 
-            sensorColor.setI2cAddress(I2cAddr.create7bit(0x1e)); //8bit 0x3c
-            sensorColorGroundL.setI2cAddress(I2cAddr.create7bit(0x2e)); //8bit 0x5c
-            sensorColorGroundR.setI2cAddress(I2cAddr.create7bit(0x26)); //8bit 0x4c
-            groundODS = mode.hardwareMap.opticalDistanceSensor.get("ODS");
-//        rightBeaconUS = mode.hardwareMap.ultrasonicSensor.get("RUS");
-//        leftBeaconUS = mode.hardwareMap.ultrasonicSensor.get("LUS");
-            sensorColor.enableLed(true);
-            sensorColorGroundL.enableLed(true);
-            sensorColorGroundR.enableLed(true);
-            motorShooter1.setMaxSpeed((int)(VelRobotConstants.MOTOR_SHOOTER_MAX_RPM*0.74));
-            stopMovement();
-            matColorVal = groundODS.getLightDetected();
+    /**
+     * Get the revolutions per minute of the shooter motor. Eats up 100ms!
+     *
+     * @return Double representing the rpm.
+     */
 
-            beaconServoReset();
-            servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
-            mode.telemetry.addData("Status", "Initialized");
+    public boolean isShooterRunning() {
+        if (motorShooter1.getPower() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void beaconServoReset() {
+        servoBeaconRight.setPosition(VelRobotConstants.BEACON_RIGHT_BACK);
+        servoBeaconLeft.setPosition(VelRobotConstants.BEACON_LEFT_BACK);
+    }
+
+    public double getShooterRPM() {
+
+        int endEncoder;
+        int startEncoder = motorShooter1.getCurrentPosition();
+        timer.reset();
+
+        //noinspection StatementWithEmptyBody
+        while (timer.milliseconds() < 100) {
         }
 
-        /**
-         * Get the revolutions per minute of the shooter motor. Eats up 100ms!
-         * @return Double representing the rpm.
-         */
+        endEncoder = motorShooter1.getCurrentPosition();
 
-        public boolean isShooterRunning (){
-            if (motorShooter1.getPower() >0) {
-                return true;
-            }
-            else {
-                return false;
-            }
+        return (endEncoder - startEncoder) * (600.0 / 44.4);
+    }
+
+    /**
+     * Set the direction of the particle pickup motor.
+     *
+     * @param setting MotorSetting enum telling what setting to use.
+     */
+    public void setBallPickup(PublicEnums.MotorSetting setting) {
+        switch (setting) {
+            case FORWARD:
+                motorPickup.setPower(VelRobotConstants.MOTOR_PICKUP_POWER);
+                break;
+            case REVERSE:
+                motorPickup.setPower(-VelRobotConstants.MOTOR_PICKUP_POWER);
+                break;
+            case STOP:
+                motorPickup.setPower(0.0);
+                break;
+            default:
+                motorPickup.setPower(0.0);
+                break;
         }
-        public void beaconServoReset(){
-            servoBeaconRight.setPosition(VelRobotConstants.BEACON_RIGHT_BACK);
-            servoBeaconLeft.setPosition(VelRobotConstants.BEACON_LEFT_BACK);
+    }
+
+    public void directionChange(PublicEnums.Direction direction) {
+        robotDirection = direction;
+
+        switch (direction) {
+            case N:
+                motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                mode.telemetry.addData("Robot Direction:", "N");
+                break;
+            case E:
+                motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive2 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive3 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                mode.telemetry.addData("Robot Direction:", "E");
+
+                break;
+            case S:
+                motorDrive1 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive2 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive3 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive4 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                mode.telemetry.addData("Robot Direction:", "S");
+
+                break;
+            case W:
+                motorDrive1 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                motorDrive4 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                mode.telemetry.addData("Robot Direction:", "W");
+
+                break;
+            default:
+                motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
+                motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
+                motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
+                motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
+                mode.telemetry.addData("Robot Direction:", "N");
+                break;
+
         }
-        public double getShooterRPM() {
+        mode.telemetry.update();
+    }
 
-            int endEncoder;
-            int startEncoder = motorShooter1.getCurrentPosition();
-            timer.reset();
-
-            //noinspection StatementWithEmptyBody
-            while(timer.milliseconds() < 100) {}
-
-            endEncoder = motorShooter1.getCurrentPosition();
-
-            return (endEncoder - startEncoder) * (600.0/44.4);
+    /**
+     * Set the shooter motors.
+     *
+     * @param setting MotorSetting enum telling what setting to use.
+     */
+    public void setShooter(PublicEnums.MotorSetting setting) throws InterruptedException {
+        switch (setting) {
+            case FORWARD:
+                setShooterRpm(VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM);
+                break;
+            case STOP:
+                motorShooter1.setPower(0.0);
+                break;
+            default:
+                motorShooter1.setPower(0.0);
+                break;
         }
+    }
 
-        /**
-         * Set the direction of the particle pickup motor.
-         * @param setting MotorSetting enum telling what setting to use.
-         */
-        public void setBallPickup(PublicEnums.MotorSetting setting) {
-            switch (setting) {
-                case FORWARD:
-                    motorPickup.setPower(VelRobotConstants.MOTOR_PICKUP_POWER);
-                    break;
-                case REVERSE:
-                    motorPickup.setPower(-VelRobotConstants.MOTOR_PICKUP_POWER);
-                    break;
-                case STOP:
-                    motorPickup.setPower(0.0);
-                    break;
-                default:
-                    motorPickup.setPower(0.0);
-                    break;
-            }
-        }
-        public void directionChange(PublicEnums.Direction direction) {
-            robotDirection = direction;
-
-            switch (direction) {
-                case N:
-                    motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
-                    motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-                    motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-                    motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
-                    mode.telemetry.addData("Robot Direction:", "N");
-                    break;
-                case E:
-                    motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-                    motorDrive2 = mode.hardwareMap.dcMotor.get("motorBackRight");
-                    motorDrive3 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
-                    motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-                    mode.telemetry.addData("Robot Direction:", "E");
-
-                    break;
-                case S:
-                    motorDrive1 = mode.hardwareMap.dcMotor.get("motorBackRight");
-                    motorDrive2 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-                    motorDrive3 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-                    motorDrive4 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
-                    mode.telemetry.addData("Robot Direction:", "S");
-
-                    break;
-                case W:
-                    motorDrive1 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-                    motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
-                    motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackRight");
-                    motorDrive4 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-                    mode.telemetry.addData("Robot Direction:", "W");
-
-                    break;
-                default:
-                    motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
-                    motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
-                    motorDrive3 = mode.hardwareMap.dcMotor.get("motorBackLeft");
-                    motorDrive4 = mode.hardwareMap.dcMotor.get("motorBackRight");
-                    mode.telemetry.addData("Robot Direction:", "N");
-                    break;
-
-            }
-            mode.telemetry.update();
-        }
-        /**
-         * Set the shooter motors.
-         * @param setting MotorSetting enum telling what setting to use.
-         */
-        public void setShooter(PublicEnums.MotorSetting setting) {
-            switch (setting) {
-                case FORWARD:
-                    setShooterRpm(VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM);
-                    break;
-                case STOP:
-                    motorShooter1.setPower(0.0);
-                    break;
-                default:
-                    motorShooter1.setPower(0.0);
-                    break;
-            }
-        }
-
-        /**
-         * Set the RPM of the shooter motor. Sets the speed as a percentage of the maximum RPM.
-         * @param rpm RPM of motor that we want to set, can be positive or negative.
-         */
+    /**
+     * Set the RPM of the shooter motor. Sets the speed as a percentage of the maximum RPM.
+     * @param rpm RPM of motor that we want to set, can be positive or negative.
+     */
 //    private void setShooterRpm(int rpm) {
 //        double shootRpm = getShooterRPM();
 //
@@ -309,331 +350,258 @@ import static java.lang.Math.sqrt;
 //            motorShooter1.setPower(motorShooter1.getPower() - 0.05);
 //        }
 //    }
-        /**
-         * Set the RPM of the shooter motor. Sets the speed as a percentage of the maximum RPM.
-         * @param rpm RPM of motor that we want to set, can be positive or negative.
-         */
-        private void setShooterRpm(int rpm) {
 
-            if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
-                motorShooter1.setPower( (double) rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
-            } else {
-                motorShooter1.setPower(rpm > 0? 1.0 : -1.0);
-            }
-        }
-        /**
-         * Set the lift motor.
-         * @param setting MotorSetting telling which setting to use.
-         */
-        public void setLift(PublicEnums.MotorSetting setting) {
-            switch (setting) {
-                case FORWARD:
-                    motorLLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
-                    motorRLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
-                    break;
-                case REVERSE:
-                    motorLLift.setPower(-VelRobotConstants.MOTOR_LIFT_POWER);
-                    motorRLift.setPower(-VelRobotConstants.MOTOR_LIFT_POWER);
-                    break;
-                case STOP:
-                    motorLLift.setPower(0.0);
-                    motorRLift.setPower(0.0);
-                    break;
-                default:
-                    motorLLift.setPower(0.0);
-                    motorRLift.setPower(0.0);
-                    break;
-            }
+    /**
+     * Set the RPM of the shooter motor. Sets the speed as a percentage of the maximum RPM.
+     *
+     * @param rpm RPM of motor that we want to set, can be positive or negative.
+     */
+    private void setShooterRpm(int rpm) throws InterruptedException {
+        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
+            motorShooter1.setPower((double) rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
+        } else {
+            motorShooter1.setPower(rpm > 0 ? 1.0 : -1.0);
         }
 
-        public void setBeaconTap(double position) {
-            servoBeaconRight.setPosition(position);
+//        if (getShooterRPM() > 650){
+//        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
+//            motorShooter1.setPower((double) rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
+//        } else {
+//            motorShooter1.setPower(rpm > 0 ? 1.0 : -1.0);
+//        }}
+    }
+
+    /**
+     * Set the lift motor.
+     *
+     * @param setting MotorSetting telling which setting to use.
+     */
+    public void setLift(PublicEnums.MotorSetting setting) {
+        switch (setting) {
+            case FORWARD:
+                motorLLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
+                motorRLift.setPower(VelRobotConstants.MOTOR_LIFT_POWER);
+                break;
+            case REVERSE:
+                motorLLift.setPower(-VelRobotConstants.MOTOR_LIFT_POWER);
+                motorRLift.setPower(-VelRobotConstants.MOTOR_LIFT_POWER);
+                break;
+            case STOP:
+                motorLLift.setPower(0.0);
+                motorRLift.setPower(0.0);
+                break;
+            default:
+                motorLLift.setPower(0.0);
+                motorRLift.setPower(0.0);
+                break;
         }
+    }
 
-        /**
-         * Set the movement speeds of all four motors, based on a desired angle, speed, and rotation
-         * speed.
-         *
-         * @param angle The angle we want the robot to move, in radians, where "forward" is pi/2
-         * @param speed The movement speed we want, ranging from -1:1
-         * @param rotation The speed of rotation, ranging from -1:1
-         */
-        public void setMovement(double angle, double speed, double rotation, double scale) {
-            // Shift angle by 45 degrees, since our drive train is x-shaped and not cross-shaped
-            angle += PI/4;
-
-            // Cut rotation in half because we don't want to spin THAT fast
-            rotation *= 0.5;
-
-            // Normalize magnitudes so that "straight forward" has a magnitude of 1
-            speed *= sqrt(2);
-
-            double sinDir = sin(angle);
-            double cosDir = cos(angle);
-
-            // None of this stuff should happen if the speed is 0.
-            if (speed == 0.0 && rotation == 0.0) {
-                stopMovement();
-                return;
-            }
-
-            // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
-            double multipliers[] = new double[4];
-            multipliers[0] = (speed * sinDir) + rotation;
-            multipliers[1] = (speed * cosDir) + rotation;
-            multipliers[2] = (speed * -cosDir) + rotation;
-            multipliers[3] = (speed * -sinDir) + rotation;
-
-            double largest = abs(multipliers[0]);
-            for (int i = 1; i < 4; i++) {
-                if (abs(multipliers[i]) > largest)
-                    largest = abs(multipliers[i]);
-            }
-
-            // Only normalize multipliers if largest exceeds 1.0
-            if(largest > 1.0) {
-                for (int i = 0; i < 4; i++) {
-                    multipliers[i] = multipliers[i] / largest;
-                }
-            }
-
-            // Scale if needed, 0.0 < scale < 1.0;
-//        for (int i = 0; i < 4; i++) {
-//            multipliers[i] = multipliers[i] * scale;
-//        }
-
-            // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
-            motorDrive1.setPower(multipliers[0]*scale);
-            motorDrive4.setPower(multipliers[1]*scale);
-            motorDrive3.setPower(multipliers[2]*scale);
-            motorDrive2.setPower(multipliers[3]*scale);
-        }
-        public void driveToLine(double angle, double speed, PublicEnums.GyroCorrection gyroCorrection, PublicEnums.BeaconNumber beaconNumber) {
-
-            // Shift angle by 45 degrees, since our drive train is x-shaped and not cross-shaped
-            angle += PI / 4;
-
-            // Cut rotation in half because we don't want to spin THAT fast
-
-            // Normalize magnitudes so that "straight forward" has a magnitude of 1
-            speed *= sqrt(2);
-
-            double sinDir = sin(angle);
-            double cosDir = cos(angle);
-
-            // None of this stuff should happen if the speed is 0.
-
-            // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
-            double multipliers[] = new double[4];
-            multipliers[0] = (speed * sinDir);
-            multipliers[1] = (speed * cosDir);
-            multipliers[2] = (speed * -cosDir);
-            multipliers[3] = (speed * -sinDir);
-
-            double largest = abs(multipliers[0]);
-            for (int i = 1; i < 4; i++) {
-                if (abs(multipliers[i]) > largest)
-                    largest = abs(multipliers[i]);
-            }
-
-            // Only normalize multipliers if largest exceeds 1.0
-            if (largest > 1.0) {
-                for (int i = 0; i < 4; i++) {
-                    multipliers[i] = multipliers[i] / largest;
-                }
-            }
-
-            // Scale if needed, 0.0 < scale < 1.0;
-//        for (int i = 0; i < 4; i++) {
-//            multipliers[i] = multipliers[i] * scale;
-//        }
-//        int x = 0;
-//        while (isThereMat() && mode.opModeIsActive() && x == 0) {
-//            if (gyroCorrection == PublicEnums.GyroCorrection.YES) {
-//                int currentHead = startDirection;
-//                // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
-//
-////if (beaconNumber == PublicEnums.BeaconNumber.ONE &&(rightBeaconUS.getUltrasonicLevel() <= 10 || leftBeaconUS.getUltrasonicLevel() <= 10)){
-////        x++;
-////}
-//                if (getGyroHeading() < currentHead) {
-//                    motorDrive1.setPower(multipliers[0]);
-//                    motorDrive3.setPower(multipliers[2]);
-//                    motorDrive4.setPower(multipliers[1] / 1.5);
-//                    motorDrive2.setPower(multipliers[3] / 1.5);
-//                } else if (getGyroHeading() > currentHead) {
-//                    motorDrive1.setPower(multipliers[0] / 1.5);
-//                    motorDrive3.setPower(multipliers[2] / 1.5);
-//                    motorDrive4.setPower(multipliers[1]);
-//                    motorDrive2.setPower(multipliers[3]);
-//                } else {
-//                    motorDrive1.setPower(multipliers[0]);
-//                    motorDrive3.setPower(multipliers[2]);
-//                    motorDrive4.setPower(multipliers[1]);
-//                    motorDrive2.setPower(multipliers[3]);
-//                }
-//
-//            } else {
-//
-//                motorDrive1.setPower(multipliers[0]);
-//                motorDrive3.setPower(multipliers[2]);
-//                motorDrive4.setPower(multipliers[1]);
-//                motorDrive2.setPower(multipliers[3]);
-//            }
-//        }
-//        if (x ==1) {
-//            driveToLine(VelRobotConstants.DIRECTION_WEST, 0.8, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO);
-//        }
-            double startGyroVal = sensorGyro.getHeading();
-            setMovement(angle, speed, 0, 1);
-            while (isThereMat() && mode.opModeIsActive()) {
-                setMovement(angle, speed, sensorGyro.getHeading() - startGyroVal, 1);
-            }
-            stopMovement();
-        }
-//
-//    public void driveWithUS(double angle, double speed, double target) {
-//
-//        // Shift angle by 45 degrees, since our drive train is x-shaped and not cross-shaped
-//        angle += PI / 4;
-//
-//        // Cut rotation in half because we don't want to spin THAT fast
-//
-//        // Normalize magnitudes so that "straight forward" has a magnitude of 1
-//        speed *= sqrt(2);
-//
-//        double sinDir = sin(angle);
-//        double cosDir = cos(angle);
-//
-//        // None of this stuff should happen if the speed is 0.
-//
-//        // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
-//        double multipliers[] = new double[4];
-//        multipliers[0] = (speed * sinDir);
-//        multipliers[1] = (speed * cosDir);
-//        multipliers[2] = (speed * -cosDir);
-//        multipliers[3] = (speed * -sinDir);
-//
-//        double largest = abs(multipliers[0]);
-//        for (int i = 1; i < 4; i++) {
-//            if (abs(multipliers[i]) > largest)
-//                largest = abs(multipliers[i]);
-//        }
-//
-//        // Only normalize multipliers if largest exceeds 1.0
-//        if (largest > 1.0) {
-//            for (int i = 0; i < 4; i++) {
-//                multipliers[i] = multipliers[i] / largest;
-//            }
-//        }
-//
-//        // Scale if needed, 0.0 < scale < 1.0;
-////        for (int i = 0; i < 4; i++) {
-////            multipliers[i] = multipliers[i] * scale;
-////        }
-//        int currentHead = startDirection;
-//        // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
-//        double correctionScaleRight;
-//        double correctionScaleLeft;
-//// any errors with misalignment will get fixed when the robot squares on the wall
-//        while (leftBeaconUS.getUltrasonicLevel() > target && rightBeaconUS.getUltrasonicLevel() > target && mode.opModeIsActive()) {
-//            if (leftBeaconUS.getUltrasonicLevel() < rightBeaconUS.getUltrasonicLevel()) {
-//                correctionScaleLeft = 1.5;
-//                correctionScaleRight = 1;
-//            } else if (leftBeaconUS.getUltrasonicLevel() > rightBeaconUS.getUltrasonicLevel()) {
-//                correctionScaleLeft = 1.5;
-//                correctionScaleRight = 1;
-//            } else {
-//                correctionScaleLeft = 1;
-//                correctionScaleRight = 1;
-//            }
-//            motorDrive1.setPower(multipliers[0] / correctionScaleLeft);
-//            motorDrive3.setPower(multipliers[2] / correctionScaleLeft);
-//            motorDrive4.setPower(multipliers[1] / correctionScaleRight);
-//            motorDrive2.setPower(multipliers[3] / correctionScaleRight);
-//            mode.telemetry.addData("Robot Heading", sensorGyro.getHeading());
-//            mode.telemetry.update();
-//        }
-//
-//        stopMovement();
+//    public void setBeaconTap(double position) {
+//        servoBeaconRight.setPosition(position);
 //    }
 
-        public double getGroundLight() {
-            return groundODS.getLightDetected();
+    /**
+     * Set the movement speeds of all four motors, based on a desired angle, speed, and rotation
+     * speed.
+     *
+     * @param angle    The angle we want the robot to move, in radians, where "forward" is pi/2
+     * @param speed    The movement speed we want, ranging from -1:1
+     * @param rotation The speed of rotation, ranging from -1:1
+     */
+    public void setMovement(double angle, double speed, double rotation, double scale) {
+        // Shift angle by 45 degrees, since our drive train is x-shaped and not cross-shaped
+        angle += PI / 4;
+
+        // Cut rotation in half because we don't want to spin THAT fast
+        rotation *= 0.5;
+
+        // Normalize magnitudes so that "straight forward" has a magnitude of 1
+        speed *= sqrt(2);
+
+        double sinDir = sin(angle);
+        double cosDir = cos(angle);
+
+        // None of this stuff should happen if the speed is 0.
+        if (speed == 0.0 && rotation == 0.0) {
+            stopMovement();
+            return;
         }
 
-        public boolean isThereMat() {
+        // Rotation is scaled down by 50% so that it doesn't completely cancel out any motors
+        double multipliers[] = new double[4];
+        multipliers[0] = (speed * sinDir) + rotation;
+        multipliers[1] = (speed * cosDir) + rotation;
+        multipliers[2] = (speed * -cosDir) + rotation;
+        multipliers[3] = (speed * -sinDir) + rotation;
 
-            if (getGroundLight() - .3 <= matColorVal) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        /**
-         *  Completely stop the drive motors.
-         */
-        public void stopMovement() {
-            motorDrive1.setPower(0.0);
-            motorDrive2.setPower(0.0);
-            motorDrive3.setPower(0.0);
-            motorDrive4.setPower(0.0);
+        double largest = abs(multipliers[0]);
+        for (int i = 1; i < 4; i++) {
+            if (abs(multipliers[i]) > largest)
+                largest = abs(multipliers[i]);
         }
 
-        /**
-         * Completely stop all motors on the robot.
-         */
-        public void stopAllMotors() {
-            motorDrive1.setPower(0.0);
-            motorDrive2.setPower(0.0);
-            motorDrive3.setPower(0.0);
-            motorDrive4.setPower(0.0);
-
-            motorShooter1.setPower(0.0);
-            motorPickup.setPower(0.0);
-            motorLLift.setPower(0.0);
-            motorRLift.setPower(0.0);
-        }
-
-        /**
-         * Get direction of travel from the joystick.
-         *
-         * @param pad Gamepad to take control values from.
-         * @return A direction of movement, in radians, where "forward" is pi/2
-         */
-        public static double mecDirectionFromJoystick(Gamepad pad) {
-            return Math.atan2(-pad.left_stick_y, pad.left_stick_x);
-        }
-
-        /**
-         *  Get the translation speed value from the joystick. If the joysticks are moved close enough
-         *  to the center, the method will return 0 (meaning no movement).
-         *
-         * @param pad Gamepad to take control values from.
-         * @return Speed ranging from 0:1
-         */
-        public static double mecSpeedFromJoystick(Gamepad pad) {
-            // If the joystick is close enough to the middle, return a 0 (no movement)
-            if (abs(pad.left_stick_x) < VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD
-                    && abs(pad.left_stick_y) < VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD){
-                return 0.0;
-            } else {
-                return sqrt((pad.left_stick_y * pad.left_stick_y)
-                        + (pad.left_stick_x * pad.left_stick_x));
+        // Only normalize multipliers if largest exceeds 1.0
+        if (largest > 1.0) {
+            for (int i = 0; i < 4; i++) {
+                multipliers[i] = multipliers[i] / largest;
             }
         }
 
-        /**
-         *  Get the spin speed value from the joystick. If the joystick is moved close enough to the
-         *  center, the method will return 0 (meaning no spin).
-         *
-         * @param pad Gamepad to take control values from.
-         * @return Speed ranging from -1:1
-         */
-        public static double mecSpinFromJoystick(Gamepad pad) {
-            return (abs(pad.right_stick_x) > VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD)
-                    ? pad.right_stick_x : 0.0;
+        // Scale if needed, 0.0 < scale < 1.0;
+//        for (int i = 0; i < 4; i++) {
+//            multipliers[i] = multipliers[i] * scale;
+//        }
+
+        // TODO Fix wiring. Motors 2 and 4 are plugged into the wrong motor ports.
+        motorDrive1.setPower(multipliers[0] * scale);
+        motorDrive4.setPower(multipliers[1] * scale);
+        motorDrive3.setPower(multipliers[2] * scale);
+        motorDrive2.setPower(multipliers[3] * scale);
+    }
+    public void encoderDriveCm(double angle, double speed, double cm){
+        motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorDrive1.setTargetPosition(cmToTicks(cm)+motorDrive1.getCurrentPosition());
+        setMovement(angle, speed, 0, 1);
+        while (motorDrive1.isBusy()&&mode.opModeIsActive()){
+            mode.telemetry.addData("Drive encoder count: ", motorDrive1.getCurrentPosition());
+            mode.telemetry.update();
         }
+        stopMovement();
+    }
+    public void driveToLine(double angle, double speed, PublicEnums.GyroCorrection gyroCorrection, PublicEnums.BeaconNumber beaconNumber, double scale) {
+
+        int x = 0;
+        double startGyroVal = sensorGyro.getHeading();
+        setMovement(angle, speed, 0, scale);
+        while (isThereMat() && mode.opModeIsActive() && x == 0) {
+            //setMovement(angle, speed, sensorGyro.getHeading() - startGyroVal, 1);
+            mode.telemetry.addData("Is there Mat", isThereMat());
+            mode.telemetry.addData("Mat Light", getGroundLight());
+            mode.telemetry.update();
+            if (beaconNumber == PublicEnums.BeaconNumber.ONE &&(rightBeaconUS.getUltrasonicLevel() <= 7 || leftBeaconUS.getUltrasonicLevel() <= 7)){
+                x++;
+            }
+        }
+        if (x ==1) {
+            while (isThereMat() && mode.opModeIsActive()) {
+                setMovement(VelRobotConstants.DIRECTION_NORTH, speed-0.1, 0, 1);
+                mode.telemetry.addData("Is there Mat", isThereMat());
+                mode.telemetry.addData("Mat Light", getGroundLight());
+                mode.telemetry.update();
+            }
+        }
+        stopMovement();
+    }
+
+    public void driveWithUS(double angle, double speed, double target) {
+        int currentHead = startDirection;
+
+// any errors with misalignment will get fixed when the robot squares on the wall
+        while (getLeftUS() != target && getRightUS() != target && mode.opModeIsActive()) {
+            if (getLeftUS() < getRightUS()) {
+                setMovement(angle, speed, - 0.2, 1);
+
+            } else if (getLeftUS() > getRightUS()) {
+                setMovement(angle, speed, 0.2, 1);
+
+            } else {
+                setMovement(angle, speed, 0, 1);
+
+            }
+            mode.telemetry.addData("Robot Heading", sensorGyro.getHeading());
+            mode.telemetry.update();
+        }
+
+        stopMovement();
+    }
+    public double getRightUS(){
+        return rightBeaconUS.getUltrasonicLevel();
+    }
+    public double getLeftUS(){
+        return leftBeaconUS.getUltrasonicLevel();
+    }
+    public double getGroundLight() {
+        return groundODS.getLightDetected();
+    }
+
+    public boolean isThereMat() {
+
+        if (getGroundLight() - .3 <= matColorVal) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Completely stop the drive motors.
+     */
+    public void stopMovement() {
+        motorDrive1.setPower(0.0);
+        motorDrive2.setPower(0.0);
+        motorDrive3.setPower(0.0);
+        motorDrive4.setPower(0.0);
+    }
+
+    /**
+     * Completely stop all motors on the robot.
+     */
+    public void stopAllMotors() {
+        motorDrive1.setPower(0.0);
+        motorDrive2.setPower(0.0);
+        motorDrive3.setPower(0.0);
+        motorDrive4.setPower(0.0);
+
+        motorShooter1.setPower(0.0);
+        motorPickup.setPower(0.0);
+        motorLLift.setPower(0.0);
+        motorRLift.setPower(0.0);
+    }
+
+    /**
+     * Get direction of travel from the joystick.
+     *
+     * @param pad Gamepad to take control values from.
+     * @return A direction of movement, in radians, where "forward" is pi/2
+     */
+    public static double mecDirectionFromJoystick(Gamepad pad) {
+        return Math.atan2(-pad.left_stick_y, pad.left_stick_x);
+    }
+
+    /**
+     * Get the translation speed value from the joystick. If the joysticks are moved close enough
+     * to the center, the method will return 0 (meaning no movement).
+     *
+     * @param pad Gamepad to take control values from.
+     * @return Speed ranging from 0:1
+     */
+    public static double mecSpeedFromJoystick(Gamepad pad) {
+        // If the joystick is close enough to the middle, return a 0 (no movement)
+        if (abs(pad.left_stick_x) < VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD
+                && abs(pad.left_stick_y) < VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD) {
+            return 0.0;
+        } else {
+            return sqrt((pad.left_stick_y * pad.left_stick_y)
+                    + (pad.left_stick_x * pad.left_stick_x));
+        }
+    }
+
+    /**
+     * Get the spin speed value from the joystick. If the joystick is moved close enough to the
+     * center, the method will return 0 (meaning no spin).
+     *
+     * @param pad Gamepad to take control values from.
+     * @return Speed ranging from -1:1
+     */
+    public static double mecSpinFromJoystick(Gamepad pad) {
+        return (abs(pad.right_stick_x) > VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD)
+                ? pad.right_stick_x : 0.0;
+    }
 
 //    /**
 //     * Tap the beacon on the correct side.
@@ -662,49 +630,50 @@ import static java.lang.Math.sqrt;
 //        servoBeaconRight.setPosition(positionBeaconServo);
 //    }
 
-        /**
-         * Trim a servo value between the minimum and maximum ranges.
-         * @param servoValue Value to trim.
-         * @return A raw double with the trimmed value.
-         */
-        private static double trimServoValue(double servoValue) {
-            return Range.clip(servoValue, 0.0, 1.0);
-        }
+    /**
+     * Trim a servo value between the minimum and maximum ranges.
+     *
+     * @param servoValue Value to trim.
+     * @return A raw double with the trimmed value.
+     */
+    private static double trimServoValue(double servoValue) {
+        return Range.clip(servoValue, 0.0, 1.0);
+    }
 
-        /**
-         * @return Int representation of the motor position.
-         */
-        public int getShooterEncVal() {
-            return motorShooter1.getCurrentPosition();
-        }
+    /**
+     * @return Int representation of the motor position.
+     */
+    public int getShooterEncVal() {
+        return motorShooter1.getCurrentPosition();
+    }
 
-        public double getShooterPower(){
-            return motorShooter1.getPower();
-        }
+    public double getShooterPower() {
+        return motorShooter1.getPower();
+    }
 
-        public long getDrive1Encoder() {
-            return motorDrive1.getCurrentPosition();
-        }
+    public long getDrive1Encoder() {
+        return motorDrive1.getCurrentPosition();
+    }
 
-        public long getDrive2Encoder() {
-            return motorDrive2.getCurrentPosition();
-        }
+    public long getDrive2Encoder() {
+        return motorDrive2.getCurrentPosition();
+    }
 
-        public long getDrive3Encoder() {
-            return motorDrive3.getCurrentPosition();
-        }
+    public long getDrive3Encoder() {
+        return motorDrive3.getCurrentPosition();
+    }
 
-        public long getDrive4Encoder() {
-            return motorDrive4.getCurrentPosition();
-        }
+    public long getDrive4Encoder() {
+        return motorDrive4.getCurrentPosition();
+    }
 
-        public int getEncoderShooter() throws InterruptedException {
-            return motorShooter1.getCurrentPosition();
-        }
+    public int getEncoderShooter() throws InterruptedException {
+        return motorShooter1.getCurrentPosition();
+    }
 
-        public double getBallGrabPosition() {
-            return this.servoBallGrab.getPosition();
-        }
+    public double getBallGrabPosition() {
+        return this.servoBallGrab.getPosition();
+    }
 
 
 //    public int getARGB() {
@@ -727,7 +696,7 @@ import static java.lang.Math.sqrt;
 //        return sensorColor.alpha();
 //    }
 
-        // TODO Automatic ball feeder method
+    // TODO Automatic ball feeder method
 
 
     /**
@@ -741,17 +710,17 @@ import static java.lang.Math.sqrt;
      * number of rotations by a factor of 40, the final count is 7 * 4 * 40 = 1120. For 20 or 60
      * reduction motors, the  number would be different.
      */
-    private static final double ticksPerRevolution = 28 * gearbox;
+    private static final double ticksPerRevolution = 7 * gearbox;
     /**
      * Motor diameter in centimeters.
      */
-    private static final double wheelDiameterCM = 10.0;
+
 
     /**
      * Motor diameter in Inches
      */
     private static final double wheelDiameterIN = 4;
-
+    private static final double wheelDiameterCM = wheelDiameterIN*2.54;
     /**
      * Gear ratio between the motor and the drive wheels. Used in calculating distance.
      */
@@ -810,12 +779,12 @@ import static java.lang.Math.sqrt;
             while (mode.opModeIsActive() && x < 1) {
                 if (sensorColor.red() > sensorColor.blue()) {
                     servoBeaconLeft.setPosition(VelRobotConstants.BEACON_LEFT_FORWARD);
-                    Thread.sleep(1000);
+                    sleep(1000);
                     x++;
 
                 } else if (sensorColor.blue() > sensorColor.red()) {
                     servoBeaconRight.setPosition(VelRobotConstants.BEACON_RIGHT_FORWARD);
-                    Thread.sleep(1000);
+                    sleep(1000);
                     x++;
                 } else {
                     beaconServoReset();
@@ -825,12 +794,12 @@ import static java.lang.Math.sqrt;
             while (mode.opModeIsActive() && x < 1) {
                 if (sensorColor.red() < sensorColor.blue()) {
                     servoBeaconLeft.setPosition(VelRobotConstants.BEACON_LEFT_FORWARD);
-                    Thread.sleep(1000);
+                    sleep(1000);
                     x++;
 
                 } else if (sensorColor.blue() < sensorColor.red()) {
                     servoBeaconRight.setPosition(VelRobotConstants.BEACON_RIGHT_FORWARD);
-                    Thread.sleep(1000);
+                    sleep(1000);
                     x++;
                 } else {
                     beaconServoReset();
@@ -838,6 +807,7 @@ import static java.lang.Math.sqrt;
             }
         }
         beaconServoReset();
+        sleep(500);
     }
 
     /**
@@ -885,8 +855,9 @@ import static java.lang.Math.sqrt;
         mode.telemetry.addData("Gyro", degrees + "," + degreesSoFar);
         // For as long as the current degree measure doesn't equal the target. This will work in the clockwise and
         // counterclockwise directions, since we are comparing the absolute values
-        while ((degreesSoFar) < (degrees)) {
-            mode.telemetry.addData("gyrocompare", degreesSoFar = getGyroHeading());
+        while ((degreesSoFar) != (degrees)) {
+            degreesSoFar = getGyroHeading();
+            mode.telemetry.addData("gyrocompare", degreesSoFar);
         }
 
         // Stop all drive motors
@@ -912,14 +883,15 @@ import static java.lang.Math.sqrt;
         if (degreesToGo < 360) {                //right
             this.setPowerLeft(speed);
             this.setPowerRight(-1 * speed);
-            while ((degreesSoFar) < (degrees)) {
+            while ((degreesSoFar) < (degrees)&&mode.opModeIsActive()) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
+                mode.telemetry.update();
             }
         } else if (degreesToGo > 360) {
             degreesFixed = degreesToGo - 360;
             this.setPowerLeft(speed);
             this.setPowerRight(-1 * speed);
-            while ((degreesSoFar) < (degreesFixed)) {
+            while ((degreesSoFar) < (degreesFixed)&&mode.opModeIsActive()) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
             }
         } else {
@@ -937,14 +909,14 @@ import static java.lang.Math.sqrt;
         if (degreesToGo > 0) {                //left
             this.setPowerLeft(-1 * speed);
             this.setPowerRight(speed);
-            while ((degreesSoFar) > (degrees)) {
+            while ((degreesSoFar) > (degrees)&&mode.opModeIsActive()) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
             }
         } else if (degreesToGo < 0) {
             degreesFixed = 360 - degreesToGo;
             this.setPowerLeft(-1 * speed);
             this.setPowerRight(speed);
-            while ((degreesSoFar) > (degreesFixed)) {
+            while ((degreesSoFar) > (degreesFixed)&&mode.opModeIsActive()) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
             }
         } else {
@@ -1087,8 +1059,8 @@ import static java.lang.Math.sqrt;
      * @return that distance in encoder ticks.
      */
     private static int cmToTicks(double cm) {
-        // TODO This is wrong now.
-        return (int) ((1 / driveGearMultiplier) * ticksPerRevolution * (cm / (PI * wheelDiameterCM)));
+
+        return (int) (cm*(((driveGearMultiplier) * ticksPerRevolution) / (PI * wheelDiameterCM)));
     }
 
     /**

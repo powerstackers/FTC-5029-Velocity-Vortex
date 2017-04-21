@@ -20,13 +20,21 @@
 
 package com.powerstackers.velocity.opmodes.teleop;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
+
 import com.powerstackers.velocity.common.VelRobot;
 import com.powerstackers.velocity.common.VelRobotConstants;
 import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.R;
 
 import static com.powerstackers.velocity.common.VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD;
 
@@ -48,13 +56,18 @@ public class VelTeleop extends OpMode {
     private boolean flag_speedToggleJustPressed = false;
     private boolean flag_speedChanged = false;
     private double scale = VelRobotConstants.DRIVE_SPEED_NORMAL; // Normal Speed Needs to be tested
-
-//    final View relativeLayout = ((Activity) robot.getOpMode().hardwareMap.appContext).findViewById(R.id.RelativeLayout);
+    private double rotationNegation = 1;
+    //final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(R.id.RelativeLayout);
 
     @Override
     public void init() {
+
         robot = new VelRobot(this);
-        robot.initializeRobot();
+        try {
+            robot.initializeRobot();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -77,7 +90,7 @@ public class VelTeleop extends OpMode {
     public void loop() {
         telemetry.addData("shooterEncVal", robot.getShooterEncVal());
         telemetry.addData("Status", "Running: ");
-
+        robot.displayDirection();
         //button maps here vvv
         boolean buttonParticlePickupIn = gamepad2.left_bumper;
         boolean buttonParticlePickupOut = gamepad2.left_trigger > 0.5;
@@ -89,6 +102,9 @@ public class VelTeleop extends OpMode {
         boolean buttonSpeedFastToggle = gamepad1.right_bumper;
         boolean buttonSpeedSlowHold = gamepad1.left_bumper;
         boolean buttonTapBeacon = gamepad1.y;
+        boolean buttonShoot = gamepad2.b;
+        boolean buttonBeaconRight = gamepad1.right_trigger > 0.5;
+        boolean buttonBeaconLeft = gamepad1.left_trigger > 0.5;
 
         // Toggle speed for driver
         if (buttonSpeedFastToggle && !flag_speedToggleJustPressed) {
@@ -100,22 +116,36 @@ public class VelTeleop extends OpMode {
 
         if (flag_speedChanged) {
             scale = VelRobotConstants.DRIVE_SPEED_FAST;
+            telemetry.addData("Drive Speed: ", "Fast");
+            telemetry.update();
         } else {
+
             scale = VelRobotConstants.DRIVE_SPEED_NORMAL;
+            telemetry.addData("Drive Speed: ", "Normal");
+            telemetry.update();
         }
 
         // Set the movement of the robot's wheels
+        if (robot.robotDirection == PublicEnums.Direction.E || robot.robotDirection == PublicEnums.Direction.W) {
+            rotationNegation = -1;
+        } else {
+            rotationNegation = 1;
+        }
         if (buttonSpeedSlowHold) {
             scale = VelRobotConstants.DRIVE_SPEED_SLOW;
             robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
                     VelRobot.mecSpeedFromJoystick(gamepad1),
-                    VelRobot.mecSpinFromJoystick(gamepad1),
+                    VelRobot.mecSpinFromJoystick(gamepad1) * 2 * rotationNegation,
                     scale);
+            telemetry.addData("Drive Speed: ", "Slow");
+            telemetry.update();
         } else {
             robot.setMovement(VelRobot.mecDirectionFromJoystick(gamepad1),
                     VelRobot.mecSpeedFromJoystick(gamepad1),
-                    VelRobot.mecSpinFromJoystick(gamepad1),
+                    VelRobot.mecSpinFromJoystick(gamepad1) * 2 * rotationNegation,
                     scale);
+            telemetry.addData("Drive Speed: ", "Normal");
+            telemetry.update();
         }
         if (gamepad1.dpad_up) {
             robot.directionChange(PublicEnums.Direction.N);
@@ -142,17 +172,6 @@ public class VelTeleop extends OpMode {
 //        robot.sensorColorGroundL.enableLed(true);
 //        robot.sensorColorGroundR.enableLed(true);
 
-        if (robot.sensorColor.blue() > robot.sensorColor.red()) {
-//            servoBeaconPosition = 0.20;
-            robot.setBeaconTap(0.20);
-
-        } else if (robot.sensorColor.red() > robot.sensorColor.blue()) {
-//            servoBeaconPosition = 0.80;
-            robot.setBeaconTap(0.80);
-        } else {
-//            servoBeaconPosition = 0.50;
-            robot.setBeaconTap(0.50);
-        }
 
         // Set particle pickup motor
         if (buttonParticlePickupIn) {
@@ -162,8 +181,17 @@ public class VelTeleop extends OpMode {
         } else {
             robot.setBallPickup(MotorSetting.STOP);
         }
-
-        // Set the Shootor motor value.
+        if (buttonBeaconLeft) {
+            robot.leftBeaconPosition(PublicEnums.BeaconPostion.IN);
+        }else{
+            robot.leftBeaconPosition(PublicEnums.BeaconPostion.OUT);
+        }
+        if (buttonBeaconRight) {
+            robot.rightBeaconPosition(PublicEnums.BeaconPostion.IN);
+        }else{
+            robot.rightBeaconPosition(PublicEnums.BeaconPostion.OUT);
+        }
+        // Set the Shooter motor value.
         // TODO Make shooter able to spin backwards for emergencies
         if (buttonShooter) {
             robot.setShooter(MotorSetting.FORWARD);
@@ -181,12 +209,22 @@ public class VelTeleop extends OpMode {
         }
 
         // Set cap ball grabber
-        if (buttonCapBallLooser) {
-            robot.servoBallGrab.setPosition(robot.servoBallGrab.getPosition() + 0.2);
-        } else if (buttonCapBallTighter) {
-            robot.servoBallGrab.setPosition(robot.servoBallGrab.getPosition() - 0.05);
+//        if (buttonCapBallLooser) {
+//            robot.servoBallGrab.setDirection(DcMotorSimple.Direction.FORWARD);
+//
+//            robot.servoBallGrab.setPower(0.5);
+//        } else if (buttonCapBallTighter) {
+//            robot.servoBallGrab.setDirection(DcMotorSimple.Direction.REVERSE);
+//            robot.servoBallGrab.setPower(0.2);
+//        }
+        if (buttonShoot) {
+            robot.servoShoot.setPosition(VelRobotConstants.SHOOT_SERVO_OPEN);
+        } else {
+            robot.servoShoot.setPosition(VelRobotConstants.SHOOT_SERVO_CLOSED);
         }
 
+//        robot.motorShooter1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        robot.motorShooter1.setPower(1);
         // Screen will turn green if within target RPM, else screen is red
         // Not tested!
         // Why is VelRobotConstants not public??
@@ -204,9 +242,20 @@ public class VelTeleop extends OpMode {
 //            });
 //        }
 
+
 //        telemetry here vvv
-        if (robot.isShooterRunning()){
-        telemetry.addData("Shooter RPM", robot.getShooterRPM());}
+//        if (robot.isShooterRunning()) {
+//            telemetry.addData("Shooter RPM", robot.getShooterRPM());
+//            relativeLayout.post(new Runnable() {
+//                public void run() {
+//                    if (robot.getShooterRPM() < (VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM + 70) && robot.getShooterRPM() > (VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM - 70)) {
+//                        relativeLayout.setBackgroundColor(Color.GREEN);
+//                    } else {
+//                        relativeLayout.setBackgroundColor(Color.RED);
+//                    }
+//                }
+//            });
+//        }
 //        telemetry.addData("EncVal", robot.getShooterEncVal());
 //        telemetry.addData("Clear", robot.getAlpha());
 //        telemetry.addData("Red  ", robot.getRed());

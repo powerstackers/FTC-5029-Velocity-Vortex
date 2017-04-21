@@ -61,5 +61,8 @@ public class PublicEnums {
     public enum AutonomousStates {
         STATE_FORWARD,STATE_DETECT,STATE_SHOOT,STATE_FEED //...
     }
+    public enum BeaconPostion {
+        OUT, IN
+    }
     // TODO This can be implemented later in autonomous
 }
