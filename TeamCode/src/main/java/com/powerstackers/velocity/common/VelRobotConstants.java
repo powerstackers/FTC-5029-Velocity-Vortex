@@ -57,7 +57,7 @@ public class VelRobotConstants {
 //    public static int SCHMITT_LOWER = 20;
 
     public static final double MOTOR_LIFT_POWER    = 1.0;
-    public static final double MOTOR_PICKUP_POWER  = -1.0;
+    public static final double MOTOR_PICKUP_POWER  = -1;
 
     public static final double DIRECTION_NORTH     = PI/2;
     public static final double DIRECTION_SOUTH     = (3*PI)/2;

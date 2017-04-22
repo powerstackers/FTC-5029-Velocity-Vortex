@@ -52,7 +52,7 @@ public class VelAutonomousProgramTesting extends LinearOpMode {
         this.waitForStart();
 //        telemetry.addData("Is there mat: ", robot.isThereMat());
 //        telemetry.update();
-            robot.encoderDriveCm(VelRobotConstants.DIRECTION_NORTH, 0.8, 30);
+            robot.encoderDriveCm(VelRobotConstants.DIRECTION_NORTH, 0.8, 60.96);
         //robot.driveWithUS(VelRobotConstants.DIRECTION_SOUTH, 0.5, 10);
 //        robot.turnDegreesRight(VelRobotConstants.DIRECTION_EAST, 0.4);
         //robot.turnDegreesLeft(90, 0.4);
