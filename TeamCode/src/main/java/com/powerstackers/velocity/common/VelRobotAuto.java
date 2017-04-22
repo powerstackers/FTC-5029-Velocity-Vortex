@@ -103,6 +103,7 @@ public class VelRobotAuto {
     Servo servoBeaconRight = null;
     Servo servoBeaconLeft = null;
     public Servo servoBallGrab = null;
+    public Servo servoShoot = null;
     public double matColorVal = 0;
     public int startDirection = 0;
 
@@ -157,6 +158,7 @@ public class VelRobotAuto {
         servoBeaconRight = mode.hardwareMap.servo.get("servoBeaconRight");
         servoBeaconLeft = mode.hardwareMap.servo.get("servoBeaconLeft");
         sensorGyro = mode.hardwareMap.gyroSensor.get("sensorGyro");
+        servoShoot = mode.hardwareMap.servo.get("servoShoot");
 
 //        mode.telemetry.addData("Gyro: ", "Gyro Calibration Started");
 //        mode.telemetry.update();
@@ -201,7 +203,7 @@ public class VelRobotAuto {
         motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
         stopMovement();
         matColorVal = groundODS.getLightDetected();
-
+        servoShoot.setPosition(VelRobotConstants.SHOOT_SERVO_CLOSED);
         beaconServoReset();
         servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
         mode.telemetry.addData("Status: ", "Initialized");
@@ -569,9 +571,7 @@ public class VelRobotAuto {
      * @param pad Gamepad to take control values from.
      * @return A direction of movement, in radians, where "forward" is pi/2
      */
-    public static double mecDirectionFromJoystick(Gamepad pad) {
-        return Math.atan2(-pad.left_stick_y, pad.left_stick_x);
-    }
+
 
     /**
      * Get the translation speed value from the joystick. If the joysticks are moved close enough
@@ -580,16 +580,6 @@ public class VelRobotAuto {
      * @param pad Gamepad to take control values from.
      * @return Speed ranging from 0:1
      */
-    public static double mecSpeedFromJoystick(Gamepad pad) {
-        // If the joystick is close enough to the middle, return a 0 (no movement)
-        if (abs(pad.left_stick_x) < VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD
-                && abs(pad.left_stick_y) < VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD) {
-            return 0.0;
-        } else {
-            return sqrt((pad.left_stick_y * pad.left_stick_y)
-                    + (pad.left_stick_x * pad.left_stick_x));
-        }
-    }
 
     /**
      * Get the spin speed value from the joystick. If the joystick is moved close enough to the
@@ -598,10 +588,6 @@ public class VelRobotAuto {
      * @param pad Gamepad to take control values from.
      * @return Speed ranging from -1:1
      */
-    public static double mecSpinFromJoystick(Gamepad pad) {
-        return (abs(pad.right_stick_x) > VelRobotConstants.MINIMUM_JOYSTICK_THRESHOLD)
-                ? pad.right_stick_x : 0.0;
-    }
 
 //    /**
 //     * Tap the beacon on the correct side.
