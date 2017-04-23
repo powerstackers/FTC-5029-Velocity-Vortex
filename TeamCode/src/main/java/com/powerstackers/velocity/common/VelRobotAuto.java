@@ -22,6 +22,7 @@ package com.powerstackers.velocity.common;
 
 import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.StartingPosition;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -103,16 +104,19 @@ public class VelRobotAuto {
 
     Servo servoBeaconRight = null;
     Servo servoBeaconLeft = null;
-    public CRServo servoBallGrab = null;
+    public Servo servoBallGrab = null;
     public Servo servoShoot = null;
     public double matColorVal = 0;
+    public double matColorValBack = 0;
+
     public int startDirection = 0;
 
-    GyroSensor sensorGyro;
+    ModernRoboticsI2cGyro sensorGyro;
     public ColorSensor sensorColor;
     public UltrasonicSensor rightBeaconUS = null;
     public UltrasonicSensor leftBeaconUS = null;
     public OpticalDistanceSensor groundODS = null;
+    public OpticalDistanceSensor groundODSBack = null;
     public ColorSensor sensorColorGroundL;
     public ColorSensor sensorColorGroundR;
     public PublicEnums.Direction robotDirection = PublicEnums.Direction.N;
@@ -156,10 +160,10 @@ public class VelRobotAuto {
         motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
         motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        servoBallGrab = mode.hardwareMap.crservo.get("servoBallGrab");
+        servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         servoBeaconRight = mode.hardwareMap.servo.get("servoBeaconRight");
         servoBeaconLeft = mode.hardwareMap.servo.get("servoBeaconLeft");
-        sensorGyro = mode.hardwareMap.gyroSensor.get("sensorGyro");
+        sensorGyro = (ModernRoboticsI2cGyro) mode.hardwareMap.gyroSensor.get("sensorGyro");
         servoShoot = mode.hardwareMap.servo.get("servoShoot");
 
 //        mode.telemetry.addData("Gyro: ", "Gyro Calibration Started");
@@ -188,7 +192,7 @@ public class VelRobotAuto {
 
         mode.telemetry.addData(">", "Gyro Calibrated.  Press Start.");
         mode.telemetry.update();
-        servoBallGrab.setPower(1);
+        servoBallGrab.setPosition(0.5);
         sensorColor = mode.hardwareMap.colorSensor.get("sensorColor");
         sensorColorGroundL = mode.hardwareMap.colorSensor.get("sensorColorGroundL");
         sensorColorGroundR = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
@@ -197,6 +201,8 @@ public class VelRobotAuto {
         sensorColorGroundL.setI2cAddress(I2cAddr.create7bit(0x2e)); //8bit 0x5c
         sensorColorGroundR.setI2cAddress(I2cAddr.create7bit(0x26)); //8bit 0x4c
         groundODS = mode.hardwareMap.opticalDistanceSensor.get("ODS");
+        groundODSBack = mode.hardwareMap.opticalDistanceSensor.get("ODSB");
+
         rightBeaconUS = mode.hardwareMap.ultrasonicSensor.get("RUS");
         leftBeaconUS = mode.hardwareMap.ultrasonicSensor.get("LUS");
         sensorColor.enableLed(false);
@@ -205,6 +211,7 @@ public class VelRobotAuto {
         motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
         stopMovement();
         matColorVal = groundODS.getLightDetected();
+        matColorValBack = groundODSBack.getLightDetected();
         servoShoot.setPosition(VelRobotConstants.SHOOT_SERVO_CLOSED);
         beaconServoReset();
         //servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
@@ -244,28 +251,6 @@ public class VelRobotAuto {
         endEncoder = motorShooter1.getCurrentPosition();
 
         return (endEncoder - startEncoder) * (600.0 / 44.4);
-    }
-
-    /**
-     * Set the direction of the particle pickup motor.
-     *
-     * @param setting MotorSetting enum telling what setting to use.
-     */
-    public void setBallPickup(PublicEnums.MotorSetting setting) {
-        switch (setting) {
-            case FORWARD:
-                motorPickup.setPower(VelRobotConstants.MOTOR_PICKUP_POWER);
-                break;
-            case REVERSE:
-                motorPickup.setPower(-VelRobotConstants.MOTOR_PICKUP_POWER);
-                break;
-            case STOP:
-                motorPickup.setPower(0.0);
-                break;
-            default:
-                motorPickup.setPower(0.0);
-                break;
-        }
     }
 
     public void directionChange(PublicEnums.Direction direction) {
@@ -466,34 +451,47 @@ public class VelRobotAuto {
         motorDrive3.setPower(multipliers[2] * scale);
         motorDrive2.setPower(multipliers[3] * scale);
     }
-    public void encoderDriveCm(double angle, double speed, double cm){
-        motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorDrive1.setTargetPosition(cmToTicks(cm)+motorDrive1.getCurrentPosition());
-        setMovement(angle, speed, 0, 1);
-        while (motorDrive1.isBusy()&&mode.opModeIsActive()){
-            mode.telemetry.addData("Drive encoder count: ", motorDrive1.getCurrentPosition());
-            mode.telemetry.update();
-        }
-        stopMovement();
-    }
+
+    //    public void encoderDriveCm(double angle, double speed, double cm){
+////        motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+////        motorDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        //motorDrive1.setTargetPosition(cmToTicks(cm)+motorDrive1.getCurrentPosition());
+//        motorDrive2.setTargetPosition(cmToTicks(cm)+motorDrive1.getCurrentPosition());
+//
+//        setMovement(angle, speed, 0, 1);
+//        while (motorDrive2.isBusy()&&mode.opModeIsActive()){
+//            mode.telemetry.addData("Drive encoder count: ", motorDrive2.getCurrentPosition());
+//            mode.telemetry.update();
+//        }
+//        stopMovement();
+//    }
+
     public void driveToLine(double angle, double speed, PublicEnums.GyroCorrection gyroCorrection, PublicEnums.BeaconNumber beaconNumber, double scale) {
 
         int x = 0;
         double startGyroVal = sensorGyro.getHeading();
+        double GyroVal;
         setMovement(angle, speed, 0, scale);
-        while (isThereMat() && mode.opModeIsActive() && x == 0) {
-            //setMovement(angle, speed, sensorGyro.getHeading() - startGyroVal, 1);
+        while ((isThereMat()||isThereMatBack()) && mode.opModeIsActive() && x == 0) {
+            GyroVal = sensorGyro.getHeading();
+            if (gyroCorrection == PublicEnums.GyroCorrection.YES) {
+                setMovement(angle, speed, (sensorGyro.getIntegratedZValue() + startGyroVal)/100, 1);
+            }
+            mode.telemetry.addData("Gyro Heading", GyroVal);
             mode.telemetry.addData("Is there Mat", isThereMat());
-            mode.telemetry.addData("Mat Light", getGroundLight());
+            mode.telemetry.addData("Mat Val:", matColorVal);
+            mode.telemetry.addData("ODS Front Val: ", getGroundLight());
+            mode.telemetry.addData("ODS Back Val: ", getGroundLight());
             mode.telemetry.update();
-            if (beaconNumber == PublicEnums.BeaconNumber.ONE &&(rightBeaconUS.getUltrasonicLevel() <= 7 || leftBeaconUS.getUltrasonicLevel() <= 7)){
+            if (beaconNumber == PublicEnums.BeaconNumber.ONE && (rightBeaconUS.getUltrasonicLevel() <= 7 || leftBeaconUS.getUltrasonicLevel() <= 7)) {
                 x++;
             }
         }
-        if (x ==1) {
+        if (x == 1) {
             while (isThereMat() && mode.opModeIsActive()) {
-                setMovement(VelRobotConstants.DIRECTION_NORTH, speed-0.1, 0, 1);
+                setMovement(VelRobotConstants.DIRECTION_NORTH, speed - 0.1, 0, 1);
                 mode.telemetry.addData("Is there Mat", isThereMat());
                 mode.telemetry.addData("Mat Light", getGroundLight());
                 mode.telemetry.update();
@@ -502,19 +500,27 @@ public class VelRobotAuto {
         stopMovement();
     }
 
-    public void driveWithUS(double angle, double speed, double target) {
-        int currentHead = startDirection;
+    public double degToRad(double degrees) {
+        return ((degrees / 180) * PI);
+    }
 
+    public void driveWithUS(double angle, double speed, double target) {
+        double startGyroVal = sensorGyro.getHeading();
 // any errors with misalignment will get fixed when the robot squares on the wall
         while (getLeftUS() != target && getRightUS() != target && mode.opModeIsActive()) {
-            if (getLeftUS() < getRightUS()) {
-                setMovement(angle, speed, - 0.2, 1);
+            if (getLeftUS()<15 &&getRightUS()<15){
+                if (getLeftUS() < getRightUS()) {
+                    setMovement(angle, speed, -0.2, 1);
 
-            } else if (getLeftUS() > getRightUS()) {
-                setMovement(angle, speed, 0.2, 1);
+                } else if (getLeftUS() > getRightUS()) {
+                    setMovement(angle, speed, 0.2, 1);
 
-            } else {
-                setMovement(angle, speed, 0, 1);
+                } else {
+                    setMovement(angle, speed, 0, 1);
+
+                }
+            }else{
+                setMovement(angle, speed, (sensorGyro.getIntegratedZValue() + startGyroVal)/100, 1);
 
             }
             mode.telemetry.addData("Robot Heading", sensorGyro.getHeading());
@@ -523,19 +529,33 @@ public class VelRobotAuto {
 
         stopMovement();
     }
-    public double getRightUS(){
+
+    public double getRightUS() {
         return rightBeaconUS.getUltrasonicLevel();
     }
-    public double getLeftUS(){
+
+    public double getLeftUS() {
         return leftBeaconUS.getUltrasonicLevel();
     }
+
     public double getGroundLight() {
+        return groundODS.getLightDetected();
+    }
+    public double getGroundLightBack() {
         return groundODS.getLightDetected();
     }
 
     public boolean isThereMat() {
 
         if (getGroundLight() - .3 <= matColorVal) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public boolean isThereMatBack() {
+
+        if (getGroundLightBack() - .3 <= matColorVal) {
             return true;
         } else {
             return false;
@@ -659,10 +679,6 @@ public class VelRobotAuto {
         return motorShooter1.getCurrentPosition();
     }
 
-    public double getBallGrabPosition() {
-        return this.servoBallGrab.getPosition();
-    }
-
 
 //    public int getARGB() {
 //        return sensorColor.argb();
@@ -708,7 +724,7 @@ public class VelRobotAuto {
      * Motor diameter in Inches
      */
     private static final double wheelDiameterIN = 4;
-    private static final double wheelDiameterCM = wheelDiameterIN*2.54;
+    private static final double wheelDiameterCM = wheelDiameterIN * 2.54;
     /**
      * Gear ratio between the motor and the drive wheels. Used in calculating distance.
      */
@@ -795,7 +811,7 @@ public class VelRobotAuto {
             }
         }
         beaconServoReset();
-        sleep(500);
+
     }
 
     /**
@@ -861,7 +877,7 @@ public class VelRobotAuto {
      * @param speed   The speed at which to turn.
      */
     public void turnDegreesRight(double degrees, double speed) throws InterruptedException {
-
+        motorDrive1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         double degreesSoFar = this.getGyroHeading();
         double degreesToGo;
         double degreesFixed;
@@ -871,15 +887,16 @@ public class VelRobotAuto {
         if (degreesToGo < 360) {                //right
             this.setPowerLeft(speed);
             this.setPowerRight(-1 * speed);
-            while ((degreesSoFar) < (degrees)&&mode.opModeIsActive()) {
-                mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
+            while ((degreesSoFar) != (degrees) && mode.opModeIsActive()) {
+                degreesSoFar = this.getGyroHeading();
+                mode.telemetry.addData("gyrocompare", degreesSoFar);
                 mode.telemetry.update();
             }
         } else if (degreesToGo > 360) {
             degreesFixed = degreesToGo - 360;
             this.setPowerLeft(speed);
             this.setPowerRight(-1 * speed);
-            while ((degreesSoFar) < (degreesFixed)&&mode.opModeIsActive()) {
+            while ((degreesSoFar) < (degreesFixed) && mode.opModeIsActive()) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
             }
         } else {
@@ -897,14 +914,14 @@ public class VelRobotAuto {
         if (degreesToGo > 0) {                //left
             this.setPowerLeft(-1 * speed);
             this.setPowerRight(speed);
-            while ((degreesSoFar) > (degrees)&&mode.opModeIsActive()) {
+            while ((degreesSoFar) > (degrees) && mode.opModeIsActive()) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
             }
         } else if (degreesToGo < 0) {
             degreesFixed = 360 - degreesToGo;
             this.setPowerLeft(-1 * speed);
             this.setPowerRight(speed);
-            while ((degreesSoFar) > (degreesFixed)&&mode.opModeIsActive()) {
+            while ((degreesSoFar) > (degreesFixed) && mode.opModeIsActive()) {
                 mode.telemetry.addData("gyrocompare", degreesSoFar = this.getGyroHeading());
             }
         } else {
@@ -1048,7 +1065,7 @@ public class VelRobotAuto {
      */
     private static int cmToTicks(double cm) {
 
-        return (int) (cm*(((driveGearMultiplier) * ticksPerRevolution) / (PI * wheelDiameterCM)));
+        return (int) (cm * (((driveGearMultiplier) * ticksPerRevolution) / (PI * wheelDiameterCM)));
     }
 
     /**

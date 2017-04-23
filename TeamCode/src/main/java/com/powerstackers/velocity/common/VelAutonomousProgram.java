@@ -62,18 +62,18 @@ public class VelAutonomousProgram extends LinearOpMode {
             robot.goTicks(robot.inchesToTicks(24),0.3);
             robot.setShooter(MotorSetting.FORWARD);
             sleep(1400);
-            robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(1500);
-            robot.setBallPickup(MotorSetting.STOP);
+//            robot.setBallPickup(MotorSetting.FORWARD);
+//            sleep(1500);
+//            robot.setBallPickup(MotorSetting.STOP);
             robot.setShooter(MotorSetting.STOP);
 
             sleep(1500);
 
             robot.setShooter(MotorSetting.FORWARD);
             sleep(1200);
-            robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(2000);
-            robot.setShooter(MotorSetting.STOP);
+//            robot.setBallPickup(MotorSetting.FORWARD);
+//            sleep(2000);
+//            robot.setShooter(MotorSetting.STOP);
 
             robot.goTicks(robot.inchesToTicks(26),0.3);
 
@@ -87,17 +87,17 @@ public class VelAutonomousProgram extends LinearOpMode {
             robot.goTicks(robot.inchesToTicks(24),0.3);
             robot.setShooter(MotorSetting.FORWARD);
             sleep(1400);
-            robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(1500);
-            robot.setBallPickup(MotorSetting.STOP);
-            robot.setShooter(MotorSetting.STOP);
-
-            sleep(1500);
-
-            robot.setShooter(MotorSetting.FORWARD);
-            sleep(1200);
-            robot.setBallPickup(MotorSetting.FORWARD);
-            sleep(2000);
+//            robot.setBallPickup(MotorSetting.FORWARD);
+//            sleep(1500);
+//            robot.setBallPickup(MotorSetting.STOP);
+//            robot.setShooter(MotorSetting.STOP);
+//
+//            sleep(1500);
+//
+//            robot.setShooter(MotorSetting.FORWARD);
+//            sleep(1200);
+//            robot.setBallPickup(MotorSetting.FORWARD);
+//            sleep(2000);
             robot.setShooter(MotorSetting.STOP);
 
             robot.goTicks(robot.inchesToTicks(26),0.3);

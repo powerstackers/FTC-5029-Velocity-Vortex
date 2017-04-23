@@ -23,6 +23,7 @@ package com.powerstackers.velocity.common;
 import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -154,13 +155,13 @@ public class VelRobot {
         sensorColor.enableLed(true);
         sensorColorGroundL.enableLed(true);
         sensorColorGroundR.enableLed(true);
-        motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
+        motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM*0.74));
         stopMovement();
         matColorVal = groundODS.getLightDetected();
 
         beaconServoReset();
 //        servoBallGrab.setPosition(0.493);
-        servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
+        servoBallGrab.setPosition(0.5);
         mode.telemetry.addData("Status: ", "Initialized");
         mode.telemetry.update();
     }
@@ -215,7 +216,7 @@ public class VelRobot {
                 motorPickup.setPower(VelRobotConstants.MOTOR_PICKUP_POWER/8);
                 break;
             case REVERSE:
-                motorPickup.setPower(-VelRobotConstants.MOTOR_PICKUP_POWER/1.587 );
+                motorPickup.setPower(-VelRobotConstants.MOTOR_PICKUP_POWER );
                 break;
             case STOP:
                 motorPickup.setPower(0.0);
@@ -740,9 +741,9 @@ public class VelRobot {
         return motorShooter1.getCurrentPosition();
     }
 
-    public double getBallGrabPosition() {
-        return this.servoBallGrab.getPosition();
-    }
+    //public double getBallGrabPosition() {
+//        return this.servoBallGrab.getPosition();
+//    }
 
     public double getGyroHeading() {
         return sensorGyro.getHeading();
