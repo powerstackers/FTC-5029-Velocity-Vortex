@@ -507,8 +507,8 @@ public class VelRobotAuto {
     public void driveWithUS(double angle, double speed, double target) {
         double startGyroVal = sensorGyro.getHeading();
 // any errors with misalignment will get fixed when the robot squares on the wall
-        while (getLeftUS() != target && getRightUS() != target && mode.opModeIsActive()) {
-            if (getLeftUS()<15 &&getRightUS()<15){
+        while ((getLeftUS() >= target && getRightUS() >= target) && mode.opModeIsActive()) {
+            if (getLeftUS()<30 &&getRightUS()<30){
                 if (getLeftUS() < getRightUS()) {
                     setMovement(angle, speed, -0.2, 1);
 
@@ -778,9 +778,12 @@ public class VelRobotAuto {
 
     public void beaconTap(PublicEnums.AllianceColor allianceColor) throws InterruptedException {
         sensorColor.enableLed(false);
+
         int x = 0;
         if (allianceColor == PublicEnums.AllianceColor.RED) {
             while (mode.opModeIsActive() && x < 1) {
+                mode.telemetry.addData("Sensor Beacon Color Red: " ,sensorColor.red());
+                mode.telemetry.addData("Sensor Beacon Color Blue: " ,sensorColor.blue());
                 if (sensorColor.red() > sensorColor.blue()) {
                     servoBeaconLeft.setPosition(VelRobotConstants.BEACON_LEFT_FORWARD);
                     sleep(1000);
@@ -796,6 +799,9 @@ public class VelRobotAuto {
             }
         } else if (allianceColor == PublicEnums.AllianceColor.BLUE) {
             while (mode.opModeIsActive() && x < 1) {
+                mode.telemetry.addData("Sensor Beacon Color Red: " ,sensorColor.red());
+                mode.telemetry.addData("Sensor Beacon Color Blue: " ,sensorColor.blue());
+                mode.telemetry.update();
                 if (sensorColor.red() < sensorColor.blue()) {
                     servoBeaconLeft.setPosition(VelRobotConstants.BEACON_LEFT_FORWARD);
                     sleep(1000);

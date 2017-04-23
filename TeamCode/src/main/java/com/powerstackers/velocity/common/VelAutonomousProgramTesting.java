@@ -26,9 +26,6 @@ import com.powerstackers.velocity.common.enums.StartingPosition;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.BLUE;
-import static com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor.RED;
-
 /**
  * @author Derek Helm
  */
@@ -49,11 +46,17 @@ public class VelAutonomousProgramTesting extends LinearOpMode {
         this.waitForStart();
 
         robot.driveWithUS(VelRobotConstants.DIRECTION_SOUTHEAST, 0.4, 20);
-        robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 1);
+        robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
 //        robot.setMovement(VelRobotConstants.DIRECTION_SOUTH, 0.2, 0, 1);
         Thread.sleep(200);
-        robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 1);
-        robot.beaconTap(BLUE);
+        robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+        robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
+        robot.beaconTap(PublicEnums.AllianceColor.BLUE);
+        robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+        Thread.sleep(200);
+
+        robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+
 
 
     }
