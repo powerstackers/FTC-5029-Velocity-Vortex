@@ -244,8 +244,8 @@ public class VelTeleop extends OpMode {
 
 
 //        telemetry here vvv
-//        if (robot.isShooterRunning()) {
-//            telemetry.addData("Shooter RPM", robot.getShooterRPM());
+        if (robot.isShooterRunning()) {
+            telemetry.addData("Shooter RPM", robot.getShooterRPM());
 //            relativeLayout.post(new Runnable() {
 //                public void run() {
 //                    if (robot.getShooterRPM() < (VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM + 70) && robot.getShooterRPM() > (VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM - 70)) {
