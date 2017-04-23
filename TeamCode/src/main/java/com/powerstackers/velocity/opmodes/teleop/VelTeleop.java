@@ -209,14 +209,14 @@ public class VelTeleop extends OpMode {
         }
 
         // Set cap ball grabber
-//        if (buttonCapBallLooser) {
-//            robot.servoBallGrab.setDirection(DcMotorSimple.Direction.FORWARD);
-//
-//            robot.servoBallGrab.setPower(0.5);
-//        } else if (buttonCapBallTighter) {
-//            robot.servoBallGrab.setDirection(DcMotorSimple.Direction.REVERSE);
-//            robot.servoBallGrab.setPower(0.2);
-//        }
+        if (buttonCapBallLooser) {
+            robot.servoBallGrab.setPosition(1);
+        } else if (buttonCapBallTighter) {
+            robot.servoBallGrab.setPosition(0);
+        }
+        else{
+            robot.servoBallGrab.setPosition(0.5);
+        }
         if (buttonShoot) {
             robot.servoShoot.setPosition(VelRobotConstants.SHOOT_SERVO_OPEN);
         } else {
@@ -255,7 +255,7 @@ public class VelTeleop extends OpMode {
 //                    }
 //                }
 //            });
-//        }
+        }
 //        telemetry.addData("EncVal", robot.getShooterEncVal());
 //        telemetry.addData("Clear", robot.getAlpha());
 //        telemetry.addData("Red  ", robot.getRed());
