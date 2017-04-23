@@ -52,11 +52,13 @@ public class VelAutonomousProgramTesting extends LinearOpMode {
         robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
         robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
         robot.beaconTap(PublicEnums.AllianceColor.BLUE);
+        robot.setMovement(VelRobotConstants.DIRECTION_NORTH, 0.2,0, 0.8);
+        Thread.sleep(200);
         robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
         Thread.sleep(200);
-
         robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-
+        robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
+        robot.beaconTap(PublicEnums.AllianceColor.BLUE);
 
 
     }

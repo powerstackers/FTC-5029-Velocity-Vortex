@@ -817,7 +817,7 @@ public class VelRobotAuto {
             }
         }
         beaconServoReset();
-
+        sleep(1000);
     }
 
     /**
