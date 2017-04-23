@@ -24,6 +24,7 @@ import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.StartingPosition;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -102,7 +103,7 @@ public class VelRobotAuto {
 
     Servo servoBeaconRight = null;
     Servo servoBeaconLeft = null;
-    public Servo servoBallGrab = null;
+    public CRServo servoBallGrab = null;
     public Servo servoShoot = null;
     public double matColorVal = 0;
     public int startDirection = 0;
@@ -154,7 +155,7 @@ public class VelRobotAuto {
         motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
         motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
+        servoBallGrab = mode.hardwareMap.crservo.get("servoBallGrab");
         servoBeaconRight = mode.hardwareMap.servo.get("servoBeaconRight");
         servoBeaconLeft = mode.hardwareMap.servo.get("servoBeaconLeft");
         sensorGyro = mode.hardwareMap.gyroSensor.get("sensorGyro");
@@ -186,7 +187,7 @@ public class VelRobotAuto {
 
         mode.telemetry.addData(">", "Gyro Calibrated.  Press Start.");
         mode.telemetry.update();
-
+        servoBallGrab.setPower(1);
         sensorColor = mode.hardwareMap.colorSensor.get("sensorColor");
         sensorColorGroundL = mode.hardwareMap.colorSensor.get("sensorColorGroundL");
         sensorColorGroundR = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
@@ -205,7 +206,7 @@ public class VelRobotAuto {
         matColorVal = groundODS.getLightDetected();
         servoShoot.setPosition(VelRobotConstants.SHOOT_SERVO_CLOSED);
         beaconServoReset();
-        servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
+        //servoBallGrab.setPosition(VelRobotConstants.SERVO_BALL_GRAB_STOWED);
         mode.telemetry.addData("Status: ", "Initialized");
         mode.telemetry.update();
     }
