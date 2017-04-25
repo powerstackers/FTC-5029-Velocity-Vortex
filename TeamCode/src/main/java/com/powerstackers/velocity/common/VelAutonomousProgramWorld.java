@@ -20,6 +20,7 @@
 
 package com.powerstackers.velocity.common;
 
+import com.powerstackers.velocity.common.enums.PublicEnums;
 import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
 import com.powerstackers.velocity.common.enums.PublicEnums.MotorSetting;
 import com.powerstackers.velocity.common.enums.StartingPosition;
@@ -52,6 +53,50 @@ public class VelAutonomousProgramWorld extends LinearOpMode {
         // Wait for the start of the match!Thread.interrupted()
         this.waitForStart();
 
-
+        if (allianceColor == RED) {
+            switch (startingPosition) {
+                case FAR_FROM_RAMP:
+                    break;
+                case MIDDLE:
+                    break;
+                case CLOSE_TO_RAMP:
+                    robot.driveWithUS(VelRobotConstants.DIRECTION_NORTHEAST, 0.4, 20);
+                    robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+                    Thread.sleep(200);
+                    robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+                    robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
+                    robot.beaconTap(PublicEnums.AllianceColor.RED);
+                    robot.setMovement(VelRobotConstants.DIRECTION_SOUTH, 0.2,0, 0.8);
+                    Thread.sleep(200);
+                    robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+                    Thread.sleep(200);
+                    robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+                    robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
+                    robot.beaconTap(PublicEnums.AllianceColor.RED);
+                    break;
+            }
+        } else if (allianceColor == BLUE) {
+            switch (startingPosition) {
+                case FAR_FROM_RAMP:
+                    break;
+                case MIDDLE:
+                    break;
+                case CLOSE_TO_RAMP:
+                    robot.driveWithUS(VelRobotConstants.DIRECTION_SOUTHEAST, 0.4, 20);
+                    robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+                    Thread.sleep(200);
+                    robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+                    robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
+                    robot.beaconTap(PublicEnums.AllianceColor.BLUE);
+                    robot.setMovement(VelRobotConstants.DIRECTION_NORTH, 0.2,0, 0.8);
+                    Thread.sleep(200);
+                    robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+                    Thread.sleep(200);
+                    robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+                    robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
+                    robot.beaconTap(PublicEnums.AllianceColor.BLUE);
+                    break;
+            }
+        }
     }
 }
