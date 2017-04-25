@@ -30,10 +30,19 @@ public class PublicEnums {
     public enum MotorSetting {
         REVERSE, STOP, FORWARD
     }
+    public enum BeaconNumber {
+        ONE, TWO
+    }
 
     /** The color alliance that we have been placed on. */
     public enum AllianceColor {
         RED, BLUE
+    }
+    public enum Direction {
+        N, S, E, W
+    }
+    public enum GyroCorrection {
+        YES, NO
     }
 
     /** The setting of the grabber, either tight (grabbing the ball) or loose (not grabbing it). */
@@ -51,6 +60,9 @@ public class PublicEnums {
     /** Sequential steps in autonomous */
     public enum AutonomousStates {
         STATE_FORWARD,STATE_DETECT,STATE_SHOOT,STATE_FEED //...
+    }
+    public enum BeaconPostion {
+        OUT, IN
     }
     // TODO This can be implemented later in autonomous
 }
