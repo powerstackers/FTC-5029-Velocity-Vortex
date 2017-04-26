@@ -54,49 +54,37 @@ public class VelAutonomousProgramWorld extends LinearOpMode {
         this.waitForStart();
 
         if (allianceColor == RED) {
-            switch (startingPosition) {
-                case FAR_FROM_RAMP:
-                    break;
-                case MIDDLE:
-                    break;
-                case CLOSE_TO_RAMP:
-                    robot.driveWithUS(VelRobotConstants.DIRECTION_NORTHEAST, 0.4, 20);
-                    robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-                    Thread.sleep(200);
-                    robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-                    robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
-                    robot.beaconTap(PublicEnums.AllianceColor.RED);
-                    robot.setMovement(VelRobotConstants.DIRECTION_SOUTH, 0.2,0, 0.8);
-                    Thread.sleep(200);
-                    robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-                    Thread.sleep(200);
-                    robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-                    robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
-                    robot.beaconTap(PublicEnums.AllianceColor.RED);
-                    break;
-            }
+
+            robot.driveWithUS(VelRobotConstants.DIRECTION_NORTHEAST, 0.4, 20);
+            robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+            Thread.sleep(200);
+            robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+            robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
+            robot.beaconTap(PublicEnums.AllianceColor.RED);
+            robot.setMovement(VelRobotConstants.DIRECTION_SOUTH, 0.2, 0, 0.8);
+            Thread.sleep(200);
+            robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+            Thread.sleep(200);
+            robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+            robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
+            robot.beaconTap(PublicEnums.AllianceColor.RED);
+
         } else if (allianceColor == BLUE) {
-            switch (startingPosition) {
-                case FAR_FROM_RAMP:
-                    break;
-                case MIDDLE:
-                    break;
-                case CLOSE_TO_RAMP:
-                    robot.driveWithUS(VelRobotConstants.DIRECTION_SOUTHEAST, 0.4, 20);
-                    robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-                    Thread.sleep(200);
-                    robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-                    robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
-                    robot.beaconTap(PublicEnums.AllianceColor.BLUE);
-                    robot.setMovement(VelRobotConstants.DIRECTION_NORTH, 0.2,0, 0.8);
-                    Thread.sleep(200);
-                    robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-                    Thread.sleep(200);
-                    robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-                    robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
-                    robot.beaconTap(PublicEnums.AllianceColor.BLUE);
-                    break;
-            }
+
+            robot.driveWithUS(VelRobotConstants.DIRECTION_SOUTHEAST, 0.4, 20);
+            robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+            Thread.sleep(200);
+            robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+            robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
+            robot.beaconTap(PublicEnums.AllianceColor.BLUE);
+            robot.setMovement(VelRobotConstants.DIRECTION_NORTH, 0.2, 0, 0.8);
+            Thread.sleep(200);
+            robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+            Thread.sleep(200);
+            robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
+            robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
+            robot.beaconTap(PublicEnums.AllianceColor.BLUE);
+
         }
     }
 }

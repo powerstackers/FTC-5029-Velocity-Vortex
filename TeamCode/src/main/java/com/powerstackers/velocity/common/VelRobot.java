@@ -85,6 +85,7 @@ public class VelRobot {
     public ColorSensor sensorColorGroundL;
     public ColorSensor sensorColorGroundR;
     public PublicEnums.Direction robotDirection = PublicEnums.Direction.N;
+    public MiniPID shooterPID = new MiniPID(0.03, 0, 0.01);
 
     private final ElapsedTime timer = new ElapsedTime();
 
@@ -121,7 +122,7 @@ public class VelRobot {
         motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         //motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorShooter1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         servoShoot = mode.hardwareMap.servo.get("servoShoot");
         servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         servoBeaconRight = mode.hardwareMap.servo.get("servoBeaconRight");
@@ -158,7 +159,7 @@ public class VelRobot {
         motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM*0.74));
         stopMovement();
         matColorVal = groundODS.getLightDetected();
-
+        shooterPID.setOutputLimits(0.0, 1.0);
         beaconServoReset();
 //        servoBallGrab.setPosition(0.493);
         servoBallGrab.setPosition(0.5);
@@ -301,7 +302,8 @@ public class VelRobot {
     public void setShooter(MotorSetting setting) {
         switch (setting) {
             case FORWARD:
-                setShooterRpm(VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM);
+                double outputSpeed = shooterPID.getOutput(getShooterRPM(), VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM);
+                motorShooter1.setPower(outputSpeed);
                 break;
             case STOP:
                 motorShooter1.setPower(0.0);
@@ -339,7 +341,7 @@ public class VelRobot {
      * @param rpm RPM of motor that we want to set, can be positive or negative.
      */
     private void setShooterRpm(int rpm) {
-//        motorShooter1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorShooter1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
             motorShooter1.setPower((double) rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
         } else {
