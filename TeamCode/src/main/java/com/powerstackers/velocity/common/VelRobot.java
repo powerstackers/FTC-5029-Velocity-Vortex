@@ -214,10 +214,10 @@ public class VelRobot {
     public void setBallPickup(MotorSetting setting) {
         switch (setting) {
             case FORWARD:
-                motorPickup.setPower(VelRobotConstants.MOTOR_PICKUP_POWER/8);
+                motorPickup.setPower(-VelRobotConstants.MOTOR_PICKUP_POWER/8);
                 break;
             case REVERSE:
-                motorPickup.setPower(-VelRobotConstants.MOTOR_PICKUP_POWER );
+                motorPickup.setPower(VelRobotConstants.MOTOR_PICKUP_POWER);
                 break;
             case STOP:
                 motorPickup.setPower(0.0);

@@ -25,6 +25,9 @@ import com.powerstackers.velocity.common.enums.PublicEnums.AllianceColor;
 import com.powerstackers.velocity.common.enums.StartingPosition;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.util.Timer;
 
 /**
  * @author Derek Helm
@@ -32,34 +35,23 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name = "AutoTest", group = "Powerstackers")
 
 public class VelAutonomousProgramTesting extends LinearOpMode {
-    VelRobotAuto robot;
-
+    VelRobotAuto robot = new VelRobotAuto(this);
+    //Timer time = new Timer();
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new VelRobotAuto(this);
+
+        //ElapsedTime runtime = new ElapsedTime();
 
         // Initialize any sensors and servos
         robot.initializeRobot();
 
         // Wait for the start of the match!Thread.interrupted()
         this.waitForStart();
-
-        robot.driveWithUS(VelRobotConstants.DIRECTION_SOUTHEAST, 0.4, 20);
-        robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-//        robot.setMovement(VelRobotConstants.DIRECTION_SOUTH, 0.2, 0, 1);
-        Thread.sleep(200);
-        robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-        robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
-        robot.beaconTap(PublicEnums.AllianceColor.BLUE);
-        robot.setMovement(VelRobotConstants.DIRECTION_NORTH, 0.2,0, 0.8);
-        Thread.sleep(200);
-        robot.driveToLine(VelRobotConstants.DIRECTION_NORTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-        Thread.sleep(200);
-        robot.driveToLine(VelRobotConstants.DIRECTION_SOUTH, 0.2, PublicEnums.GyroCorrection.NO, PublicEnums.BeaconNumber.TWO, 0.8);
-        robot.driveWithUS(VelRobotConstants.DIRECTION_EAST, 0.2, 6);
-        robot.beaconTap(PublicEnums.AllianceColor.BLUE);
-
-
+        //runtime.reset();
+        robot.setMovement(VelRobotConstants.DIRECTION_NORTH, 0.8, 0, 1);
+        Thread.sleep(5000);
+//        robot.servoShoot.setPosition(VelRobotConstants.SHOOT_SERVO_OPEN);
+//        Thread.sleep(1000);
     }
 }

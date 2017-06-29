@@ -104,22 +104,22 @@ public class VelAutonomousProgram extends LinearOpMode {
 
         } else if (allianceColor == RED && startingPosition == StartingPosition.BACKUP) {
 
-            robot.setPowerLeft(-0.3 * 0.75);
-            robot.setPowerRight(-0.3 * 1.0);
+            robot.setPowerLeft(-0.5 * 0.75);
+            robot.setPowerRight(-0.5 * 1.0);
             sleep(1800);
             robot.stopAllMotors();
-            robot.setPowerLeft(+0.3 * 0.75);
-            robot.setPowerRight(-0.3 * 1.0);
+            robot.setPowerLeft(+0.5 * 0.75);
+            robot.setPowerRight(-0.5 * 1.0);
             sleep(500);
             robot.stopAllMotors();
-            robot.setPowerLeft(-0.3 * 0.75);
-            robot.setPowerRight(-0.3 * 1.0);
+            robot.setPowerLeft(-0.5 * 0.75);
+            robot.setPowerRight(-0.5 * 1.0);
             sleep(1800);
 
         } else if (allianceColor == BLUE && startingPosition == StartingPosition.BACKUP) {
 
-            robot.setPowerLeft(-0.3 * 0.75);
-            robot.setPowerRight(-0.3 * 1.0);
+            robot.setPowerLeft(-0.5 * 0.75);
+            robot.setPowerRight(-0.5 * 1.0);
             sleep(1800);
             robot.stopAllMotors();
 

@@ -120,6 +120,7 @@ public class VelRobotAuto {
     public ColorSensor sensorColorGroundL;
     public ColorSensor sensorColorGroundR;
     public PublicEnums.Direction robotDirection = PublicEnums.Direction.N;
+    public MiniPID shooterPID = new MiniPID(0.03, 0, 0.01);
 
     private final ElapsedTime timer = new ElapsedTime();
 
@@ -142,7 +143,7 @@ public class VelRobotAuto {
         mode.telemetry.update();
         motorDrive1 = mode.hardwareMap.dcMotor.get("motorFrontLeft");
         //motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        motorDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //motorDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorDrive2 = mode.hardwareMap.dcMotor.get("motorFrontRight");
 //        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        motorDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -158,7 +159,7 @@ public class VelRobotAuto {
         motorShooter1 = mode.hardwareMap.dcMotor.get("motorShooter");
         motorShooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorShooter1.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorShooter1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         servoBallGrab = mode.hardwareMap.servo.get("servoBallGrab");
         servoBeaconRight = mode.hardwareMap.servo.get("servoBeaconRight");
@@ -196,6 +197,7 @@ public class VelRobotAuto {
         sensorColor = mode.hardwareMap.colorSensor.get("sensorColor");
         sensorColorGroundL = mode.hardwareMap.colorSensor.get("sensorColorGroundL");
         sensorColorGroundR = mode.hardwareMap.colorSensor.get("sensorColorGroundR");
+        shooterPID.setOutputLimits(0.0, 1.0);
 
         sensorColor.setI2cAddress(I2cAddr.create7bit(0x1e)); //8bit 0x3c
         sensorColorGroundL.setI2cAddress(I2cAddr.create7bit(0x2e)); //8bit 0x5c
@@ -305,10 +307,11 @@ public class VelRobotAuto {
      *
      * @param setting MotorSetting enum telling what setting to use.
      */
-    public void setShooter(PublicEnums.MotorSetting setting) throws InterruptedException {
+    public void setShooter(PublicEnums.MotorSetting setting) {
         switch (setting) {
             case FORWARD:
-                setShooterRpm(VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM);
+                double outputSpeed = shooterPID.getOutput(getShooterRPM(), VelRobotConstants.MOTOR_SHOOTER_TARGET_RPM);
+                motorShooter1.setPower(outputSpeed);
                 break;
             case STOP:
                 motorShooter1.setPower(0.0);
@@ -320,7 +323,7 @@ public class VelRobotAuto {
     }
 
     /**
-     * Set the RPM of the shooter motor. Sets the speed as a percentage of the maximum RPM.
+     * Set the RPM of the shooter motor. Sets the speed as\ a percentage of the maximum RPM.
      * @param rpm RPM of motor that we want to set, can be positive or negative.
      */
 //    private void setShooterRpm(int rpm) {
@@ -346,7 +349,7 @@ public class VelRobotAuto {
      * @param rpm RPM of motor that we want to set, can be positive or negative.
      */
     private void setShooterRpm(int rpm) throws InterruptedException {
-        motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorShooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (Math.abs(rpm) <= VelRobotConstants.MOTOR_SHOOTER_MAX_RPM) {
             motorShooter1.setPower((double) rpm / VelRobotConstants.MOTOR_SHOOTER_MAX_RPM);
         } else {
@@ -452,21 +455,21 @@ public class VelRobotAuto {
         motorDrive2.setPower(multipliers[3] * scale);
     }
 
-    //    public void encoderDriveCm(double angle, double speed, double cm){
-////        motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-////        motorDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        public void encoderDriveCm(double angle, double speed, double cm){
+//        motorDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        motorDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        motorDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        //motorDrive1.setTargetPosition(cmToTicks(cm)+motorDrive1.getCurrentPosition());
-//        motorDrive2.setTargetPosition(cmToTicks(cm)+motorDrive1.getCurrentPosition());
-//
-//        setMovement(angle, speed, 0, 1);
-//        while (motorDrive2.isBusy()&&mode.opModeIsActive()){
-//            mode.telemetry.addData("Drive encoder count: ", motorDrive2.getCurrentPosition());
-//            mode.telemetry.update();
-//        }
-//        stopMovement();
-//    }
+        //motorDrive1.setTargetPosition(cmToTicks(cm)+motorDrive1.getCurrentPosition());
+        motorDrive1.setTargetPosition(cmToTicks(cm)+motorDrive1.getCurrentPosition());
+
+        setMovement(angle, speed, 0, 1);
+        while (motorDrive1.isBusy()&&mode.opModeIsActive()){
+            mode.telemetry.addData("Drive encoder count: ", motorDrive1.getCurrentPosition());
+            mode.telemetry.update();
+        }
+        stopMovement();
+    }
 
     public void driveToLine(double angle, double speed, PublicEnums.GyroCorrection gyroCorrection, PublicEnums.BeaconNumber beaconNumber, double scale) {
 

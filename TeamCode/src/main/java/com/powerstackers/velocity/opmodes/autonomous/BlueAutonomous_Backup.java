@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  */
 @SuppressWarnings("unused")
 @Autonomous(name = "Blue Auto (Backup)", group = "Powerstackers")
-@Disabled
+//@Disabled
 public class BlueAutonomous_Backup extends VelAutonomousProgram {
     public BlueAutonomous_Backup() {
         super(PublicEnums.AllianceColor.BLUE, StartingPosition.BACKUP);
