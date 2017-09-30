@@ -210,7 +210,7 @@ public class VelRobotAuto {
         sensorColor.enableLed(false);
         sensorColorGroundL.enableLed(true);
         sensorColorGroundR.enableLed(true);
-        motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
+        //motorShooter1.setMaxSpeed((int) (VelRobotConstants.MOTOR_SHOOTER_MAX_RPM * 0.74));
         stopMovement();
         matColorVal = groundODS.getLightDetected();
         matColorValBack = groundODSBack.getLightDetected();

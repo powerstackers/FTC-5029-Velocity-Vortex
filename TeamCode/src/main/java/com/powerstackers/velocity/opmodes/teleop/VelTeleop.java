@@ -95,6 +95,7 @@ public class VelTeleop extends OpMode {
         boolean buttonParticlePickupIn = gamepad2.left_bumper;
         boolean buttonParticlePickupOut = gamepad2.left_trigger > 0.5;
         boolean buttonShooter = gamepad2.a;
+        boolean buttonShooterHigh = gamepad2.x;
         boolean buttonLiftUp = gamepad2.right_bumper;
         boolean buttonLiftDown = gamepad2.right_trigger > 0.5;
         boolean buttonCapBallTighter = gamepad2.dpad_down;
@@ -193,10 +194,16 @@ public class VelTeleop extends OpMode {
         }
         // Set the Shooter motor value.
         // TODO Make shooter able to spin backwards for emergencies
-        if (buttonShooter) {
-            robot.setShooter(MotorSetting.FORWARD);
-        } else {
-            robot.setShooter(MotorSetting.STOP);
+
+        if (buttonShooterHigh) {
+            robot.motorShooter1.setPower(1);
+        }
+        else {
+            if (buttonShooter) {
+                robot.setShooter(MotorSetting.FORWARD);
+            } else {
+                robot.setShooter(MotorSetting.STOP);
+            }
         }
 
         // Set lift motor
